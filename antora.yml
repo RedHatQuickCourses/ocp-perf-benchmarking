@@ -1,5 +1,5 @@
-name: REPLACEREPONAME
-title: FIXME Course Title
+name: ocp-perf-benchmarking
+title: OpenShift Performance benchmarking guide
 version: 1
 nav:
 - modules/ROOT/nav.adoc
