@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>An Example Quick Course :: OpenShift Performance benchmarking guide</title>
+    <title>OpenShift performance benchmarking :: OpenShift performance benchmarking guide</title>
     <link rel="next" href="LABENV/index.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../_/css/site.css">
@@ -14,7 +14,7 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
-      <a class="navbar-item" style="font-size: 24px; color: white" href="../..">OpenShift Performance benchmarking guide</a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../..">OpenShift performance benchmarking guide</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
@@ -34,7 +34,7 @@
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html">OpenShift Performance benchmarking guide</a></h3>
+    <h3 class="title"><a href="index.html">OpenShift performance benchmarking guide</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -54,16 +54,30 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="chapter1/index.html">Chapter 1</a>
+    <a class="nav-link" href="chapter1/index.html">Introduction to performance benchmarking</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="chapter1/section1.html">Section 1</a>
+    <a class="nav-link" href="chapter1/section1.html">Kubernetes/OpenShift performance landscape</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="chapter1/section2.html">Section 2</a>
+</ul>
   </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="chapter2/index.html">Built-in OpenShift monitoring stack</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="chapter3/index.html">Benchmarking suites</a>
+<ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="chapter1/section3.html">Section 3</a>
+    <a class="nav-link" href="chapter3/section1.html">Kubernetes-native benchmarking tools</a>
   </li>
 </ul>
   </li>
@@ -73,10 +87,16 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="chapter2/index.html">Chapter 2</a>
+    <a class="nav-link" href="chapter4/index.html">Benchmarking the data plane</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="chapter2/section1.html">Section 1</a>
+    <a class="nav-link" href="chapter4/section1.html">Understanding OVN-Kubernetes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="chapter4/section2.html">Network throughput and latency testing with k8s-netperf</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="chapter4/section3.html">Ingress controller benchmarking</a>
   </li>
 </ul>
   </li>
@@ -86,13 +106,26 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="chapter3/index.html">Chapter 3</a>
+    <a class="nav-link" href="chapter5/index.html">Control plane and scalability testing</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="chapter3/section1.html">Section 1</a>
+    <a class="nav-link" href="chapter5/section1.html">Configuring kube-burner jobs to simulate cluster churn</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="chapter3/section2.html">Section 2</a>
+    <a class="nav-link" href="chapter5/section2.html">Measuring Control Plane Responsiveness</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="chapter6/index.html">Benchmarking suites</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="chapter6/section1.html">Kubernetes-native benchmarking tools</a>
   </li>
 </ul>
   </li>
@@ -110,12 +143,12 @@
 </div>
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
-    <span class="title">OpenShift Performance benchmarking guide</span>
+    <span class="title">OpenShift performance benchmarking guide</span>
     <span class="version">1</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <a class="title" href="index.html">OpenShift Performance benchmarking guide</a>
+      <a class="title" href="index.html">OpenShift performance benchmarking guide</a>
       <ul class="versions">
         <li class="version is-current is-latest">
           <a href="index.html">1</a>
@@ -133,7 +166,7 @@
   <a href="index.html" class="home-link is-current"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="index.html">OpenShift Performance benchmarking guide</a></li>
+    <li><a href="index.html">OpenShift performance benchmarking guide</a></li>
     <li><a href="index.html">Home</a></li>
   </ul>
 </nav>
@@ -143,19 +176,18 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">An Example Quick Course</h1>
+<h1 class="page">OpenShift performance benchmarking</h1>
 <div class="sect1">
 <h2 id="_introduction"><a class="anchor" href="#_introduction"></a>Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Course Title: Course title FIXME</p>
+<p>Course Title: OpenShift performance benchmarking</p>
 </div>
 <div class="paragraph">
-<p>Description:
-Course description FIXME</p>
+<p>Description: This intensive, hands-on course will teach you how to use the built-in monitoring stack and Kubernetes-native tools like kube-burner to stress-test your cluster&#8217;s networking and control plane. We&#8217;ll dive into establishing performance baselines, finding bottlenecks before they become problems, and getting the data you need to keep your platform running smoothly and efficiently.</p>
 </div>
 <div class="paragraph">
-<p>Duration: FIXME hours</p>
+<p>Duration: 4-8 hours</p>
 </div>
 </div>
 </div>
@@ -163,18 +195,30 @@ Course description FIXME</p>
 <h2 id="_objectives"><a class="anchor" href="#_objectives"></a>Objectives</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>On completing this course, you should be able to:</p>
+<p>On completing this course, you should gain skills to proactively measure, analyze, and tune an OpenShift cluster for optimal performance:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Observable, measurable objective&#8230;&#8203;</p>
+<p>Articulate Performance Goals</p>
 </li>
 <li>
-<p>Observable, measurable objective&#8230;&#8203;</p>
+<p>Identify Bottlenecks</p>
 </li>
 <li>
-<p>Observable, measurable objective&#8230;&#8203;</p>
+<p>Get familiar with Kubernetes-native benchmarking tools</p>
+</li>
+<li>
+<p>Establish a Baseline</p>
+</li>
+<li>
+<p>Benchmark the Data Plane</p>
+</li>
+<li>
+<p>Stress-Test the Control Plane</p>
+</li>
+<li>
+<p>Analytical and Reporting Abilities</p>
 </li>
 </ul>
 </div>
@@ -189,13 +233,13 @@ Course description FIXME</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Course or experience&#8230;&#8203;</p>
+<p>Basic understanding of containerization (Docker, Podman) and Kubernetes/OpenShift concepts.</p>
 </li>
 <li>
-<p>Course or experience&#8230;&#8203;</p>
+<p>Familiarity with the Linux command line.</p>
 </li>
 <li>
-<p>Course or experience&#8230;&#8203;</p>
+<p>Experience with basic OpenShift administration is beneficial but not required.</p>
 </li>
 </ul>
 </div>
