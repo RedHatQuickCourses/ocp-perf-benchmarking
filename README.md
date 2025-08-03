@@ -7,12 +7,12 @@ This intensive, hands-on course will teach you how to use the built-in monitorin
 # Objectives
 
 Gain skills to proactively measure, analyze, and tune an OpenShift cluster for optimal performance:
-- Articulate Performance Goals
-- Identify Bottlenecks
+- Articulate performance goals
+- Identify bottlenecks
 - Get familiar with Kubernetes-native benchmarking tools
-- Establish a Baseline
-- Benchmark the Data Plane
-- Stress-Test the Control Plane
-- Analytical and Reporting Abilities
+- Establish a baseline
+- Benchmark the data plane
+- Stress-Test the control plane
+- Analytical and reporting abilities
 
 
