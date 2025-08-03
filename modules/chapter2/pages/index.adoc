@@ -1,4 +1,4 @@
-= Chapter 2
+= Built-in OpenShift monitoring stack
 
 In this section, we cover... FIXME
 

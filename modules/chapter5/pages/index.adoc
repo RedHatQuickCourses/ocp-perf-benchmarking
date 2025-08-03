@@ -1,4 +1,4 @@
-= Benchmarking suites
+= Control plane and scalability testing
 
 In this section, we cover... FIXME
 

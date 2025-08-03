@@ -1,4 +1,4 @@
-= Chapter 1
+= Introduction to performance benchmarking
 
 In this section, we cover... FIXME
 

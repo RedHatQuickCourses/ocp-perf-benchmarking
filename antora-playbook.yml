@@ -1,5 +1,5 @@
 site:
-  title: OpenShift Performance benchmarking guide
+  title: OpenShift performance benchmarking guide
   start_page: ocp-perf-benchmarking::index.adoc
 
 content:
