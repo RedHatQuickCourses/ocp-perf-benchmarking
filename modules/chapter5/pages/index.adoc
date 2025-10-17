@@ -1,6 +1,6 @@
 = Control plane and scalability testing with kube-burner
 
-(https://github.com/kube-burner/kube-burner)[kube-burner] is a CNCF hosted project designed for Kubernetes control plane performance testing. It enables users to simulate various scenarios, such as node failures or updates, to assess how the control plane responds under stress. Key features include:
+https://github.com/kube-burner/kube-burner[kube-burner] is a CNCF hosted project designed for Kubernetes control plane performance testing. It enables users to simulate various scenarios, such as node failures or updates, to assess how the control plane responds under stress. Key features include:
 
 - Configuring kube-burner jobs for customized testing environments
 - Measuring Control Plane Responsiveness by observing key metrics during simulated churn events
