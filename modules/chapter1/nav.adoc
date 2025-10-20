@@ -1,2 +1,2 @@
-* xref:index.adoc[]
+* xref:index.adoc[Introduction to Performance Benchmarking]
 ** xref:section1.adoc[]

@@ -1,4 +1,4 @@
-= Built-in OpenShift monitoring stack
+= Monitoring OpenShift Performance with the Built-in Stack
 
 In this section, we cover... FIXME
 

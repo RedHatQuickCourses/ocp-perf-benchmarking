@@ -1,4 +1,4 @@
-= Lab Environment
+= Lab Environment Setup
 
 == Instructions to Launch Your Lab on the Red Hat Demo Platform (RHDP)
 
