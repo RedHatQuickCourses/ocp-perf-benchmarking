@@ -1,4 +1,4 @@
-= OpenShift performance benchmarking
+= OpenShift Performance Benchmarking Guide
 :navtitle: Home
 
 == Introduction

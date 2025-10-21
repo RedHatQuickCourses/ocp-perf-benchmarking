@@ -1,2 +1,2 @@
-* xref:index.adoc[]
+* xref:index.adoc[Final Review and Key Takeaways]
 ** xref:section1.adoc[]

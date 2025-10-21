@@ -1,4 +1,4 @@
-= Network throughput and latency testing with k8s-netperf
+= Network Performance Testing with k8s-netperf
 
 * Create multiple copies of this section as needed.
 * Remove any unnecessary sections or chapter pages.
