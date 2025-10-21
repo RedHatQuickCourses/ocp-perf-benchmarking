@@ -47,7 +47,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment Setup</a>
   </li>
 </ul>
   </li>
@@ -55,7 +55,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter1/index.html">Introduction to performance benchmarking</a>
+    <a class="nav-link" href="../chapter1/index.html">Introduction to Performance Benchmarking</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../chapter1/section1.html">Kubernetes/OpenShift performance landscape</a>
@@ -67,7 +67,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter2/index.html">Built-in OpenShift monitoring stack</a>
+    <a class="nav-link" href="../chapter2/index.html">Monitoring OpenShift Performance with the Built-in Stack</a>
   </li>
 </ul>
   </li>
@@ -75,7 +75,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter3/index.html">Benchmarking suites</a>
+    <a class="nav-link" href="../chapter3/index.html">Overview of Benchmarking Suites</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../chapter3/section1.html">Kubernetes-native benchmarking tools</a>
@@ -88,16 +88,16 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Benchmarking the data plane</a>
+    <a class="nav-link" href="index.html">Understanding Openshift Networking</a>
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="section1.html">Understanding OVN-Kubernetes</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section2.html">Network throughput and latency testing with k8s-netperf</a>
+    <a class="nav-link" href="section2.html">Network Performance Testing with k8s-netperf</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section3.html">Ingress controller benchmarking</a>
+    <a class="nav-link" href="section3.html">Ingress Controller Benchmarking and Analysis</a>
   </li>
 </ul>
   </li>
@@ -107,7 +107,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter5/index.html">Control plane and scalability testing with kube-burner</a>
+    <a class="nav-link" href="../chapter5/index.html">Control Plane and Scalability Testing with kube-burner</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../chapter5/section1.html">Configuring kube-burner jobs to simulate cluster churn</a>
@@ -126,7 +126,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter6/index.html">Final review</a>
+    <a class="nav-link" href="../chapter6/index.html">Final Review and Key Takeaways</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../chapter6/section1.html">Final review</a>
@@ -138,7 +138,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+    <a class="nav-link" href="../appendix/appendix.html">Appendix and References</a>
   </li>
 </ul>
   </li>
@@ -171,7 +171,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">OpenShift performance benchmarking guide</a></li>
-    <li><a href="index.html">Benchmarking the data plane</a></li>
+    <li><a href="index.html">Understanding Openshift Networking</a></li>
     <li><a href="section1.html">Understanding OVN-Kubernetes</a></li>
   </ul>
 </nav>
@@ -182,25 +182,201 @@
 </aside>
 <article class="doc">
 <h1 class="page">Understanding OVN-Kubernetes</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In OpenShift, <strong>OVN-Kubernetes (OVN-K)</strong> provides the networking fabric that connects pods across nodes. Consider <strong>Pod A</strong> on Node 1 communicating with <strong>Pod B</strong> on Node 2. The major components involved are explained below, using <strong>ovnkube-controller as the CMS equivalent</strong>.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_1_ovnkube_controller_cms"><a class="anchor" href="#_1_ovnkube_controller_cms"></a>1. ovnkube-controller (CMS)</h2>
+<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p>Create multiple copies of this section as needed.</p>
+<p>Runs on the <strong>control plane node(s)</strong>.</p>
 </li>
 <li>
-<p>Remove any unnecessary sections or chapter pages.</p>
+<p>Acts as the <strong>central authority</strong> for cluster networking.</p>
 </li>
 <li>
-<p>Customize the section as appropriate.</p>
+<p>Responsibilities:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Maintains the logical network representation for all pods and namespaces.</p>
 </li>
 <li>
-<p>Ensure that each page contains a manageable amount of content.</p>
+<p>Synchronizes network policies and logical switches/routers with the OVN Northbound Database (NBDB).</p>
 </li>
 </ul>
 </div>
+</li>
+<li>
+<p><strong>Performance and scale:</strong> In large clusters, it must process thousands of pod and network policy updates efficiently to prevent connectivity delays.</p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_ovn_northbound_database_nbdb"><a class="anchor" href="#_2_ovn_northbound_database_nbdb"></a>2. OVN Northbound Database (nbdb)</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Stores <strong>high-level logical network configuration</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Logical switches (pod networks)</p>
+</li>
+<li>
+<p>Logical routers (routing between networks)</p>
+</li>
+<li>
+<p>Access control policies (who can communicate with whom)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Receives updates from the <strong>ovnkube-controller</strong>.</p>
+</li>
+<li>
+<p><strong>Clients:</strong> <code>ovnkube-controller</code> (above) and <code>ovn-northd</code> (below).</p>
+</li>
+<li>
+<p><strong>Scale note:</strong> As cluster size increases, NBDB grows; ovn-northd ensures updates are efficiently propagated to SBDB.</p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_ovn_northd"><a class="anchor" href="#_3_ovn_northd"></a>3. ovn-northd</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Translates the <strong>logical network configuration</strong> from NBDB into <strong>node-level flows</strong> stored in the Southbound Database (SBDB).</p>
+</li>
+<li>
+<p>Calculates routes and encodings for pods across nodes.</p>
+</li>
+<li>
+<p>Ensures traffic is <strong>policy-compliant</strong> and optimized for latency and throughput.</p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_ovn_southbound_database_sbdb"><a class="anchor" href="#_4_ovn_southbound_database_sbdb"></a>4. OVN Southbound Database (SBDB)</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Stores <strong>low-level instructions</strong> for each node to implement the logical network.</p>
+</li>
+<li>
+<p>Contains:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Physical Network (PN) tables:</strong> How to reach each node.</p>
+</li>
+<li>
+<p><strong>Logical Network (LN) tables:</strong> Pod-to-pod connectivity rules.</p>
+</li>
+<li>
+<p><strong>Binding tables:</strong> Maps logical network elements to physical nodes.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Clients:</strong> ovn-northd above, ovn-controller on each node below.</p>
+</li>
+<li>
+<p><strong>Performance:</strong> Must scale with node and pod count; large clusters may require SBDB optimization.</p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_ovn_controller_per_node"><a class="anchor" href="#_5_ovn_controller_per_node"></a>5. ovn-controller (per node)</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Runs on every <strong>worker node</strong>.</p>
+</li>
+<li>
+<p>Responsibilities:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Reads SBDB to configure <strong>Open vSwitch flows</strong>.</p>
+</li>
+<li>
+<p>Updates PN and Binding tables with node and pod status.</p>
+</li>
+<li>
+<p>Handles <strong>encapsulation/decapsulation</strong> for pod-to-pod traffic (usually via Geneve tunnels).</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Scale/performance:</strong> Each node handles all local pod traffic; efficient flow programming minimizes latency.</p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_6_ovs_vswitchd_and_ovsdb_server"><a class="anchor" href="#_6_ovs_vswitchd_and_ovsdb_server"></a>6. ovs-vswitchd and ovsdb-server</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>ovs-vswitchd:</strong> Local software switch that forwards traffic according to flows programmed by ovn-controller.</p>
+</li>
+<li>
+<p><strong>ovsdb-server:</strong> Stores node-level Open vSwitch configuration.</p>
+</li>
+<li>
+<p>Ensures Pod A → Pod B traffic is <strong>encapsulated, routed, and delivered</strong> correctly.</p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="sect2">
+<h3 id="_summary_of_traffic_flow"><a class="anchor" href="#_summary_of_traffic_flow"></a>Summary of traffic flow</h3>
+<div class="paragraph">
+<p>(Data path) Pod 1 → ovs-vswitchd → Geneve encapsulation → ovs-vswitchd → Pod 2</p>
+</div>
+<div class="paragraph">
+<p>(Control path) ovnkube-controller → NBDB → ovn-northd → SBDB → ovn-controller → ovs-vswitchd</p>
+</div>
+<div class="paragraph">
+<p>This architecture ensures <strong>scalable, reliable, and high-performance pod-to-pod communication</strong> in OpenShift clusters.</p>
+</div>
+</div>
+</div>
+</div>
 <nav class="pagination">
-  <span class="prev"><a href="index.html">Benchmarking the data plane</a></span>
-  <span class="next"><a href="section2.html">Network throughput and latency testing with k8s-netperf</a></span>
+  <span class="prev"><a href="index.html">Understanding Openshift Networking</a></span>
+  <span class="next"><a href="section2.html">Network Performance Testing with k8s-netperf</a></span>
 </nav>
 </article>
   </div>

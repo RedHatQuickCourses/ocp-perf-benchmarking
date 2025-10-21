@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Benchmarking the data plane :: OpenShift performance benchmarking guide</title>
+    <title>Understanding Openshift Networking :: OpenShift performance benchmarking guide</title>
     <link rel="prev" href="../chapter3/section1.html">
     <link rel="next" href="section1.html">
     <meta name="generator" content="Antora 3.1.3">
@@ -47,7 +47,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment Setup</a>
   </li>
 </ul>
   </li>
@@ -55,7 +55,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter1/index.html">Introduction to performance benchmarking</a>
+    <a class="nav-link" href="../chapter1/index.html">Introduction to Performance Benchmarking</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../chapter1/section1.html">Kubernetes/OpenShift performance landscape</a>
@@ -67,7 +67,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter2/index.html">Built-in OpenShift monitoring stack</a>
+    <a class="nav-link" href="../chapter2/index.html">Monitoring OpenShift Performance with the Built-in Stack</a>
   </li>
 </ul>
   </li>
@@ -75,7 +75,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter3/index.html">Benchmarking suites</a>
+    <a class="nav-link" href="../chapter3/index.html">Overview of Benchmarking Suites</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../chapter3/section1.html">Kubernetes-native benchmarking tools</a>
@@ -88,16 +88,16 @@
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Benchmarking the data plane</a>
+    <a class="nav-link" href="index.html">Understanding Openshift Networking</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="section1.html">Understanding OVN-Kubernetes</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section2.html">Network throughput and latency testing with k8s-netperf</a>
+    <a class="nav-link" href="section2.html">Network Performance Testing with k8s-netperf</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section3.html">Ingress controller benchmarking</a>
+    <a class="nav-link" href="section3.html">Ingress Controller Benchmarking and Analysis</a>
   </li>
 </ul>
   </li>
@@ -107,7 +107,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter5/index.html">Control plane and scalability testing with kube-burner</a>
+    <a class="nav-link" href="../chapter5/index.html">Control Plane and Scalability Testing with kube-burner</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../chapter5/section1.html">Configuring kube-burner jobs to simulate cluster churn</a>
@@ -126,7 +126,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter6/index.html">Final review</a>
+    <a class="nav-link" href="../chapter6/index.html">Final Review and Key Takeaways</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../chapter6/section1.html">Final review</a>
@@ -138,7 +138,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+    <a class="nav-link" href="../appendix/appendix.html">Appendix and References</a>
   </li>
 </ul>
   </li>
@@ -171,7 +171,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">OpenShift performance benchmarking guide</a></li>
-    <li><a href="index.html">Benchmarking the data plane</a></li>
+    <li><a href="index.html">Understanding Openshift Networking</a></li>
   </ul>
 </nav>
 </div>
@@ -180,7 +180,60 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Benchmarking the data plane</h1>
+<h1 class="page">Understanding Openshift Networking</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift networking is the foundation that enables communication <strong>within a cluster</strong> as well as <strong>between the cluster and external systems</strong>. Effective networking is critical for ensuring application performance, reliability, and security.</p>
+</div>
+<div class="paragraph">
+<p>Traffic in OpenShift is generally categorized into two types:</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_north_south_traffic"><a class="anchor" href="#_north_south_traffic"></a>North-South Traffic</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Definition:</strong> Traffic that <strong>enters or exits</strong> the cluster, originating from clients, external services, or the internet.</p>
+</li>
+<li>
+<p><strong>Example:</strong> A user accesses a web application hosted in OpenShift via an external URL. The request passes through the OpenShift <strong>ingress controller</strong>, which routes it to the appropriate pod serving the application.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>North-South traffic represents the interaction between the cluster and the outside world, and it must be managed to ensure secure and efficient access.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_east_west_traffic"><a class="anchor" href="#_east_west_traffic"></a>East-West Traffic</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Definition:</strong> Traffic between pods <strong>within the cluster</strong> or between nodes.</p>
+</li>
+<li>
+<p><strong>Example:</strong> A backend service pod communicates with a database pod located on a different node. This traffic remains internal to the cluster network and is optimized for low-latency, high-throughput communication.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>East-West traffic is essential for internal application interactions, supporting the communication patterns of distributed and microservices-based architectures.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p>OpenShift leverages a <strong>software-defined network (SDN)</strong> to manage these traffic flows. The SDN abstracts the underlying network, enabling seamless pod-to-pod communication, enforcing network policies, and providing reliable connectivity across nodes.</p>
+</div>
+<div class="paragraph">
+<p>In summary, OpenShift networking ensures that applications can communicate <strong>efficiently and securely</strong>, whether traffic is flowing <strong>internally within the cluster</strong> or <strong>externally to clients</strong>.</p>
+</div>
 <div class="paragraph">
 <p>In this section, we cover&#8230;&#8203; FIXME</p>
 </div>
@@ -193,6 +246,8 @@
 <p>Ensure you create or delete the corresponding directory for the chapter accordingly.</p>
 </li>
 </ul>
+</div>
+</div>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="../chapter3/section1.html">Kubernetes-native benchmarking tools</a></span>
