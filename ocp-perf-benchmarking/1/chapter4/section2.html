@@ -182,19 +182,125 @@
 </aside>
 <article class="doc">
 <h1 class="page">Network Performance Testing with k8s-netperf</h1>
+<div class="paragraph">
+<p>k8s-netperf is an open-source tool designed to make it easy to run networking performance tests against your OpenShift clusters. It&#8217;s built by the team at Red Hat who contribute to the cloud-bulldozer organization, and it&#8217;s a powerful and simple way to understand how your network is performing and to identify any potential bottlenecks.</p>
+</div>
+<div class="paragraph">
+<p>Red Hat OpenShift&#8217;s development team is constantly updating and improving its source code and the Kernel networking data-path is part of that source code! In order to ensure the OpenShift network performance stays lightning fast, we have k8s-netperf  running constantly on new releases of OpenShift in our pipeline.</p>
+</div>
+<div class="paragraph">
+<p>Quick Getting Started with k8s-netperf</p>
+</div>
+<div class="paragraph">
+<p>Getting started with k8s-netperf is a straightforward process. Here&#8217;s a quick guide to get you up and running:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Installation - Build from git</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>First, you&#8217;ll need to clone the k8s-netperf repository from GitHub and build the binary. You can do this with the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone https://github.com/cloud-bulldozer/k8s-netperf.git
+cd k8s-netperf
+make build</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Node Labeling (Optional)</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>k8s-netperf schedules a client and a server pod in your OpenShift cluster to run the network throughput and latency tests. Allowing for node labeling allows the user to control which nodes the network performance tests run on – for example to not cross regions or availability zones, which could lead to higher latency. To also ensure that these pods land on the correct nodes, you use node labels.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc label nodes &lt;client-node-name&gt; netperf=client
+oc label nodes &lt;server-node-name&gt; netperf=server</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Namespace and Service Account (Optional)</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll need a dedicated namespace and service account for k8s-netperf. You can create them with the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc create ns netperf
+oc create sa -n netperf netperf</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you plan to run tests with hostNetwork enabled, you&#8217;ll need to grant the netperf service account additional permissions.</p>
+</div>
+<div class="paragraph">
+<p>Running Your First Test</p>
+</div>
+<div class="paragraph">
+<p>With the setup complete, you&#8217;re now ready to run your first network performance test. k8s-netperf offers a wide range of options to customize your tests. Here&#8217;s a basic example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">./bin/k8s-netperf --all</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command will run a comprehensive set of tests, including TCP and UDP stream tests, as well as request/response tests.</p>
+</div>
+<div class="paragraph">
+<p>Here are some of the most useful command-line options:</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>Create multiple copies of this section as needed.</p>
+<p><code>--across</code>: Forces the client and server pods to be scheduled across different availability zones.</p>
 </li>
 <li>
-<p>Remove any unnecessary sections or chapter pages.</p>
+<p><code>--json</code>: Outputs the test results in JSON format, which is great for parsing with tools like jq.</p>
 </li>
 <li>
-<p>Customize the section as appropriate.</p>
+<p><code>--clean=true</code>: Deletes all of the resources created by k8s-netperf after the tests are complete.</p>
 </li>
 <li>
-<p>Ensure that each page contains a manageable amount of content.</p>
+<p><code>--metrics</code>: Displays Prometheus metrics in the standard output.</p>
+</li>
+<li>
+<p><code>--iperf</code>: Uses iperf3 as the load driver for stream tests.</p>
+</li>
+<li>
+<p><code>--uperf</code>: Uses uperf as the load driver for stream tests.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Advanced Usage</p>
+</div>
+<div class="paragraph">
+<p>k8s-netperf also supports more advanced use cases, such as:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Testing with <strong>Virtual Machines</strong>: If you&#8217;re using OpenShift CNV, you can run network performance tests between virtual machines.</p>
+</li>
+<li>
+<p>Using a <strong>Linux Bridge Interface</strong>: The <code>--bridge</code> option allows you to test network performance over a Linux bridge interface.</p>
+</li>
+<li>
+<p>Integrating with <strong>Prometheus</strong>: You can use the <code>--prom</code> option to specify a Prometheus URL for scraping metrics.</p>
 </li>
 </ul>
 </div>
