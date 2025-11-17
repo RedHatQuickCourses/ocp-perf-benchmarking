@@ -7,28 +7,21 @@ Traffic in OpenShift is generally categorized into two types:
 ---
 
 ## North-South Traffic
-- **Definition:** Traffic that **enters or exits** the cluster, originating from clients, external services, or the internet.  
-- **Example:** A user accesses a web application hosted in OpenShift via an external URL. The request passes through the OpenShift **ingress controller**, which routes it to the appropriate pod serving the application.  
+- **Definition:** Traffic that **enters or exits** the cluster, originating from clients, external services, or the internet.
+- **Example:** A user accesses a web application hosted in OpenShift via an external URL. The request passes through the OpenShift **ingress controller**, which routes it to the appropriate pod serving the application.
 
 North-South traffic represents the interaction between the cluster and the outside world, and it must be managed to ensure secure and efficient access.
 
 ---
 
 ## East-West Traffic
-- **Definition:** Traffic between pods **within the cluster** or between nodes.  
-- **Example:** A backend service pod communicates with a database pod located on a different node. This traffic remains internal to the cluster network and is optimized for low-latency, high-throughput communication.  
+- **Definition:** Traffic between pods **within the cluster** or between nodes.
+- **Example:** A backend service pod communicates with a database pod located on a different node. This traffic remains internal to the cluster network and is optimized for low-latency, high-throughput communication.
 
 East-West traffic is essential for internal application interactions, supporting the communication patterns of distributed and microservices-based architectures.
 
 ---
 
-OpenShift leverages a **software-defined network (SDN)** to manage these traffic flows. The SDN abstracts the underlying network, enabling seamless pod-to-pod communication, enforcing network policies, and providing reliable connectivity across nodes.  
+OpenShift leverages a **software-defined network (SDN)** to manage these traffic flows. The SDN abstracts the underlying network, enabling seamless pod-to-pod communication, enforcing network policies, and providing reliable connectivity across nodes.
 
 In summary, OpenShift networking ensures that applications can communicate **efficiently and securely**, whether traffic is flowing **internally within the cluster** or **externally to clients**.
-
-
-In this section, we cover... FIXME
-
-
-- Add or remove section entries in the `antora.yaml` file as needed.
-- Ensure you create or delete the corresponding directory for the chapter accordingly.

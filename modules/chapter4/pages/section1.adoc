@@ -2,9 +2,10 @@
 
 In OpenShift, **OVN-Kubernetes (OVN-K)** provides the networking fabric that connects pods across nodes. Consider **Pod A** on Node 1 communicating with **Pod B** on Node 2. The major components involved are explained below, using **ovnkube-controller as the CMS equivalent**.
 
----
+== OVN Components
 
-## 1. ovnkube-controller (CMS)
+
+=== ovnkube-controller (CMS)
 - Runs on the **control plane node(s)**.
 - Acts as the **central authority** for cluster networking.
 - Responsibilities:
@@ -12,9 +13,8 @@ In OpenShift, **OVN-Kubernetes (OVN-K)** provides the networking fabric that con
   * Synchronizes network policies and logical switches/routers with the OVN Northbound Database (NBDB).
 - **Performance and scale:** In large clusters, it must process thousands of pod and network policy updates efficiently to prevent connectivity delays.
 
----
 
-## 2. OVN Northbound Database (nbdb)
+=== OVN Northbound Database (nbdb)
 - Stores **high-level logical network configuration**:
   * Logical switches (pod networks)
   * Logical routers (routing between networks)
@@ -23,16 +23,13 @@ In OpenShift, **OVN-Kubernetes (OVN-K)** provides the networking fabric that con
 - **Clients:** `ovnkube-controller` (above) and `ovn-northd` (below).
 - **Scale note:** As cluster size increases, NBDB grows; ovn-northd ensures updates are efficiently propagated to SBDB.
 
----
 
-## 3. ovn-northd
+=== ovn-northd
 - Translates the **logical network configuration** from NBDB into **node-level flows** stored in the Southbound Database (SBDB).
 - Calculates routes and encodings for pods across nodes.
 - Ensures traffic is **policy-compliant** and optimized for latency and throughput.
 
----
-
-## 4. OVN Southbound Database (SBDB)
+=== OVN Southbound Database (SBDB)
 - Stores **low-level instructions** for each node to implement the logical network.
 - Contains:
   * **Physical Network (PN) tables:** How to reach each node.
@@ -41,9 +38,8 @@ In OpenShift, **OVN-Kubernetes (OVN-K)** provides the networking fabric that con
 - **Clients:** ovn-northd above, ovn-controller on each node below.
 - **Performance:** Must scale with node and pod count; large clusters may require SBDB optimization.
 
----
 
-## 5. ovn-controller (per node)
+=== ovn-controller (per node)
 - Runs on every **worker node**.
 - Responsibilities:
   * Reads SBDB to configure **Open vSwitch flows**.
@@ -51,16 +47,14 @@ In OpenShift, **OVN-Kubernetes (OVN-K)** provides the networking fabric that con
   * Handles **encapsulation/decapsulation** for pod-to-pod traffic (usually via Geneve tunnels).
 - **Scale/performance:** Each node handles all local pod traffic; efficient flow programming minimizes latency.
 
----
 
-## 6. ovs-vswitchd and ovsdb-server
+=== ovs-vswitchd and ovsdb-server
 - **ovs-vswitchd:** Local software switch that forwards traffic according to flows programmed by ovn-controller.
 - **ovsdb-server:** Stores node-level Open vSwitch configuration.
 - Ensures Pod A → Pod B traffic is **encapsulated, routed, and delivered** correctly.
 
----
 
-### Summary of traffic flow
+== Summary of traffic flow
 (Data path) Pod 1 → ovs-vswitchd → Geneve encapsulation → ovs-vswitchd → Pod 2
 
 (Control path) ovnkube-controller → NBDB → ovn-northd → SBDB → ovn-controller → ovs-vswitchd
