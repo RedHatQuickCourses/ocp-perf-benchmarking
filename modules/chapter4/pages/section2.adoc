@@ -1,23 +1,23 @@
 = Network Performance Testing with k8s-netperf
 
-k8s-netperf is an open-source tool designed to make it easy to run networking performance tests against your OpenShift clusters. It's built by the team at Red Hat who contribute to the cloud-bulldozer organization, and it's a powerful and simple way to understand how your network is performing and to identify any potential bottlenecks.
+k8s-netperf is an open-source tool designed to make it easy to run networking performance tests against your OpenShift clusters. It's built by the team at Red Hat who contribute to the https://github.com/cloud-bulldozer[cloud-bulldozer] organization, and it's a powerful and simple way to understand how your network is performing and to identify any potential bottlenecks.
 
 Red Hat OpenShift's development team is constantly updating and improving its source code and the Kernel networking data-path is part of that source code! In order to ensure the OpenShift network performance stays lightning fast, we have k8s-netperf  running constantly on new releases of OpenShift in our pipeline.
 
-Quick Getting Started with k8s-netperf
+== Quick Getting Started with k8s-netperf
 
 Getting started with k8s-netperf is a straightforward process. Here's a quick guide to get you up and running:
 
-1. Installation - Build from git
+=== 1. Installation - Build from git
 
-First, you'll need to clone the k8s-netperf repository from GitHub and build the binary. You can do this with the following commands:
+First, you'll need to clone the https://github.com/cloud-bulldozer/k8s-netperf[k8s-netperf repository] from GitHub and build the binary. You can do this with the following commands:
 ```bash
 git clone https://github.com/cloud-bulldozer/k8s-netperf.git
 cd k8s-netperf
 make build
 ```
 
-2. Node Labeling (Optional)
+=== 2. Node Labeling (Optional)
 
 k8s-netperf schedules a client and a server pod in your OpenShift cluster to run the network throughput and latency tests. Allowing for node labeling allows the user to control which nodes the network performance tests run on – for example to not cross regions or availability zones, which could lead to higher latency. To also ensure that these pods land on the correct nodes, you use node labels.
 ```bash
@@ -25,7 +25,7 @@ oc label nodes <client-node-name> netperf=client
 oc label nodes <server-node-name> netperf=server
 ```
 
-3. Namespace and Service Account (Optional)
+=== 3. Namespace and Service Account (Optional)
 
 You'll need a dedicated namespace and service account for k8s-netperf. You can create them with the following commands:
 ```bash
@@ -35,7 +35,7 @@ oc create sa -n netperf netperf
 
 If you plan to run tests with hostNetwork enabled, you'll need to grant the netperf service account additional permissions.
 
-Running Your First Test
+== Running Your First Test
 
 With the setup complete, you're now ready to run your first network performance test. k8s-netperf offers a wide range of options to customize your tests. Here's a basic example:
 ```bash
@@ -53,10 +53,29 @@ Here are some of the most useful command-line options:
  - `--iperf`: Uses iperf3 as the load driver for stream tests.
  - `--uperf`: Uses uperf as the load driver for stream tests.
 
-Advanced Usage
+== Advanced Usage
 
 k8s-netperf also supports more advanced use cases, such as:
 
  - Testing with **Virtual Machines**: If you're using OpenShift CNV, you can run network performance tests between virtual machines.
  - Using a **Linux Bridge Interface**: The `--bridge` option allows you to test network performance over a Linux bridge interface.
  - Integrating with **Prometheus**: You can use the `--prom` option to specify a Prometheus URL for scraping metrics.
+
+== Interpreting the Results
+
+The output of k8s-netperf will vary depending on the tests you run. However, you'll typically see metrics such as:
+
+ - Throughput: The amount of data that can be transferred over the network in a given amount of time.
+ - Latency: The time it takes for a packet to travel from the client to the server and back.
+ - Packet Loss: The percentage of packets that are lost during transmission.
+ - CPU Usage: The amount of CPU that is consumed by the client and server pods during the tests.
+
+By analyzing these metrics, you can gain valuable insights into the performance of your OpenShift network. You can use this information to:
+ - Identify and troubleshoot network bottlenecks.
+ - Compare the performance and overhead of different CNI plugins.
+ - Optimize your network configuration for better performance, like increased MTU.
+ - Ensure that your network can handle the demands of your applications.
+
+== Conclusion
+
+k8s-netperf is an essential tool for any engineer who is serious about OpenShift network performance. It's easy to use, yet powerful enough to provide you with the insights you need to optimize your network and ensure that your applications are running at their best.
