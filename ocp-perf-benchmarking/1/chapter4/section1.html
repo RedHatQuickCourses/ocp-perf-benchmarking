@@ -187,12 +187,13 @@
 <div class="paragraph">
 <p>In OpenShift, <strong>OVN-Kubernetes (OVN-K)</strong> provides the networking fabric that connects pods across nodes. Consider <strong>Pod A</strong> on Node 1 communicating with <strong>Pod B</strong> on Node 2. The major components involved are explained below, using <strong>ovnkube-controller as the CMS equivalent</strong>.</p>
 </div>
-<hr>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_1_ovnkube_controller_cms"><a class="anchor" href="#_1_ovnkube_controller_cms"></a>1. ovnkube-controller (CMS)</h2>
+<h2 id="_ovn_components"><a class="anchor" href="#_ovn_components"></a>OVN Components</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_ovnkube_controller_cms"><a class="anchor" href="#_ovnkube_controller_cms"></a>ovnkube-controller (CMS)</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -219,12 +220,9 @@
 </li>
 </ul>
 </div>
-<hr>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_2_ovn_northbound_database_nbdb"><a class="anchor" href="#_2_ovn_northbound_database_nbdb"></a>2. OVN Northbound Database (nbdb)</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_ovn_northbound_database_nbdb"><a class="anchor" href="#_ovn_northbound_database_nbdb"></a>OVN Northbound Database (nbdb)</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -254,12 +252,9 @@
 </li>
 </ul>
 </div>
-<hr>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_3_ovn_northd"><a class="anchor" href="#_3_ovn_northd"></a>3. ovn-northd</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_ovn_northd"><a class="anchor" href="#_ovn_northd"></a>ovn-northd</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -273,12 +268,9 @@
 </li>
 </ul>
 </div>
-<hr>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_4_ovn_southbound_database_sbdb"><a class="anchor" href="#_4_ovn_southbound_database_sbdb"></a>4. OVN Southbound Database (SBDB)</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_ovn_southbound_database_sbdb"><a class="anchor" href="#_ovn_southbound_database_sbdb"></a>OVN Southbound Database (SBDB)</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -308,12 +300,9 @@
 </li>
 </ul>
 </div>
-<hr>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_5_ovn_controller_per_node"><a class="anchor" href="#_5_ovn_controller_per_node"></a>5. ovn-controller (per node)</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_ovn_controller_per_node"><a class="anchor" href="#_ovn_controller_per_node"></a>ovn-controller (per node)</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -340,12 +329,9 @@
 </li>
 </ul>
 </div>
-<hr>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_6_ovs_vswitchd_and_ovsdb_server"><a class="anchor" href="#_6_ovs_vswitchd_and_ovsdb_server"></a>6. ovs-vswitchd and ovsdb-server</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_ovs_vswitchd_and_ovsdb_server"><a class="anchor" href="#_ovs_vswitchd_and_ovsdb_server"></a>ovs-vswitchd and ovsdb-server</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -359,9 +345,12 @@
 </li>
 </ul>
 </div>
-<hr>
-<div class="sect2">
-<h3 id="_summary_of_traffic_flow"><a class="anchor" href="#_summary_of_traffic_flow"></a>Summary of traffic flow</h3>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_summary_of_traffic_flow"><a class="anchor" href="#_summary_of_traffic_flow"></a>Summary of traffic flow</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>(Data path) Pod 1 → ovs-vswitchd → Geneve encapsulation → ovs-vswitchd → Pod 2</p>
 </div>
@@ -370,7 +359,6 @@
 </div>
 <div class="paragraph">
 <p>This architecture ensures <strong>scalable, reliable, and high-performance pod-to-pod communication</strong> in OpenShift clusters.</p>
-</div>
 </div>
 </div>
 </div>
