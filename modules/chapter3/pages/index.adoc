@@ -12,7 +12,7 @@ Storage benchmarking tools evaluate disk throughput, latency, random I/O perform
 == CPU and Memory Benchmarking
 To evaluate compute resources, benchmarking tools focus on CPU throughput, cache efficiency, memory bandwidth, and system stability under load. One of the most common tools is https://manpages.org/stress-ng[stress-ng], which provides hundreds of stressors targeting CPUs, memory, I/O paths, virtual memory systems, and kernel interfaces. It is frequently used for burn-in testing or identifying stability issues under extreme load conditions.
 
-=== System-Wide and Mixed-Workload Benchmarking
+== System-Wide and Mixed-Workload Benchmarking
 Some benchmarking suites combine network, CPU, memory, and storage tests into composite workloads. *Phoronix Test Suite* is one of the most comprehensive frameworks available, providing hundreds of benchmarks across all major categories and supporting automated result comparison. It is widely used for comparing hardware platforms, kernel versions, and compiler optimizations. These system-wide benchmarks help administrators understand overall performance and make informed decisions about infrastructure upgrades or configuration changes.
 
 == Virtualization and Cloud Benchmarking
