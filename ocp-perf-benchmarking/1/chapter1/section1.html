@@ -67,7 +67,13 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="../chapter2/index.html">Monitoring OpenShift Performance with the Built-in Stack</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/section1.html">Hands-On Lab: Exploring the OpenShift Monitoring Stack</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -182,20 +188,39 @@
 </aside>
 <article class="doc">
 <h1 class="page">Kubernetes/OpenShift performance landscape</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
 <p>In Kubernetes and OpenShift environments, performance benchmarking becomes especially important due to the dynamic and distributed nature of cloud-native systems. Unlike traditional monolithic deployments where the application and its dependencies are mostly static, containerized workloads scale, move, and redeploy frequently. Benchmarking helps validate that applications and platform components can maintain expected performance levels even as pods reschedule, nodes autoscale, and workloads fluctuate. This is essential in environments where microservices communicate over the network extensively and performance issues can propagate quickly across service boundaries.</p>
 </div>
 <div class="paragraph">
-<p>Cloud-native architectures introduce layers such as service meshes, ingress controllers, CNI plugins, and distributed storage backends. Each of these components influences latency, throughput, and overall system responsiveness. Benchmarking allows engineers to isolate and quantify the performance characteristics of each layer. For example, comparing CNI implementations, measuring service mesh overhead, or evaluating ingress controller throughput provides actionable insights for tuning cluster performance. In highly abstracted environments like OpenShift, benchmarking is also key to understanding how platform-level features such as Operators, security layers, or network policies impact application behavior.</p>
+<p>Cloud-native architectures introduce layers such as service meshes, ingress controllers, CNI plugins and distributed storage backends. Each of these components influences latency, throughput, and overall system responsiveness. Benchmarking allows engineers to isolate and quantify the performance characteristics of each layer. For example, comparing CNI implementations, measuring service mesh overhead, or evaluating ingress controller throughput provides actionable insights for tuning cluster performance. In highly abstracted environments like OpenShift, benchmarking is also key to understanding how platform-level features such as Operators, security layers, or network policies impact application behavior.</p>
 </div>
-<div class="paragraph">
-<p>The shift-left approach in DevOps further increases the relevance of benchmarking. By integrating performance tests earlier in the development lifecycle, teams can identify bottlenecks long before an application reaches production. Kubernetes makes this process more accessible through ephemeral test environments and GitOps workflows where automated pipelines can deploy full stacks, run synthetic traffic tests, and collect metrics. This reduces late-stage surprises and ensures that performance becomes a core quality attribute rather than an afterthought.</p>
 </div>
-<div class="paragraph">
-<p>Benchmarking in these environments also helps validate autoscaling strategies. Horizontal Pod Autoscalers (HPA), Vertical Pod Autoscalers (VPA), and Cluster Autoscalers operate based on resource usage metrics. By simulating realistic workloads, engineers can verify how quickly and accurately the autoscaling policies react under stress. Poorly tuned scaling configurations can either overreact—causing cost inefficiency—or underreact, resulting in service degradation. Performance benchmarks expose these issues early and guide optimization.</p>
 </div>
+<div class="sect1">
+<h2 id="_autoscaling"><a class="anchor" href="#_autoscaling"></a>Autoscaling</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Finally, Kubernetes and OpenShift place strong emphasis on multi-tenancy and shared resources. Benchmarking allows organizations to understand how workloads from different teams interact, compete for resources, or impact one another. By measuring performance under contention, teams can enforce better resource quotas, limits, and scheduling decisions. In regulated or high-reliability environments, these benchmarks form part of the validation needed to ensure that the cluster behaves predictably even under heavy, mixed, or adversarial loads.</p>
+<p>Benchmarking in these environments also helps validate <strong>autoscaling strategies</strong>. Horizontal Pod Autoscalers (HPA), Vertical Pod Autoscalers (VPA) and Cluster Autoscalers operate based on resource usage metrics. By simulating realistic workloads, engineers can verify how quickly and accurately the autoscaling policies react under stress. Poorly tuned scaling configurations can either overreact—causing cost inefficiency—or underreact, resulting in service degradation. Performance benchmarks expose these issues early and guide optimization.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_multi_tenancy"><a class="anchor" href="#_multi_tenancy"></a>Multi-tenancy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Finally, Kubernetes and OpenShift place strong emphasis on <strong>multi-tenancy and shared resources</strong>. Benchmarking allows organizations to understand how workloads from different teams interact, compete for resources, or impact one another. By measuring performance under contention, teams can enforce better resource quotas, limits, and scheduling decisions. In regulated or high-reliability environments, these benchmarks form part of the validation needed to ensure that the cluster behaves predictably even under heavy, mixed, or adversarial loads.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_shift_left"><a class="anchor" href="#_shift_left"></a>Shift-left</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <strong>shift-left approach</strong> in DevOps further increases the relevance of benchmarking. By integrating performance tests earlier in the development lifecycle, teams can identify bottlenecks long before an application reaches production. Kubernetes makes this process more accessible through ephemeral test environments and GitOps workflows where automated pipelines can deploy full stacks, run synthetic traffic tests, and collect metrics. This reduces late-stage surprises and ensures that performance becomes a core quality attribute rather than an afterthought.</p>
+</div>
+</div>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="index.html">Introduction to Performance Benchmarking</a></span>
