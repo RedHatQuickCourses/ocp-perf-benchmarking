@@ -233,22 +233,6 @@
 <div class="paragraph">
 <p>The foundation of this stack is <strong>Prometheus</strong>, deployed and managed automatically by the Cluster Monitoring Operator (CMO). Prometheus scrapes metrics from the control plane, node components, and core cluster services. These metrics include CPU and memory usage, network throughput, API server performance, etc. Administrators can access this data through the web console, the Prometheus UI, or via command-line queries using <code>oc</code> or the PromQL query language.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>digraph monitoring {
-  rankdir=LR;
-  node [shape=box];
-
-  Prometheus -&gt; "Alertmanager";
-  Prometheus -&gt; "Cluster Metrics";
-  "Cluster Monitoring Operator" -&gt; Prometheus;
-  "Cluster Monitoring Operator" -&gt; "Alertmanager";
-  Prometheus -&gt; "Console Dashboards";
-  "Node Exporter" -&gt; Prometheus;
-  "Kubelet Metrics" -&gt; Prometheus;
-}</pre>
-</div>
-</div>
 </div>
 <div class="sect2">
 <h3 id="_alertmanager"><a class="anchor" href="#_alertmanager"></a>Alertmanager</h3>
@@ -272,6 +256,12 @@
 <h3 id="_command_line"><a class="anchor" href="#_command_line"></a>Command line</h3>
 <div class="paragraph">
 <p>For <strong>command-line-driven diagnostics</strong>, OpenShift offers a rich set of administrative tools under <code>oc adm</code>. Administrators can inspect API server performance, audit resource usage, collect must-gather bundles for troubleshooting, and review cluster feature states. Commands such as <code>oc adm top nodes</code> and <code>oc adm top pods</code> provide quick insights into real-time resource consumption, helping identify hotspots or imbalance conditions.</p>
+</div>
+<div class="imageblock unresolved">
+<div class="content">
+<img src="images/monitoring-architecture.png" alt="monitoring architecture" width="700">
+</div>
+<div class="title">Figure 1. Figure 1: Cluster Monitoring Architecture</div>
 </div>
 </div>
 </div>
@@ -303,6 +293,18 @@
 </li>
 <li>
 <p>Dive into workload-level observability using the User Workload Monitoring stack</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_see_also"><a class="anchor" href="#_see_also"></a>See Also</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/monitoring/index" target="_blank" rel="noopener">OpenShift Monitoring guide</a></p>
 </li>
 </ul>
 </div>
