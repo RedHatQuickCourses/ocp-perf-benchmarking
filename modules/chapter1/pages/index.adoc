@@ -40,3 +40,7 @@ After completing this module, you'll be ready to:
  * Explore specific benchmarking tools and suites for networking, compute, and storage
  * Learn how to design repeatable, automated benchmarking pipelines
  * Apply these concepts to Kubernetes and OpenShift environments, where cloud-native architectures introduce new performance considerations
+
+== See Also
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/3.11/html-single/scaling_and_performance_guide/index[OpenShift Scaling and Performance Guide,window=_blank]

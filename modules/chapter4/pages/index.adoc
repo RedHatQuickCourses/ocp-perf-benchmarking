@@ -42,3 +42,5 @@ After completing this module, you'll be ready to:
 
 * link:https://docs.openshift.com/container-platform/latest/virt/vm_networking/virt-about-vm-networking.html[OpenShift Virtualization Networking,window=_blank]
 * link:https://docs.openshift.com/container-platform/latest/networking/ovn_kubernetes_network_provider/about-ovn-kubernetes.html[About OVN-Kubernetes,window=_blank]
+* link:https://github.com/cloud-bulldozer/k8s-netperf/[k8s-netperf,window=_blank]
+* link:https://github.com/cloud-bulldozer/ingress-perf[ingress-perf,window=_blank]

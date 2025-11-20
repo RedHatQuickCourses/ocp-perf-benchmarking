@@ -21,23 +21,6 @@ OpenShift provides a comprehensive, fully integrated monitoring stack designed t
 
 The foundation of this stack is *Prometheus*, deployed and managed automatically by the Cluster Monitoring Operator (CMO). Prometheus scrapes metrics from the control plane, node components, and core cluster services. These metrics include CPU and memory usage, network throughput, API server performance, etc. Administrators can access this data through the web console, the Prometheus UI, or via command-line queries using `oc` or the PromQL query language.
 
-[graphviz, format="svg"]
-----
-digraph monitoring {
-  rankdir=LR;
-  node [shape=box];
-
-  Prometheus -> "Alertmanager";
-  Prometheus -> "Cluster Metrics";
-  "Cluster Monitoring Operator" -> Prometheus;
-  "Cluster Monitoring Operator" -> "Alertmanager";
-  Prometheus -> "Console Dashboards";
-  "Node Exporter" -> Prometheus;
-  "Kubelet Metrics" -> Prometheus;
-}
-----
-
-
 === Alertmanager
 
 Complementing Prometheus is *Alertmanager*, which evaluates predefined alerting rules and triggers notifications when abnormal behavior is detected. OpenShift ships with a rich set of *native alerts* covering API server latency, etcd health, cluster operator degradation, node pressure conditions, and other critical signals. These alerts can be integrated with email, PagerDuty, Slack, or other external notification systems to support proactive monitoring workflows.
@@ -54,6 +37,9 @@ Additionally, OpenShift integrates *application-level monitoring* through the Us
 
 For *command-line-driven diagnostics*, OpenShift offers a rich set of administrative tools under `oc adm`. Administrators can inspect API server performance, audit resource usage, collect must-gather bundles for troubleshooting, and review cluster feature states. Commands such as `oc adm top nodes` and `oc adm top pods` provide quick insights into real-time resource consumption, helping identify hotspots or imbalance conditions.
 
+.Figure 1: Cluster Monitoring Architecture
+image::images/monitoring-architecture.png[width=700]
+
 == Conclusion
 
 By leveraging the built-in monitoring stack, administrators gain a complete view of cluster performance and are able to detect, diagnose, and resolve issues before they escalate. This integrated approach reduces complexity, eliminates the need for external monitoring solutions, and ensures that observability evolves automatically as the platform itself updates and scales.
@@ -66,3 +52,7 @@ After completing this module, you'll be ready to:
  * Learn how to use oc adm tools and must-gather bundles for advanced troubleshooting
  * Experiment with Alertmanager routing and custom alert rules tailored to your environment
  * Dive into workload-level observability using the User Workload Monitoring stack
+
+== See Also
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/monitoring/index[OpenShift Monitoring guide,window=_blank]

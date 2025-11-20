@@ -7,3 +7,7 @@ https://github.com/kube-burner/kube-burner[kube-burner] is a CNCF hosted project
 - Hands-on experience with kube-burner, providing practical understanding of cluster behavior and control plane resilience
 
 To get started, create a dedicated namespace and service account for kube-burner using the provided shell commands. If running tests with `hostNetwork` enabled, additional permissions are required for the netperf service account. Run your first test with `./bin/k8s-netperf --all`, which performs comprehensive network performance assessments including TCP, UDP, and request/response tests. Customize tests further using available command-line options like `--across` to schedule pods across availability zones or `--json` for JSON output of test results.
+
+== See Also
+
+* link:https://kube-burner.github.io/kube-burner/latest/[Kubeburner documentation,window=_blank]
