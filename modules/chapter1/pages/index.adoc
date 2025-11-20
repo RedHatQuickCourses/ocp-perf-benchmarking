@@ -33,5 +33,6 @@ A key aspect of effective benchmarking is **repeatability**. Results must be con
 == Next Steps
 
 After completing this module, you’ll be ready to:
- - Deploy production VMs with appropriate network topologies
- - Troubleshoot network connectivity issues
+
+ * Deploy production VMs with appropriate network topologies
+ * Troubleshoot network connectivity issues
