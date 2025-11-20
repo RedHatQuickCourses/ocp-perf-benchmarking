@@ -2,15 +2,18 @@
 
 == Overview
 
-This module covers the essential tools and basic configuration needed to start working with OpenShift Virtualization. Whether you're new to OpenShift Virtualization or looking to refresh your knowledge, these guides will help you get up and running quickly.
+This module introduces the fundamentals of performance engineering within computer networks, focusing on how benchmarking provides measurable, repeatable insights into system behavior under load. It explains why modern infrastructures—spanning physical, virtualized, and cloud-native components—require systematic performance evaluation to validate design choices, uncover bottlenecks, and ensure reliability at scale.
 
 == What You'll Learn
 
 In this section, you will learn:
 
-* Prerequisites and required tools for working with OpenShift Virtualization
-* Basic usage of the virtctl command-line tool for managing virtual machines
-* How to configure default storage for virtual machine deployments
+ * The role of performance benchmarking in evaluating network throughput, latency, jitter, and scalability
+ * How realistic traffic patterns and controlled test scenarios help reveal bottlenecks and validate design decisions
+ * Why performance engineering must account for cloud-native and virtualized components such as SDN controllers, service meshes, and microservices
+ * The importance of repeatability in benchmarking and how standardized methodologies ensure consistent, meaningful results
+ * How automation and CI/CD-driven pipelines enable continuous performance validation and regression detection
+
 
 == Performance engineering
 
@@ -34,5 +37,6 @@ A key aspect of effective benchmarking is **repeatability**. Results must be con
 
 After completing this module, you’ll be ready to:
 
- * Deploy production VMs with appropriate network topologies
- * Troubleshoot network connectivity issues
+ * Explore specific benchmarking tools and suites for networking, compute, and storage
+ * Learn how to design repeatable, automated benchmarking pipelines
+ * Apply these concepts to Kubernetes and OpenShift environments, where cloud-native architectures introduce new performance considerations

@@ -1,8 +1,8 @@
 = Network Performance Testing with k8s-netperf
 
-k8s-netperf is an open-source tool designed to make it easy to run networking performance tests against your OpenShift clusters. It's built by the team at Red Hat who contribute to the https://github.com/cloud-bulldozer[cloud-bulldozer] organization, and it's a powerful and simple way to understand how your network is performing and to identify any potential bottlenecks.
+https://github.com/cloud-bulldozer/k8s-netperf/[k8s-netperf] is an open-source tool designed to make it easy to run networking performance tests against your OpenShift clusters. It's built by the team at Red Hat who contribute to the https://github.com/cloud-bulldozer[cloud-bulldozer] organization, and it's a powerful and simple way to understand how your network is performing and to identify any potential bottlenecks.
 
-Red Hat OpenShift's development team is constantly updating and improving its source code and the Kernel networking data-path is part of that source code! In order to ensure the OpenShift network performance stays lightning fast, we have k8s-netperf  running constantly on new releases of OpenShift in our pipeline.
+Red Hat OpenShift's development team is constantly updating and improving its source code and the Kernel networking data-path is part of that source code! In order to ensure the OpenShift network performance stays lightning fast, we have k8s-netperf running constantly on new releases of OpenShift in our pipeline.
 
 == Quick Getting Started with k8s-netperf
 
@@ -57,24 +57,25 @@ Here are some of the most useful command-line options:
 
 k8s-netperf also supports more advanced use cases, such as:
 
- - Testing with **Virtual Machines**: If you're using OpenShift CNV, you can run network performance tests between virtual machines.
- - Using a **Linux Bridge Interface**: The `--bridge` option allows you to test network performance over a Linux bridge interface.
- - Integrating with **Prometheus**: You can use the `--prom` option to specify a Prometheus URL for scraping metrics.
+ * Testing with **Virtual Machines**: If you're using OpenShift CNV, you can run network performance tests between virtual machines.
+ * Using a **Linux Bridge Interface**: The `--bridge` option allows you to test network performance over a Linux bridge interface.
+ * Integrating with **Prometheus**: You can use the `--prom` option to specify a Prometheus URL for scraping metrics.
 
 == Interpreting the Results
 
 The output of k8s-netperf will vary depending on the tests you run. However, you'll typically see metrics such as:
 
- - Throughput: The amount of data that can be transferred over the network in a given amount of time.
- - Latency: The time it takes for a packet to travel from the client to the server and back.
- - Packet Loss: The percentage of packets that are lost during transmission.
- - CPU Usage: The amount of CPU that is consumed by the client and server pods during the tests.
+ * Throughput: The amount of data that can be transferred over the network in a given amount of time.
+ * Latency: The time it takes for a packet to travel from the client to the server and back.
+ * Packet Loss: The percentage of packets that are lost during transmission.
+ * CPU Usage: The amount of CPU that is consumed by the client and server pods during the tests.
 
 By analyzing these metrics, you can gain valuable insights into the performance of your OpenShift network. You can use this information to:
- - Identify and troubleshoot network bottlenecks.
- - Compare the performance and overhead of different CNI plugins.
- - Optimize your network configuration for better performance, like increased MTU.
- - Ensure that your network can handle the demands of your applications.
+
+ * Identify and troubleshoot network bottlenecks.
+ * Compare the performance and overhead of different CNI plugins.
+ * Optimize your network configuration for better performance, like increased MTU.
+ * Ensure that your network can handle the demands of your applications.
 
 == Conclusion
 

@@ -2,19 +2,21 @@
 
 OpenShift networking is the foundation that enables communication **within a cluster** as well as **between the cluster and external systems**. Effective networking is critical for ensuring application performance, reliability, and security.
 
-Traffic in OpenShift is generally categorized into two types:
+Traffic in OpenShift is generally categorized into two types, north-south and east-west, which we will describe in the next sections.
 
 == North-South Traffic
-- **Definition:** Traffic that **enters or exits** the cluster, originating from clients, external services, or the internet.
-- **Example:** A user accesses a web application hosted in OpenShift via an external URL. The request passes through the OpenShift **ingress controller**, which routes it to the appropriate pod serving the application.
 
-North-South traffic represents the interaction between the cluster and the outside world, and it must be managed to ensure secure and efficient access.
+ * **Definition:** Traffic that **enters or exits** the cluster, originating from clients, external services, or the internet.
+ * **Example:** A user accesses a web application hosted in OpenShift via an external URL. The request passes through the OpenShift **ingress controller**, which routes it to the appropriate pod serving the application.
+
+North-South traffic represents the interaction between the cluster and the outside world, and it must be managed to ensure secure and efficient access. Includes ingress and egress scenarios.
 
 == East-West Traffic
-- **Definition:** Traffic between pods **within the cluster** or between nodes.
-- **Example:** A backend service pod communicates with a database pod located on a different node. This traffic remains internal to the cluster network and is optimized for low-latency, high-throughput communication.
 
-East-West traffic is essential for internal application interactions, supporting the communication patterns of distributed and microservices-based architectures.
+ * **Definition:** Traffic between pods **within the cluster** or between nodes.
+ * **Example:** A backend service pod communicates with a database pod located on a different node. This traffic remains internal to the cluster network and is optimized for low-latency, high-throughput communication.
+
+East-West traffic is essential for internal application interactions, supporting the communication patterns of distributed and microservices-based architectures. Includes host-networked scenarios (node to node) along with virtual traffic scenarios (pod to pod, pod to service, etc.)
 
 ---
 
@@ -28,8 +30,13 @@ OpenShift leverages https://ovn-kubernetes.io/[OVN-Kubernetes], a powerful Conta
 
 After completing this module, you'll be ready to:
 
-* Benchmark the data plane
-* Differentiate between different network traffic patterns: host-network traffic (node to node), virtual taffic (pod to pod, pod to service, etc.)
+ * Benchmark the data plane using different cloud-native tooling:
+   ** k8s-netperf
+   ** ingress-perf
+ * Differentiate between different network traffic patterns:
+   ** host-network traffic (node to node)
+   ** virtual traffic (pod to pod, pod to service)
+   ** ingress traffic
 
 == See Also
 

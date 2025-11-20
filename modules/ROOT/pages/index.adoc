@@ -11,32 +11,32 @@ Duration: 4-8 hours
 
 On completing this course, you should gain skills to proactively measure, analyze, and tune an OpenShift cluster for optimal performance:
 
- - Articulate performance goals
- - Identify bottlenecks
- - Get familiar with Kubernetes-native benchmarking tools
- - Establish a baseline
- - Benchmark the data plane
- - Stress-Test the control plane
- - Analytical and reporting abilities
+ * Articulate performance goals
+ * Identify bottlenecks
+ * Get familiar with Kubernetes-native benchmarking tools
+ * Establish a baseline
+ * Benchmark the data plane
+ * Stress-Test the control plane
+ * Analytical and reporting abilities
 
 == Out of scope
 
- - Storage benchmarking
- - Application-level benchmarking
- - Chaos testing
+ * Storage benchmarking
+ * Application-level benchmarking
+ * Chaos testing
 
 == Prerequisites
 
 This course assumes that you have the following prior experience:
 
- - Basic understanding of containerization (Docker, Podman) and Kubernetes/OpenShift concepts.
- - Familiarity with the Linux command line.
- - Experience with basic OpenShift administration is beneficial but not required.
+ * Basic understanding of containerization (Docker, Podman) and Kubernetes/OpenShift concepts.
+ * Familiarity with the Linux command line.
+ * Experience with basic OpenShift administration is beneficial but not required.
 
 == Contributors
 
-* José Castillo Lema
-* Mohit Sheth
+ * José Castillo Lema
+ * Mohit Sheth
 
 Special thanks to all contributors who have helped shape this resource through content creation, testing, and feedback.
 
