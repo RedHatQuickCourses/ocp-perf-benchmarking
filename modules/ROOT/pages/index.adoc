@@ -19,6 +19,11 @@ On completing this course, you should gain skills to proactively measure, analyz
  - Stress-Test the control plane
  - Analytical and reporting abilities
 
+== Out of scope
+
+ - Storage benchmarking
+ - Application-level benchmarking
+ - Chaos testing
 
 == Prerequisites
 
@@ -37,7 +42,7 @@ Special thanks to all contributors who have helped shape this resource through c
 
 == Contributing
 
-This cookbook is actively maintained. For questions, issues, or contributions, please refer to the link:https://github.com/RedHatQuickCourses/ocp-perf-benchmarking[project repository,window=_blank].
+This cookbook is actively maintained. For questions, issues, or contributions, please refer to the link:https://github.com/RedHatQuickCourses/ocp-perf-benchmarking/tree/main[project repository,window=_blank].
 
 == License
 
