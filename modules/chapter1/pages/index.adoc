@@ -1,15 +1,37 @@
 = Introduction to Performance Benchmarking
 
+== Overview
+
+This module covers the essential tools and basic configuration needed to start working with OpenShift Virtualization. Whether you're new to OpenShift Virtualization or looking to refresh your knowledge, these guides will help you get up and running quickly.
+
+== What You'll Learn
+
+In this section, you will learn:
+
+* Prerequisites and required tools for working with OpenShift Virtualization
+* Basic usage of the virtctl command-line tool for managing virtual machines
+* How to configure default storage for virtual machine deployments
+
+== Performance engineering
+
 Performance benchmarking in computer networks is the systematic process of measuring, comparing, and evaluating how network components behave under specific workloads. It provides engineers, operators, and architects with quantifiable evidence of performance characteristics such as throughput, latency, jitter, and resource utilization. Rather than relying on intuition or vendor claims, benchmarking establishes repeatable, data-driven insights that help determine whether a network meets its intended service objectives.
 
 One of the core goals of performance benchmarking is to simulate realistic traffic patterns and operational conditions. Networks experience a wide range of workloads—from bursty interactive flows to sustained high-bandwidth transfers—and each stresses the system differently. Benchmarking tools and methodologies attempt to mimic these behaviors so that engineers can understand how devices such as switches, routers, load balancers, or virtualized network functions respond under stress. This allows teams to uncover bottlenecks that may remain invisible during normal operation.
-
-A key aspect of effective benchmarking is **repeatability**. Results must be consistent across multiple runs, environments, and configurations. To achieve this, benchmarks rely on controlled testbeds, standardized procedures, and well-defined test parameters. Repeatable tests ensure that performance deviations are meaningful and reflect true system behavior rather than noise.
 
 Benchmarking also helps validate network design decisions before they are deployed into production. For example, performance tests can verify whether a new routing protocol configuration improves convergence times, whether a firewall can sustain expected peak loads, or whether a virtualized network function performs comparably to its hardware-based equivalent. By measuring performance early, organizations reduce deployment risks and avoid costly redesigns later in the lifecycle.
 
 In modern infrastructures, benchmarking extends beyond physical devices to include virtualized and cloud-native network components. Technologies such as SDN controllers, service meshes, and microservice-based load balancers introduce new performance considerations. Their behavior often depends not only on the network but also on compute, storage, and orchestration layers. As a result, performance benchmarking in contemporary environments must adopt a holistic approach that captures system-wide interactions.
 
+== Repeatability
+
+A key aspect of effective benchmarking is **repeatability**. Results must be consistent across multiple runs, environments, and configurations. To achieve this, benchmarks rely on controlled testbeds, standardized procedures, and well-defined test parameters. Repeatable tests ensure that performance deviations are meaningful and reflect true system behavior rather than noise.
+
+== Automation
+
 **Automation** plays an increasingly important role in benchmarking practices. Continuous performance testing pipelines, integrated into CI/CD workflows, allow engineers to detect performance regressions as part of routine software development. Automated test harnesses can deploy environments, generate traffic, collect telemetry, and analyze results without manual intervention. This shift enables teams to evaluate performance at scale and at the pace demanded by modern development cycles.
 
-Finally, benchmarking is not only about raw performance metrics—it is also about interpreting results in the context of real requirements. A device with the highest throughput may still be unsuitable if it exhibits unacceptable delay under load. Similarly, high performance in synthetic tests may not translate to real-world benefits unless the benchmark accurately reflects the intended workload. Effective benchmarking therefore requires both technical rigor and contextual understanding to draw meaningful conclusions.
+== Next Steps
+
+After completing this module, you’ll be ready to:
+ - Deploy production VMs with appropriate network topologies
+ - Troubleshoot network connectivity issues

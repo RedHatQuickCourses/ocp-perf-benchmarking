@@ -21,3 +21,17 @@ East-West traffic is essential for internal application interactions, supporting
 OpenShift leverages a **software-defined network (SDN)** to manage these traffic flows. The SDN abstracts the underlying network, enabling seamless pod-to-pod communication, enforcing network policies, and providing reliable connectivity across nodes.
 
 In summary, OpenShift networking ensures that applications can communicate **efficiently and securely**, whether traffic is flowing **internally within the cluster** or **externally to clients**.
+
+OpenShift leverages https://ovn-kubernetes.io/[OVN-Kubernetes], a powerful Container Network Interface (CNI) plugin, to provide a scalable, SDN-based networking backend that delivers advanced routing, policy, and overlay capabilities across the cluster.
+
+== Next Steps
+
+After completing this module, you'll be ready to:
+
+* Benchmark the data plane
+* Differentiate between different network traffic patterns: host-network traffic (node to node), virtual taffic (pod to pod, pod to service, etc.)
+
+== See Also
+
+* link:https://docs.openshift.com/container-platform/latest/virt/vm_networking/virt-about-vm-networking.html[OpenShift Virtualization Networking,window=_blank]
+* link:https://docs.openshift.com/container-platform/latest/networking/ovn_kubernetes_network_provider/about-ovn-kubernetes.html[About OVN-Kubernetes,window=_blank]

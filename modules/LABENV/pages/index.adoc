@@ -33,7 +33,7 @@ oc get node
 oc get co
 ```
 
-Let's make sure the ES instance that we need to index the benchmarking results through the course is available and responsive:
+Let's make sure the ElasticSearch instance that we need to index the benchmarking results through the course is available and responsive:
 ```bash
 # Get password
 PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
