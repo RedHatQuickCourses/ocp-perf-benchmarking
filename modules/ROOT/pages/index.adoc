@@ -37,7 +37,7 @@ Special thanks to all contributors who have helped shape this resource through c
 
 == Contributing
 
-This cookbook is actively maintained. For questions, issues, or contributions, please refer to the link:https://github.com/RedHatQuickCourses/ocp-virt-cookbook[project repository,window=_blank].
+This cookbook is actively maintained. For questions, issues, or contributions, please refer to the link:https://github.com/RedHatQuickCourses/ocp-perf-benchmarking[project repository,window=_blank].
 
 == License
 
