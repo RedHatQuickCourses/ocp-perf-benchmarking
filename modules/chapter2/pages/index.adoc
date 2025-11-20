@@ -1,33 +1,68 @@
 = Monitoring OpenShift Performance with the Built-in Stack
 
-In this section, we cover... FIXME
+== Overview
 
+OpenShift provides a fully integrated, opinionated monitoring stack that gives operators deep visibility into cluster health, performance, and resource usage without requiring external tools. This chapter introduces the core components—Prometheus, Alertmanager, Cluster Monitoring Operator, cluster operator health reporting, and administrative utilities such as oc adm—and explains how they work together to deliver real-time observability. You’ll see how OpenShift continuously gathers metrics, evaluates alerts, and exposes system-level insights that help maintain stability, diagnose issues, and ensure that workloads run efficiently.
 
-- Add or remove section entries in the `antora.yaml` file as needed.
-- Ensure you create or delete the corresponding directory for the chapter accordingly.
+== What You'll Learn
+
+ * How Prometheus and the Cluster Monitoring Operator collect and manage metrics for nodes, pods, and control-plane components
+ * The purpose of native alerts and how Alertmanager uses alerting rules to detect abnormal conditions.
+ * How cluster operators signal the overall health of OpenShift subsystems using the Available, Progressing, and Degraded conditions
+ * Practical use of `oc adm` commands for inspecting resource usage, gathering diagnostics, and performing cluster-level investigations
+ * How OpenShift’s built-in dashboards and metrics endpoints provide actionable visibility into performance trends
+ * How workload-level monitoring (User Workload Monitoring) extend observability across the platform
+
+== Introduction
 
 OpenShift provides a comprehensive, fully integrated monitoring stack designed to give cluster administrators deep visibility into platform health, performance, and resource behavior. Rather than relying on external tools, OpenShift ships with a curated set of components—based on industry-standard observability technologies—that continuously collect metrics, process alerts, and expose cluster status in a consistent and opinionated way.
 
-== Prometheus
+=== Prometheus
 
 The foundation of this stack is *Prometheus*, deployed and managed automatically by the Cluster Monitoring Operator (CMO). Prometheus scrapes metrics from the control plane, node components, and core cluster services. These metrics include CPU and memory usage, network throughput, API server performance, etc. Administrators can access this data through the web console, the Prometheus UI, or via command-line queries using `oc` or the PromQL query language.
 
-== Alertmanager
+[graphviz, format="svg"]
+----
+digraph monitoring {
+  rankdir=LR;
+  node [shape=box];
+
+  Prometheus -> "Alertmanager";
+  Prometheus -> "Cluster Metrics";
+  "Cluster Monitoring Operator" -> Prometheus;
+  "Cluster Monitoring Operator" -> "Alertmanager";
+  Prometheus -> "Console Dashboards";
+  "Node Exporter" -> Prometheus;
+  "Kubelet Metrics" -> Prometheus;
+}
+----
+
+
+=== Alertmanager
 
 Complementing Prometheus is *Alertmanager*, which evaluates predefined alerting rules and triggers notifications when abnormal behavior is detected. OpenShift ships with a rich set of *native alerts* covering API server latency, etcd health, cluster operator degradation, node pressure conditions, and other critical signals. These alerts can be integrated with email, PagerDuty, Slack, or other external notification systems to support proactive monitoring workflows.
 
-== Cluster operators
+=== Cluster operators
 
 Another key element of the monitoring stack is *Cluster Operator health*. Every OpenShift component is represented by a Cluster Operator that reports its own conditions (Available, Progressing, Degraded). Operators act as high-level health indicators for subsystems such as networking, storage, authentication, machine management, and monitoring itself. A degraded operator often points to deeper performance or stability issues that require investigation.
 
-== Application level monitoring
+=== Application level monitoring
 
 Additionally, OpenShift integrates *application-level monitoring* through the User Workload Monitoring (UWM) stack, and built-in consoles that let administrators drill down into metrics, events, logs, and historical trends. When combined, these tools form a unified observability layer that simplifies performance troubleshooting and ensures the platform remains healthy and responsive.
 
-## Command line
+=== Command line
 
-For command-line-driven diagnostics, OpenShift offers a rich set of administrative tools under `oc adm`. Administrators can inspect API server performance, audit resource usage, collect must-gather bundles for troubleshooting, and review cluster feature states. Commands such as `oc adm top nodes` and `oc adm top pods` provide quick insights into real-time resource consumption, helping identify hotspots or imbalance conditions.
+For *command-line-driven diagnostics*, OpenShift offers a rich set of administrative tools under `oc adm`. Administrators can inspect API server performance, audit resource usage, collect must-gather bundles for troubleshooting, and review cluster feature states. Commands such as `oc adm top nodes` and `oc adm top pods` provide quick insights into real-time resource consumption, helping identify hotspots or imbalance conditions.
 
 == Conclusion
 
 By leveraging the built-in monitoring stack, administrators gain a complete view of cluster performance and are able to detect, diagnose, and resolve issues before they escalate. This integrated approach reduces complexity, eliminates the need for external monitoring solutions, and ensures that observability evolves automatically as the platform itself updates and scales.
+
+== Next steps
+
+After completing this module, you'll be ready to:
+
+ * Explore hands-on PromQL queries to analyze control-plane and workload performance
+ * Learn how to use oc adm tools and must-gather bundles for advanced troubleshooting
+ * Experiment with Alertmanager routing and custom alert rules tailored to your environment
+ * Dive into workload-level observability using the User Workload Monitoring stack
