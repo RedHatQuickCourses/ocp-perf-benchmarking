@@ -5,3 +5,29 @@ In this section, we cover... FIXME
 
 - Add or remove section entries in the `antora.yaml` file as needed.
 - Ensure you create or delete the corresponding directory for the chapter accordingly.
+
+OpenShift provides a comprehensive, fully integrated monitoring stack designed to give cluster administrators deep visibility into platform health, performance, and resource behavior. Rather than relying on external tools, OpenShift ships with a curated set of components—based on industry-standard observability technologies—that continuously collect metrics, process alerts, and expose cluster status in a consistent and opinionated way.
+
+== Prometheus
+
+The foundation of this stack is *Prometheus*, deployed and managed automatically by the Cluster Monitoring Operator (CMO). Prometheus scrapes metrics from the control plane, node components, and core cluster services. These metrics include CPU and memory usage, network throughput, API server performance, etc. Administrators can access this data through the web console, the Prometheus UI, or via command-line queries using `oc` or the PromQL query language.
+
+== Alertmanager
+
+Complementing Prometheus is *Alertmanager*, which evaluates predefined alerting rules and triggers notifications when abnormal behavior is detected. OpenShift ships with a rich set of *native alerts* covering API server latency, etcd health, cluster operator degradation, node pressure conditions, and other critical signals. These alerts can be integrated with email, PagerDuty, Slack, or other external notification systems to support proactive monitoring workflows.
+
+== Cluster operators
+
+Another key element of the monitoring stack is *Cluster Operator health*. Every OpenShift component is represented by a Cluster Operator that reports its own conditions (Available, Progressing, Degraded). Operators act as high-level health indicators for subsystems such as networking, storage, authentication, machine management, and monitoring itself. A degraded operator often points to deeper performance or stability issues that require investigation.
+
+== Application level monitoring
+
+Additionally, OpenShift integrates *application-level monitoring* through the User Workload Monitoring (UWM) stack, and built-in consoles that let administrators drill down into metrics, events, logs, and historical trends. When combined, these tools form a unified observability layer that simplifies performance troubleshooting and ensures the platform remains healthy and responsive.
+
+## Command line
+
+For command-line-driven diagnostics, OpenShift offers a rich set of administrative tools under `oc adm`. Administrators can inspect API server performance, audit resource usage, collect must-gather bundles for troubleshooting, and review cluster feature states. Commands such as `oc adm top nodes` and `oc adm top pods` provide quick insights into real-time resource consumption, helping identify hotspots or imbalance conditions.
+
+== Conclusion
+
+By leveraging the built-in monitoring stack, administrators gain a complete view of cluster performance and are able to detect, diagnose, and resolve issues before they escalate. This integrated approach reduces complexity, eliminates the need for external monitoring solutions, and ensures that observability evolves automatically as the platform itself updates and scales.

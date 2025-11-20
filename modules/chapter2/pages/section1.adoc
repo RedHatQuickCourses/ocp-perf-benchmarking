@@ -1,6 +1,64 @@
-= Section 1
+= Hands-On Lab: Exploring the OpenShift Monitoring Stack
 
-* Create multiple copies of this section as needed.
-* Remove any unnecessary sections or chapter pages.
-* Customize the section as appropriate.
-* Ensure that each page contains a manageable amount of content.
+== Prometheus
+
+=== Inspect Prometheus Targets
+Verify which components are being scraped:
+
+----
+oc -n openshift-monitoring exec -it prometheus-k8s-0 -- curl -s localhost:9090/api/v1/targets
+----
+
+=== Query Cluster Metrics Using PromQL
+Access the Prometheus UI:
+
+----
+oc -n openshift-monitoring port-forward svc/prometheus-k8s 9090
+----
+
+Then visit: http://localhost:9090/
+
+Useful PromQL Queries You Should Know:
+
+[cols="1,2", options="header"]
+|===
+| Description | PromQL Query
+
+| Node CPU Usage
+| `instance:node_cpu:rate:sum`
+
+| API Server Request Latency
+| `apiserver_request_duration_seconds_bucket{verb="GET",scope="resource"}`
+
+| etcd Operation Latency
+| `etcd_request_duration_seconds_bucket{operation="put"}`
+
+| Pod Restart Count
+| `kube_pod_container_status_restarts_total`
+
+| Network Receive Throughput (per node)
+| `node_network_receive_bytes_total`
+|===
+
+== Check Cluster Operator Health
+----
+oc get clusteroperators
+----
+
+Identify any Degraded or Progressing operators:
+----
+oc get co -o jsonpath='{range .items[*]}{.metadata.name}: {.status.conditions[?(@.type=="Degraded")].status}{"\n"}{end}'
+----
+
+== Use oc adm Top to Inspect Resource Usage
+----
+oc adm top nodes
+oc adm top pods -A
+----
+
+== Collect a Must-Gather Bundle
+
+This bundle contains operator logs, metrics service status, and overall cluster diagnostics.
+----
+oc adm must-gather
+----

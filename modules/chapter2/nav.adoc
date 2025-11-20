@@ -1,1 +1,2 @@
 * xref:index.adoc[Monitoring OpenShift Performance with the Built-in Stack]
+** xref:section1.adoc[]
