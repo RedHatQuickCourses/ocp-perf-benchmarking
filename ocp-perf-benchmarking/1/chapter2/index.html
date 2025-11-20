@@ -187,63 +187,92 @@
 </aside>
 <article class="doc">
 <h1 class="page">Monitoring OpenShift Performance with the Built-in Stack</h1>
-<div id="preamble">
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this section, we cover&#8230;&#8203; FIXME</p>
+<p>OpenShift provides a fully integrated, opinionated monitoring stack that gives operators deep visibility into cluster health, performance, and resource usage without requiring external tools. This chapter introduces the core components—Prometheus, Alertmanager, Cluster Monitoring Operator, cluster operator health reporting, and administrative utilities such as oc adm—and explains how they work together to deliver real-time observability. You’ll see how OpenShift continuously gathers metrics, evaluates alerts, and exposes system-level insights that help maintain stability, diagnose issues, and ensure that workloads run efficiently.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_youll_learn"><a class="anchor" href="#_what_youll_learn"></a>What You&#8217;ll Learn</h2>
+<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p>Add or remove section entries in the <code>antora.yaml</code> file as needed.</p>
+<p>How Prometheus and the Cluster Monitoring Operator collect and manage metrics for nodes, pods, and control-plane components</p>
 </li>
 <li>
-<p>Ensure you create or delete the corresponding directory for the chapter accordingly.</p>
+<p>The purpose of native alerts and how Alertmanager uses alerting rules to detect abnormal conditions.</p>
+</li>
+<li>
+<p>How cluster operators signal the overall health of OpenShift subsystems using the Available, Progressing, and Degraded conditions</p>
+</li>
+<li>
+<p>Practical use of <code>oc adm</code> commands for inspecting resource usage, gathering diagnostics, and performing cluster-level investigations</p>
+</li>
+<li>
+<p>How OpenShift’s built-in dashboards and metrics endpoints provide actionable visibility into performance trends</p>
+</li>
+<li>
+<p>How workload-level monitoring (User Workload Monitoring) extend observability across the platform</p>
 </li>
 </ul>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introduction"><a class="anchor" href="#_introduction"></a>Introduction</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>OpenShift provides a comprehensive, fully integrated monitoring stack designed to give cluster administrators deep visibility into platform health, performance, and resource behavior. Rather than relying on external tools, OpenShift ships with a curated set of components—based on industry-standard observability technologies—that continuously collect metrics, process alerts, and expose cluster status in a consistent and opinionated way.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_prometheus"><a class="anchor" href="#_prometheus"></a>Prometheus</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_prometheus"><a class="anchor" href="#_prometheus"></a>Prometheus</h3>
 <div class="paragraph">
 <p>The foundation of this stack is <strong>Prometheus</strong>, deployed and managed automatically by the Cluster Monitoring Operator (CMO). Prometheus scrapes metrics from the control plane, node components, and core cluster services. These metrics include CPU and memory usage, network throughput, API server performance, etc. Administrators can access this data through the web console, the Prometheus UI, or via command-line queries using <code>oc</code> or the PromQL query language.</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>digraph monitoring {
+  rankdir=LR;
+  node [shape=box];
+
+  Prometheus -&gt; "Alertmanager";
+  Prometheus -&gt; "Cluster Metrics";
+  "Cluster Monitoring Operator" -&gt; Prometheus;
+  "Cluster Monitoring Operator" -&gt; "Alertmanager";
+  Prometheus -&gt; "Console Dashboards";
+  "Node Exporter" -&gt; Prometheus;
+  "Kubelet Metrics" -&gt; Prometheus;
+}</pre>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_alertmanager"><a class="anchor" href="#_alertmanager"></a>Alertmanager</h2>
-<div class="sectionbody">
+</div>
+<div class="sect2">
+<h3 id="_alertmanager"><a class="anchor" href="#_alertmanager"></a>Alertmanager</h3>
 <div class="paragraph">
 <p>Complementing Prometheus is <strong>Alertmanager</strong>, which evaluates predefined alerting rules and triggers notifications when abnormal behavior is detected. OpenShift ships with a rich set of <strong>native alerts</strong> covering API server latency, etcd health, cluster operator degradation, node pressure conditions, and other critical signals. These alerts can be integrated with email, PagerDuty, Slack, or other external notification systems to support proactive monitoring workflows.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_cluster_operators"><a class="anchor" href="#_cluster_operators"></a>Cluster operators</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_cluster_operators"><a class="anchor" href="#_cluster_operators"></a>Cluster operators</h3>
 <div class="paragraph">
 <p>Another key element of the monitoring stack is <strong>Cluster Operator health</strong>. Every OpenShift component is represented by a Cluster Operator that reports its own conditions (Available, Progressing, Degraded). Operators act as high-level health indicators for subsystems such as networking, storage, authentication, machine management, and monitoring itself. A degraded operator often points to deeper performance or stability issues that require investigation.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_application_level_monitoring"><a class="anchor" href="#_application_level_monitoring"></a>Application level monitoring</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_application_level_monitoring"><a class="anchor" href="#_application_level_monitoring"></a>Application level monitoring</h3>
 <div class="paragraph">
 <p>Additionally, OpenShift integrates <strong>application-level monitoring</strong> through the User Workload Monitoring (UWM) stack, and built-in consoles that let administrators drill down into metrics, events, logs, and historical trends. When combined, these tools form a unified observability layer that simplifies performance troubleshooting and ensures the platform remains healthy and responsive.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_command_line"><a class="anchor" href="#_command_line"></a>Command line</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_command_line"><a class="anchor" href="#_command_line"></a>Command line</h3>
 <div class="paragraph">
-<p>For command-line-driven diagnostics, OpenShift offers a rich set of administrative tools under <code>oc adm</code>. Administrators can inspect API server performance, audit resource usage, collect must-gather bundles for troubleshooting, and review cluster feature states. Commands such as <code>oc adm top nodes</code> and <code>oc adm top pods</code> provide quick insights into real-time resource consumption, helping identify hotspots or imbalance conditions.</p>
+<p>For <strong>command-line-driven diagnostics</strong>, OpenShift offers a rich set of administrative tools under <code>oc adm</code>. Administrators can inspect API server performance, audit resource usage, collect must-gather bundles for troubleshooting, and review cluster feature states. Commands such as <code>oc adm top nodes</code> and <code>oc adm top pods</code> provide quick insights into real-time resource consumption, helping identify hotspots or imbalance conditions.</p>
+</div>
 </div>
 </div>
 </div>
@@ -252,6 +281,30 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>By leveraging the built-in monitoring stack, administrators gain a complete view of cluster performance and are able to detect, diagnose, and resolve issues before they escalate. This integrated approach reduces complexity, eliminates the need for external monitoring solutions, and ensures that observability evolves automatically as the platform itself updates and scales.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After completing this module, you&#8217;ll be ready to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Explore hands-on PromQL queries to analyze control-plane and workload performance</p>
+</li>
+<li>
+<p>Learn how to use oc adm tools and must-gather bundles for advanced troubleshooting</p>
+</li>
+<li>
+<p>Experiment with Alertmanager routing and custom alert rules tailored to your environment</p>
+</li>
+<li>
+<p>Dive into workload-level observability using the User Workload Monitoring stack</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
