@@ -185,10 +185,10 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>k8s-netperf is an open-source tool designed to make it easy to run networking performance tests against your OpenShift clusters. It&#8217;s built by the team at Red Hat who contribute to the <a href="https://github.com/cloud-bulldozer">cloud-bulldozer</a> organization, and it&#8217;s a powerful and simple way to understand how your network is performing and to identify any potential bottlenecks.</p>
+<p><a href="https://github.com/cloud-bulldozer/k8s-netperf/">k8s-netperf</a> is an open-source tool designed to make it easy to run networking performance tests against your OpenShift clusters. It&#8217;s built by the team at Red Hat who contribute to the <a href="https://github.com/cloud-bulldozer">cloud-bulldozer</a> organization, and it&#8217;s a powerful and simple way to understand how your network is performing and to identify any potential bottlenecks.</p>
 </div>
 <div class="paragraph">
-<p>Red Hat OpenShift&#8217;s development team is constantly updating and improving its source code and the Kernel networking data-path is part of that source code! In order to ensure the OpenShift network performance stays lightning fast, we have k8s-netperf  running constantly on new releases of OpenShift in our pipeline.</p>
+<p>Red Hat OpenShift&#8217;s development team is constantly updating and improving its source code and the Kernel networking data-path is part of that source code! In order to ensure the OpenShift network performance stays lightning fast, we have k8s-netperf running constantly on new releases of OpenShift in our pipeline.</p>
 </div>
 </div>
 </div>
@@ -325,11 +325,23 @@ oc create sa -n netperf netperf</code></pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>By analyzing these metrics, you can gain valuable insights into the performance of your OpenShift network. You can use this information to:
- - Identify and troubleshoot network bottlenecks.
- - Compare the performance and overhead of different CNI plugins.
- - Optimize your network configuration for better performance, like increased MTU.
- - Ensure that your network can handle the demands of your applications.</p>
+<p>By analyzing these metrics, you can gain valuable insights into the performance of your OpenShift network. You can use this information to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Identify and troubleshoot network bottlenecks.</p>
+</li>
+<li>
+<p>Compare the performance and overhead of different CNI plugins.</p>
+</li>
+<li>
+<p>Optimize your network configuration for better performance, like increased MTU.</p>
+</li>
+<li>
+<p>Ensure that your network can handle the demands of your applications.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>

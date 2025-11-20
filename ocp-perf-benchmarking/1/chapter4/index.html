@@ -187,7 +187,7 @@
 <p>OpenShift networking is the foundation that enables communication <strong>within a cluster</strong> as well as <strong>between the cluster and external systems</strong>. Effective networking is critical for ensuring application performance, reliability, and security.</p>
 </div>
 <div class="paragraph">
-<p>Traffic in OpenShift is generally categorized into two types:</p>
+<p>Traffic in OpenShift is generally categorized into two types, north-south and east-west, which we will describe in the next sections.</p>
 </div>
 </div>
 </div>
@@ -205,7 +205,7 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>North-South traffic represents the interaction between the cluster and the outside world, and it must be managed to ensure secure and efficient access.</p>
+<p>North-South traffic represents the interaction between the cluster and the outside world, and it must be managed to ensure secure and efficient access. Includes ingress and egress scenarios.</p>
 </div>
 </div>
 </div>
@@ -223,7 +223,7 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>East-West traffic is essential for internal application interactions, supporting the communication patterns of distributed and microservices-based architectures.</p>
+<p>East-West traffic is essential for internal application interactions, supporting the communication patterns of distributed and microservices-based architectures. Includes host-networked scenarios (node to node) along with virtual traffic scenarios (pod to pod, pod to service, etc.)</p>
 </div>
 <hr>
 <div class="paragraph">
@@ -246,10 +246,33 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Benchmark the data plane</p>
+<p>Benchmark the data plane using different cloud-native tooling:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>k8s-netperf</p>
 </li>
 <li>
-<p>Differentiate between different network traffic patterns: host-network traffic (node to node), virtual taffic (pod to pod, pod to service, etc.)</p>
+<p>ingress-perf</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Differentiate between different network traffic patterns:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>host-network traffic (node to node)</p>
+</li>
+<li>
+<p>virtual traffic (pod to pod, pod to service)</p>
+</li>
+<li>
+<p>ingress traffic</p>
+</li>
+</ul>
+</div>
 </li>
 </ul>
 </div>
