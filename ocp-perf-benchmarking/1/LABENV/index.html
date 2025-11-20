@@ -190,7 +190,7 @@
 <p><strong>Log in</strong> to the <a href="#RHDP-Portal-Links">RHDP portal</a></p>
 </li>
 <li>
-<p><strong>Search</strong> for the catalog entry: <strong>FIXME Lab Catalog Name</strong>.</p>
+<p><strong>Search</strong> for the catalog entry: <strong>OpenShift Perf and Scale Benchmarking</strong>.</p>
 </li>
 <li>
 <p><strong>Click</strong> on the catalog entry in the search results.</p>
@@ -250,6 +250,32 @@
 <p>RedHat partners: <a href="https://partner.demo.redhat.com/" target="_blank" rel="noopener">https://partner.demo.redhat.com/</a></p>
 </li>
 </ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_validate_the_lab_environment"><a class="anchor" href="#_validate_the_lab_environment"></a>Validate the Lab environment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s make sure the environment healthy and ready to continue with the training:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get node
+oc get co</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s make sure the ES instance that we need to index the benchmarking results through the course is available and responsive:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Get password
+PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
+
+# Check cluster health
+oc exec -n openshift-logging elasticsearch-es-default-0 -- curl -k -u elastic:$PASSWORD https://elasticsearch-es-http.openshift-logging.svc.cluster.local:9200/_cluster/health?pretty</code></pre>
 </div>
 </div>
 </div>
