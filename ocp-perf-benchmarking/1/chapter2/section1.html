@@ -189,31 +189,114 @@
 <article class="doc">
 <h1 class="page">Hands-On Lab: Exploring the OpenShift Monitoring Stack</h1>
 <div class="sect1">
-<h2 id="_prometheus"><a class="anchor" href="#_prometheus"></a>Prometheus</h2>
+<h2 id="_check_cluster_operator_health"><a class="anchor" href="#_check_cluster_operator_health"></a>Check Cluster Operator Health</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_inspect_prometheus_targets"><a class="anchor" href="#_inspect_prometheus_targets"></a>Inspect Prometheus Targets</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get clusteroperators</code></pre>
+</div>
+</div>
 <div class="paragraph">
-<p>Verify which components are being scraped:</p>
+<p>Identify any degraded or progressing operators:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>oc -n openshift-monitoring exec -it prometheus-k8s-0 -- curl -s localhost:9090/api/v1/targets</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get co -o jsonpath='{range .items[*]}{.metadata.name}: {.status.conditions[?(@.type=="Degraded")].status}{"\n"}{end}'</code></pre>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_use_oc_adm_top_to_inspect_resource_usage"><a class="anchor" href="#_use_oc_adm_top_to_inspect_resource_usage"></a>Use oc adm Top to Inspect Resource Usage</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc adm top nodes</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NAME                            CPU(cores)   CPU%        MEMORY(bytes)   MEMORY%
+control-plane-cluster-vjm62-1   1190m        7%          11489Mi         37%
+control-plane-cluster-vjm62-2   1134m        7%          9270Mi          29%
+control-plane-cluster-vjm62-3   1455m        9%          5783Mi          18%
+worker-cluster-vjm62-1          2096m        13%         8249Mi          26%</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc adm top pods -A | head</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NAMESPACE                                          NAME                                                           CPU(cores)   MEMORY(bytes)
+openshift-apiserver                                apiserver-6df4569b8c-mts6l                                     21m          485Mi
+openshift-apiserver                                apiserver-6df4569b8c-w858d                                     41m          471Mi
+openshift-apiserver                                apiserver-6df4569b8c-x7ftk                                     15m          498Mi
+openshift-apiserver-operator                       openshift-apiserver-operator-b9ff4697-vwsm2                    21m          227Mi
+openshift-authentication                           oauth-openshift-55479d787c-4zrx4                               4m           99Mi
+openshift-authentication                           oauth-openshift-55479d787c-l562w                               3m           104Mi
+openshift-authentication                           oauth-openshift-55479d787c-lvjcs                               6m           100Mi
+openshift-authentication-operator                  authentication-operator-576f97686b-9hpfb                       98m          211Mi
+openshift-catalogd                                 catalogd-controller-manager-5fd54d45c8-qdlpb                   2m           107Mi</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_collect_a_must_gather_bundle"><a class="anchor" href="#_collect_a_must_gather_bundle"></a>Collect a Must-Gather Bundle</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This bundle contains operator logs, metrics service status and overall cluster diagnostics:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc adm must-gather</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prometheus"><a class="anchor" href="#_prometheus"></a>Prometheus</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Access the OpenShift Console and navigate to <strong>Observe</strong>.</p>
+</div>
+<div class="sect2">
+<h3 id="_dashboards"><a class="anchor" href="#_dashboards"></a>Dashboards</h3>
+<div class="paragraph">
+<p>Navigate to <strong>Observe</strong> &#8594; <strong>Dashboards</strong> for some great default dashboards, including the <strong>API Performance</strong> one showcasing API request durations, rates, long running requests, registered watchers, etc:</p>
+</div>
+<div class="imageblock unresolved">
+<div class="content">
+<img src="images/prom-dashboard.png" alt="prom dashboard" width="700">
+</div>
+<div class="title">Figure 1. Built-in API Performance dashboard</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_inspect_prometheus_targets"><a class="anchor" href="#_inspect_prometheus_targets"></a>Inspect Prometheus Targets</h3>
+<div class="paragraph">
+<p>To verify which components are being scraped, navigate to <strong>Observe</strong> &#8594; <strong>Targets</strong>:</p>
+</div>
+<div class="imageblock unresolved">
+<div class="content">
+<img src="images/prom-targets.png" alt="prom targets" width="700">
+</div>
+<div class="title">Figure 2. Prometheus Targets</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_query_cluster_metrics_using_promql"><a class="anchor" href="#_query_cluster_metrics_using_promql"></a>Query Cluster Metrics Using PromQL</h3>
 <div class="paragraph">
-<p>Access the Prometheus UI:</p>
+<p>Navigate to <strong>Observe</strong> &#8594; <strong>Metrics</strong>:</p>
 </div>
-<div class="listingblock">
+<div class="imageblock unresolved">
 <div class="content">
-<pre>oc -n openshift-monitoring port-forward svc/prometheus-k8s 9090</pre>
+<img src="images/prom-query.png" alt="prom query" width="700">
 </div>
-</div>
-<div class="paragraph">
-<p>Then visit: <a href="http://localhost:9090/" class="bare">http://localhost:9090/</a></p>
+<div class="title">Figure 3. Custom queries with PromQL</div>
 </div>
 <div class="paragraph">
 <p>Useful PromQL Queries You Should Know:</p>
@@ -240,7 +323,7 @@
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">etcd Operation Latency</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>etcd_request_duration_seconds_bucket{operation="put"}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>etcd_request_duration_seconds_bucket</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Pod Restart Count</p></td>
@@ -252,48 +335,6 @@
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_check_cluster_operator_health"><a class="anchor" href="#_check_cluster_operator_health"></a>Check Cluster Operator Health</h2>
-<div class="sectionbody">
-<div class="listingblock">
-<div class="content">
-<pre>oc get clusteroperators</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Identify any Degraded or Progressing operators:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>oc get co -o jsonpath='{range .items[*]}{.metadata.name}: {.status.conditions[?(@.type=="Degraded")].status}{"\n"}{end}'</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_use_oc_adm_top_to_inspect_resource_usage"><a class="anchor" href="#_use_oc_adm_top_to_inspect_resource_usage"></a>Use oc adm Top to Inspect Resource Usage</h2>
-<div class="sectionbody">
-<div class="listingblock">
-<div class="content">
-<pre>oc adm top nodes
-oc adm top pods -A</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_collect_a_must_gather_bundle"><a class="anchor" href="#_collect_a_must_gather_bundle"></a>Collect a Must-Gather Bundle</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This bundle contains operator logs, metrics service status, and overall cluster diagnostics.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>oc adm must-gather</pre>
-</div>
 </div>
 </div>
 </div>
