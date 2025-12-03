@@ -39,48 +39,48 @@ Let's make sure the ElasticSearch instance that we need to index the benchmarkin
 
 1. Get password:
 
-```bash
-ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
-```
+    ```bash
+    ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
+    ```
 
 2. Get ElasticSearch route URL:
-```bash
-ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath='https://{.spec.host}')
-```
+    ```bash
+    ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath='https://{.spec.host}')
+    ```
 
 3. Check ElasticSearch endpoint health:
-```bash
-curl -k -u elastic:$ES_PASSWORD $ES_INSTANCE/_cluster/health?pretty
-```
-```json
-{
-  "cluster_name" : "elasticsearch",
-  "status" : "green",
-  "timed_out" : false,
-  "number_of_nodes" : 1,
-  "number_of_data_nodes" : 1,
-  "active_primary_shards" : 0,
-  "active_shards" : 0,
-  "relocating_shards" : 0,
-  "initializing_shards" : 0,
-  "unassigned_shards" : 0,
-  "delayed_unassigned_shards" : 0,
-  "number_of_pending_tasks" : 0,
-  "number_of_in_flight_fetch" : 0,
-  "task_max_waiting_in_queue_millis" : 0,
-  "active_shards_percent_as_number" : 100.0
-}
-```
+    ```bash
+    curl -k -u elastic:$ES_PASSWORD $ES_INSTANCE/_cluster/health?pretty
+    ```
+    ```json
+    {
+      "cluster_name" : "elasticsearch",
+      "status" : "green",
+      "timed_out" : false,
+      "number_of_nodes" : 1,
+      "number_of_data_nodes" : 1,
+      "active_primary_shards" : 0,
+      "active_shards" : 0,
+      "relocating_shards" : 0,
+      "initializing_shards" : 0,
+      "unassigned_shards" : 0,
+      "delayed_unassigned_shards" : 0,
+      "number_of_pending_tasks" : 0,
+      "number_of_in_flight_fetch" : 0,
+      "task_max_waiting_in_queue_millis" : 0,
+      "active_shards_percent_as_number" : 100.0
+    }
+    ```
 
 === Grafana
 
 Let's make sure the Grafana instance that we need to visualize the benchmarking results through the course is available and responsive.
 
 1. Get Grafana route URL:
-```bash
-GRAFANA_URL=$(oc get route grafana-route -n openshift-logging -o jsonpath='https://{.spec.host}')
-echo "Grafana URL: $GRAFANA_URL"
-```
+    ```bash
+    GRAFANA_URL=$(oc get route grafana-route -n openshift-logging -o jsonpath='https://{.spec.host}')
+    echo "Grafana URL: $GRAFANA_URL"
+    ```
 
 2. Login with `admin`/`admin123`:
 
