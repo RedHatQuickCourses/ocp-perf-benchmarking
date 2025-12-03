@@ -207,7 +207,7 @@
 <p>Download the latest stable release for your operating system and architecture from the <a href="https://github.com/cloud-bulldozer/ingress-perf/releases/latest">GitHub releases page</a>.</p>
 </div>
 <div class="paragraph">
-<p>For example, if you are using Linux and amd64 architecture, you can download the v0.6.0 stable release with the following command:</p>
+<p>For example, from the lab bastion host (Linux and amd64 architecture), you can download the v0.6.0 stable release with the following command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -216,7 +216,7 @@ tar -xzf ingress-perf.tar.gz ingress-perf</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Then you can move the ingress-perf binary to a directory in your PATH, for example:</p>
+<p>Then you can move the ingress-perf binary to a directory in your path, for example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -243,7 +243,7 @@ tar -xzf ingress-perf.tar.gz ingress-perf</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">cat &gt; ingress-perf.yaml &lt;&lt;EOF
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &gt; ingress-perf.yaml &lt;&lt;EOF
 - termination: http
   connections: 200
   samples: 2
@@ -270,7 +270,7 @@ EOF</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ingress-perf run -c ingress-perf.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ingress-perf run -c ingress-perf.yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -278,8 +278,12 @@ EOF</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ ingress-perf run -c ingress-perf.yaml
-time="2025-11-28 15:16:20" level=info msg="Running ingress-perf (heads/v0.6.0@e06373946c0c939445d3b94d871d52ccd8c7e8c4) with uuid f1bd5953-698b-4b48-88ba-c79bd6f783c8" file="ingress-perf.go:62"
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ingress-perf run -c ingress-perf.yaml</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">time="2025-11-28 15:16:20" level=info msg="Running ingress-perf (heads/v0.6.0@e06373946c0c939445d3b94d871d52ccd8c7e8c4) with uuid f1bd5953-698b-4b48-88ba-c79bd6f783c8" file="ingress-perf.go:62"
 time="2025-11-28 15:16:20" level=info msg="Creating local indexer" file="runner.go:87"
 time="2025-11-28 15:16:24" level=info msg="HAProxy version: haproxy28-2.8.10-1.rhaos4.17.el9.x86_64" file="runner.go:170"
 time="2025-11-28 15:16:24" level=info msg="Deploying benchmark assets" file="runner.go:262"
@@ -323,7 +327,7 @@ time="2025-11-28 15:25:10" level=info msg="Cleaning up resources" file="runner.g
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ ingress-perf run -c ingress-perf.yaml --es-server=https://your.es-endpoint.com --es-index=ingress-perf</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ingress-perf run -c ingress-perf.yaml --es-server=https://your.es-endpoint.com --es-index=ingress-perf</code></pre>
 </div>
 </div>
 <div class="paragraph">

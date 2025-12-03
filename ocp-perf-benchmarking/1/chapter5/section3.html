@@ -210,6 +210,22 @@
 </li>
 </ol>
 </div>
+<div class="sect3">
+<h4 id="_install_kube_burner_ocp"><a class="anchor" href="#_install_kube_burner_ocp"></a>Install kube-burner-ocp</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Ls https://raw.githubusercontent.com/kube-burner/kube-burner-ocp/refs/heads/main/hack/install.sh | sh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Validate the installation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kube-burner-ocp help</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_objective"><a class="anchor" href="#_objective"></a>Objective:</h3>
@@ -320,6 +336,86 @@ spec:
 </div>
 <div class="paragraph">
 <p>You can find more information on interpreting these metrics in kube-burner&#8217;s documentation or through subsequent blog posts (as mentioned in the provided context).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_visualization_of_results_in_grafana"><a class="anchor" href="#_visualization_of_results_in_grafana"></a>Visualization of results in Grafana</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get ElasticSearch password:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get ElasticSearch route URL:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging   -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check ElasticSearch authentication:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -k $ES_INSTANCE</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">{
+  "name" : "elasticsearch-es-default-0",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "gfP33bmwQ82UMWI2btj2OQ",
+  "version" : {
+    "number" : "8.15.0",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "1a77947f34deddb41af25e6f0ddb8e830159c179",
+    "build_date" : "2024-08-05T10:05:34.233336849Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.11.1",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Run a small node-density workload:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kube-burner-ocp node-density node-density --pods-per-node 75 --es-server $ES_INSTANCE --es-index kube-burner</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">time="2025-12-03 06:18:11" level=info msg="❤️ Checking for Cluster Health" file="cluster-health.go:46"
+time="2025-12-03 06:18:11" level=info msg="Cluster is Healthy" file="cluster-health.go:54"
+time="2025-12-03 06:18:12" level=info msg="📁 Creating opensearch indexer: indexer-0" file="metrics.go:67"
+time="2025-12-03 06:18:12" level=fatal msg="Error creating indexer 0: OpenSearch health check failed: the client noticed that the server is not a supported distribution" file="metrics.go:70"</code></pre>
+</div>
 </div>
 </div>
 </div>
