@@ -199,7 +199,10 @@
 <h2 id="_control_plane"><a class="anchor" href="#_control_plane"></a>Control plane</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>One widely used tool in this space is <a href="https://kube-burner.github.io/kube-burner/latest/">kube-burner</a>, which is designed to generate configurable workloads for Kubernetes clusters. It can create pods, services, and other Kubernetes objects at scale, allowing operators to evaluate cluster behavior under high-density conditions. kube-burner is often used to test API server performance, scheduler responsiveness, and overall cluster throughput, providing metrics that help identify scaling limits and bottlenecks.</p>
+<p>One widely used tool in this space is <a href="https://kube-burner.github.io/kube-burner/latest/">kube-burner</a>, which is designed to generate configurable workloads for Kubernetes clusters. It can create pods, services, and other Kubernetes objects at scale, allowing operators to evaluate the cluster behavior under high-density conditions. kube-burner is often used to test API server performance, scheduler responsiveness, and overall cluster throughput, providing metrics that help identify scaling limits and bottlenecks.</p>
+</div>
+<div class="paragraph">
+<p>Building on top of kube-burner, <a href="https://github.com/kube-burner/kube-burner-ocp/">kube-burner-ocp</a> is a very opinionated OpenShift wrapper designed to simplify the execution of different control-plane related workloads in this Kubernetes distribution. It greatly simplifies the execution of the supported workloads adding the corresponding OpenShift metadata and automatically discovering the Prometheus URL and authentication tokens.</p>
 </div>
 </div>
 </div>
@@ -207,10 +210,26 @@
 <h2 id="_networking"><a class="anchor" href="#_networking"></a>Networking</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://github.com/cloud-bulldozer/k8s-netperf">k8s-netperf</a> is another Kubernetes-specific benchmarking tool focused on network performance. It supports several backends mentioned in the previous section, like <a href="https://hewlettpackard.github.io/netperf">netperf</a>, iperf and uperf to be able to measure latency, throughput, and other network characteristics across the cluster. By running tests between pods on different nodes, k8s-netperf provides insight into how networking plugins, CNI configurations, and overlay networks affect communication performance in a cloud-native environment.</p>
+<p><a href="https://github.com/cloud-bulldozer/k8s-netperf">k8s-netperf</a> is another Kubernetes-specific benchmarking tool focused on network performance. It supports several backends mentioned in the previous section, like netperf, iperf and uperf to be able to measure latency, throughput, and other network characteristics across the cluster. By running tests between pods on different nodes, k8s-netperf provides insight into how networking plugins, CNI configurations, and overlay networks affect communication performance in a cloud-native environment.</p>
 </div>
 <div class="paragraph">
 <p>For applications exposed via HTTP or other ingress protocols, <a href="https://github.com/cloud-bulldozer/ingress-perf">ingress-perf</a> offers a way to benchmark the performance of Kubernetes ingress controllers. It can simulate concurrent connections, measure request latency, and generate traffic patterns similar to real-world application workloads. This helps teams understand how ingress controllers behave under stress and how configuration changes or resource constraints impact application availability and responsiveness.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_virtualization"><a class="anchor" href="#_virtualization"></a>Virtualization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Both kube-burner, through kube-burner-ocp virtualization related workloads (virt-density, virt-capacity-benchmark, virt-clone, virt-migration,  etc.) and k8s-netperf (through the <code>--vm</code> and <code>--vm-image</code> flags) support running workloads on top of OpenShift Virtualization, creating virtual machines at scale allowing operators to evaluate the cluster behavior under high-density conditions.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_storage"><a class="anchor" href="#_storage"></a>Storage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/jtaleric/k8s-io">k8s-IO</a> is a lightweight Go-based CLI tool for running benchmark workloads on Kubernetes clusters. Unlike operator-based solutions, it provides a simple command-line interface for executing benchmarks without requiring cluster-wide operator deployments, supporting multiple benchmark types like fio or HammerDB (for database performance benchmarking).</p>
 </div>
 </div>
 </div>
