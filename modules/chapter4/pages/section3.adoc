@@ -10,14 +10,14 @@ Same as k8s-netperf, this tool receives periodic updates with bugfixes and enhan
 
 Download the latest stable release for your operating system and architecture from the https://github.com/cloud-bulldozer/ingress-perf/releases/latest[GitHub releases page].
 
-For example, if you are using Linux and amd64 architecture, you can download the v0.6.0 stable release with the following command:
+For example, from the lab bastion host (Linux and amd64 architecture), you can download the v0.6.0 stable release with the following command:
 
 ```bash
 curl -L https://github.com/cloud-bulldozer/ingress-perf/releases/download/v0.6.0/ingress-perf-Linux-v0.6.0-x86_64.tar.gz -o ingress-perf.tar.gz
 tar -xzf ingress-perf.tar.gz ingress-perf
 ```
 
-Then you can move the ingress-perf binary to a directory in your PATH, for example:
+Then you can move the ingress-perf binary to a directory in your path, for example:
 ```bash
 sudo mv ingress-perf /usr/local/bin/
 ```
@@ -35,7 +35,7 @@ Once these assets are deployed, ingress-perf will run the benchmarks with specif
 
 Run Ingress-perf with this basic `ingress-perf.yaml` configuration file to run two benchmark scenarios with similar parameters, but different termination types: http and edge.
 
-```shell
+```bash
 cat > ingress-perf.yaml <<EOF
 - termination: http
   connections: 200
@@ -60,14 +60,16 @@ EOF
 
 Then run ingress-perf with the following command:
 
-```shell
+```bash
 ingress-perf run -c ingress-perf.yaml
 ```
 
 The output will be similar to this:
 
-```shell
-$ ingress-perf run -c ingress-perf.yaml 
+```bash
+ingress-perf run -c ingress-perf.yaml
+```
+```
 time="2025-11-28 15:16:20" level=info msg="Running ingress-perf (heads/v0.6.0@e06373946c0c939445d3b94d871d52ccd8c7e8c4) with uuid f1bd5953-698b-4b48-88ba-c79bd6f783c8" file="ingress-perf.go:62"
 time="2025-11-28 15:16:20" level=info msg="Creating local indexer" file="runner.go:87"
 time="2025-11-28 15:16:24" level=info msg="HAProxy version: haproxy28-2.8.10-1.rhaos4.17.el9.x86_64" file="runner.go:170"
@@ -94,7 +96,8 @@ time="2025-11-28 15:25:10" level=info msg="Scenario summary edge: Rps=67075 avgL
 time="2025-11-28 15:25:10" level=info msg="File output/f1bd5953-698b-4b48-88ba-c79bd6f783c8.json created with 3 documents" file="runner.go:234"
 time="2025-11-28 15:25:10" level=info msg="Cleaning up resources" file="runner.go:239"
 ```
-The metrics 
+
+The metrics
 
 Note that ingress-perf cleans up the resources after the benchmarks are complete, so you don't need to clean up manually.
 
@@ -105,8 +108,8 @@ If no indexer is specified, ingress-perf will store the results in the local dir
 
 However, you can also index the results in a remote ElasticSearch/OpenSearch instance with:
 
-```shell
-$ ingress-perf run -c ingress-perf.yaml --es-server=https://your.es-endpoint.com --es-index=ingress-perf
+```bash
+ingress-perf run -c ingress-perf.yaml --es-server=https://your.es-endpoint.com --es-index=ingress-perf
 ```
 
 Check out the `ingress-perf run --help` for more info about the allowed flags.

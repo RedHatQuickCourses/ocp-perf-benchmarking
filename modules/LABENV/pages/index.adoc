@@ -38,6 +38,7 @@ oc get co    # ClusterOperators
 Let's make sure the ElasticSearch instance that we need to index the benchmarking results through the course is available and responsive.
 
 1. Get password:
+
 ```bash
 PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
 ```

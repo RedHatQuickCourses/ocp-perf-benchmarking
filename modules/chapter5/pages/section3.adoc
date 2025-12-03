@@ -8,6 +8,18 @@ In this section, we will walk through a practical hands-on activity that illustr
 2. Access a running Kubernetes cluster (either local or cloud-based).
 3. Ensure `kubectl` is configured and can communicate with your target Kubernetes cluster.
 
+==== Install kube-burner-ocp
+
+```bash
+curl -Ls https://raw.githubusercontent.com/kube-burner/kube-burner-ocp/refs/heads/main/hack/install.sh | sh
+```
+
+Validate the installation:
+```bash
+kube-burner-ocp help
+```
+
+
 ### Objective:
 By the end of this lab activity, you should be able to:
 
@@ -79,6 +91,54 @@ Once the job completes, analyze the collected Prometheus metrics to evaluate con
 - Throughput
 
 You can find more information on interpreting these metrics in kube-burner's documentation or through subsequent blog posts (as mentioned in the provided context).
+
+==== Visualization of results in Grafana
+
+1. Get ElasticSearch password:
+
+```bash
+ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
+```
+
+2. Get ElasticSearch route URL:
+```bash
+ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging   -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")
+```
+
+3. Check ElasticSearch authentication:
+```bash
+curl -k $ES_INSTANCE
+```
+```
+{
+  "name" : "elasticsearch-es-default-0",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "gfP33bmwQ82UMWI2btj2OQ",
+  "version" : {
+    "number" : "8.15.0",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "1a77947f34deddb41af25e6f0ddb8e830159c179",
+    "build_date" : "2024-08-05T10:05:34.233336849Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.11.1",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+```
+
+3. Run a small node-density workload:
+```bash
+kube-burner-ocp node-density node-density --pods-per-node 75 --es-server $ES_INSTANCE --es-index kube-burner
+```
+```
+time="2025-12-03 06:18:11" level=info msg="❤️ Checking for Cluster Health" file="cluster-health.go:46"
+time="2025-12-03 06:18:11" level=info msg="Cluster is Healthy" file="cluster-health.go:54"
+time="2025-12-03 06:18:12" level=info msg="📁 Creating opensearch indexer: indexer-0" file="metrics.go:67"
+time="2025-12-03 06:18:12" level=fatal msg="Error creating indexer 0: OpenSearch health check failed: the client noticed that the server is not a supported distribution" file="metrics.go:70"
+```
 
 ### Conclusion
 

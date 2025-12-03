@@ -7,7 +7,7 @@ Measuring control plane responsiveness is crucial for ensuring a Kubernetes (k8s
 Before diving into measuring control plane responsiveness, it's essential to understand relevant metrics:
 
 1. **API Server Latency**: Measures how quickly the API server responds to client requests in milliseconds (ms). High latency may indicate performance issues or overloaded resources.
-   
+
 2. **etcd Performance**: etcd is responsible for k8s cluster state persistence. Key metrics include read/write operation success rates, latency, and resource usage like CPU and memory.
 
 3. **Controller Manager Responsiveness**: This metric assesses how efficiently controllers process the cluster's desired state, replicating it in reality. Delays here might lead to pod scheduling failures or other control loop issues.
