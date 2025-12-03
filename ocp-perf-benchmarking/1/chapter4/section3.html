@@ -393,49 +393,41 @@ time="2025-12-03 09:11:17" level=info msg="Cleaning up resources" file="runner.g
 <ol class="arabic">
 <li>
 <p>Download the dasboard:</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
+<div class="literalblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">wget https://raw.githubusercontent.com/cloud-bulldozer/ingress-perf/refs/heads/main/dashboards/ingress-perf.json</code></pre>
+<pre>```bash
+wget https://raw.githubusercontent.com/cloud-bulldozer/ingress-perf/refs/heads/main/dashboards/ingress-perf.json
+```</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Grafana does NOT accept a raw dashboard JSON file, it requires a wrapper object around it:</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
+<div class="literalblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">jq -n --argfile dash ingress-perf.json '{
+<pre>```bash
+jq -n --argfile dash ingress-perf.json '{
   dashboard: $dash,
   overwrite: true,
   folderId: 0
-}' &gt; ingress-perf-wrapped.json</code></pre>
+}' &gt; ingress-perf-wrapped.json
+```</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Finally, let&#8217;s create the dashboard:</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
+<div class="literalblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -X POST -sS --insecure \
-     -u admin:admin123 \
-     -H "Content-Type: application/json" \
-     -d @ingress-perf-wrapped.json \
-     https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import | jq .</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+<pre>```bash
+curl -X POST -sS --insecure \
+    -u admin:admin123 \
+    -H "Content-Type: application/json" \
+    -d @ingress-perf-wrapped.json \
+    https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import | jq .
+```
+```json
+{
   "uid": "nlAhmRyVk",
   "pluginId": "",
   "title": "Ingress Performance nextgen",
@@ -449,11 +441,11 @@ time="2025-12-03 09:11:17" level=info msg="Cleaning up resources" file="runner.g
   "description": "",
   "path": "",
   "removed": false
-}</code></pre>
+}
+```</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Let&#8217;s make sure the ElasticSearch data source is properly configured:</p>
 </li>
