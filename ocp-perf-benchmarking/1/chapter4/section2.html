@@ -71,7 +71,7 @@
     <a class="nav-link" href="../chapter2/index.html">Monitoring OpenShift Performance with the Built-in Stack</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter2/section1.html">Hands-On Lab: Exploring the OpenShift Monitoring Stack</a>
+    <a class="nav-link" href="../chapter2/section1.html">Hands-on lab: Exploring the OpenShift monitoring stack</a>
   </li>
 </ul>
   </li>
@@ -206,27 +206,48 @@
 </div>
 <div class="sect2">
 <h3 id="_1_installation_build_from_git"><a class="anchor" href="#_1_installation_build_from_git"></a>1. Installation - Build from git</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Ls https://raw.githubusercontent.com/cloud-bulldozer/k8s-netperf/refs/heads/main/hack/install.sh | sh</code></pre>
+</div>
+</div>
 <div class="paragraph">
-<p>First, you&#8217;ll need to clone the <a href="https://github.com/cloud-bulldozer/k8s-netperf">k8s-netperf repository</a> from GitHub and build the binary. You can do this with the following commands:</p>
+<p>Validate the installation:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone https://github.com/cloud-bulldozer/k8s-netperf.git
-cd k8s-netperf
-make build</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">k8s-netperf -h</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_2_node_labeling_optional"><a class="anchor" href="#_2_node_labeling_optional"></a>2. Node Labeling (Optional)</h3>
 <div class="paragraph">
-<p>k8s-netperf schedules a client and a server pod in your OpenShift cluster to run the network throughput and latency tests. Allowing for node labeling allows the user to control which nodes the network performance tests run on – for example to not cross regions or availability zones, which could lead to higher latency. To also ensure that these pods land on the correct nodes, you use node labels.</p>
+<p>k8s-netperf schedules a client and a server pod in your OpenShift cluster to run the network throughput and latency tests. Allowing for node labeling allows the user to control which nodes the network performance tests run on - for example to not cross regions or availability zones, which could lead to higher latency. To also ensure that these pods land on the correct nodes, you use node labels.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc label nodes &lt;client-node-name&gt; netperf=client
-oc label nodes &lt;server-node-name&gt; netperf=server</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get node</code></pre>
 </div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">NAME                            STATUS   ROLES                  AGE   VERSION
+control-plane-cluster-vjm62-1   Ready    control-plane,master   47h   v1.31.7
+control-plane-cluster-vjm62-2   Ready    control-plane,master   47h   v1.31.7
+control-plane-cluster-vjm62-3   Ready    control-plane,master   47h   v1.31.7
+worker-cluster-vjm62-1          Ready    worker                 47h   v1.31.7
+worker-cluster-vjm62-2          Ready    worker                 47h   v1.31.7</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc label node worker-cluster-vjm62-1 netperf=client
+oc label node worker-cluster-vjm62-2 netperf=server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If for some reason you want to place the client and server pods on the same node you can use the <code>--local</code> flag.</p>
 </div>
 </div>
 <div class="sect2">
@@ -254,8 +275,87 @@ oc create sa -n netperf netperf</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">./bin/k8s-netperf --all</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &gt; netperf.yml &lt;&lt;EOF
+tests:
+- TCPStreamSmall:
+  parallelism: 1
+  profile: "TCP_STREAM"
+  duration: 30
+  samples: 2
+  messagesize: 64
+
+- UDPStreamSmall:
+  parallelism: 1
+  profile: "UDP_STREAM"
+  duration: 30
+  samples: 2
+  messagesize: 64
+EOF</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s run it with the <code>-all</code> flag that runs both hostNet and podNetwork scenarios. This comparison is very useful to understand the CNI overhead.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">k8s-netperf --all</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">INFO[2025-12-03 10:06:53] Starting k8s-netperf (0.1.34@664f2cc67082b9dcd5a07f6d01b195ca6ad507c4)
+INFO[2025-12-03 10:06:53] 📒 Reading netperf.yml file.
+INFO[2025-12-03 10:06:53] 📒 Reading netperf.yml file - using ConfigV2 Method.
+INFO[2025-12-03 10:58:23] 🔬 prometheus discovered at openshift-monitoring
+INFO[2025-12-03 10:07:04] 🔨 Creating namespace: netperf
+INFO[2025-12-03 10:07:04] 🔨 Creating service account: netperf
+WARN[2025-12-03 10:07:04] ⚠️  No zone label
+WARN[2025-12-03 10:07:04] ⚠️  Single node per zone and/or no zone labels
+INFO[2025-12-03 10:07:04] 🚀 Creating service for iperf-service in namespace netperf
+INFO[2025-12-03 10:07:04] 🚀 Creating service for uperf-service in namespace netperf
+INFO[2025-12-03 10:07:04] 🚀 Creating service for netperf-service in namespace netperf
+INFO[2025-12-03 10:07:05] 🚀 Starting Deployment for: client-host in namespace: netperf
+INFO[2025-12-03 10:07:05] ⏰ Checking for client-host Pods to become ready...
+INFO[2025-12-03 10:07:22] Looking for pods with label role=host-client
+INFO[2025-12-03 10:07:22] 🚀 Starting Deployment for: client-across in namespace: netperf
+INFO[2025-12-03 10:07:22] ⏰ Checking for client-across Pods to become ready...
+INFO[2025-12-03 10:07:24] Looking for pods with label role=client-across
+INFO[2025-12-03 10:07:24] 🚀 Starting Deployment for: server-host in namespace: netperf
+INFO[2025-12-03 10:07:24] ⏰ Checking for server-host Pods to become ready...
+INFO[2025-12-03 10:07:35] Looking for pods with label role=host-server
+INFO[2025-12-03 10:07:35] 🚀 Starting Deployment for: server in namespace: netperf
+INFO[2025-12-03 10:07:35] ⏰ Checking for server Pods to become ready...
+INFO[2025-12-03 10:07:39] Looking for pods with label role=server
+INFO[2025-12-03 10:07:44] 🗒️  Running netperf TCP_STREAM (service false) for 30s
+INFO[2025-12-03 10:08:16] 🗒️  Running netperf TCP_STREAM (service false) for 30s
+INFO[2025-12-03 10:08:48] 🗒️  Running netperf TCP_STREAM (service false) for 30s
+INFO[2025-12-03 10:09:20] 🗒️  Running netperf TCP_STREAM (service false) for 30s
+INFO[2025-12-03 10:13:06] 🗒️  Running netperf UDP_STREAM (service false) for 30s
+INFO[2025-12-03 10:13:39] 🗒️  Running netperf UDP_STREAM (service false) for 30s
+INFO[2025-12-03 10:14:11] 🗒️  Running netperf UDP_STREAM (service false) for 30s
+INFO[2025-12-03 10:14:43] 🗒️  Running netperf UDP_STREAM (service false) for 30s
++-------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+-------------------+------------------------------+
+|    RESULT TYPE    | DRIVER  |  SCENARIO  | PARALLELISM | HOST NETWORK | SERVICE | EXTERNAL SERVER | UDN INFO | BRIDGE INFO | MESSAGE SIZE | BURST | SAME NODE | DURATION | SAMPLES |     AVG VALUE     |   95% CONFIDENCE INTERVAL    |
++-------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+-------------------+------------------------------+
+| 📊 Stream Results | netperf | TCP_STREAM | 1           | true         | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 240.416000 (Mb/s) | 234.638902-246.193098 (Mb/s) |
+| 📊 Stream Results | netperf | TCP_STREAM | 1           | false        | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 221.214000 (Mb/s) | 215.625211-226.802789 (Mb/s) |
+| 📊 Stream Results | netperf | UDP_STREAM | 1           | true         | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 42.238000 (Mb/s)  | 41.693902-42.782098 (Mb/s)   |
+| 📊 Stream Results | netperf | UDP_STREAM | 1           | false        | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 40.906000 (Mb/s)  | 40.186660-41.625340 (Mb/s)   |
++-------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+-------------------+------------------------------+
++---------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+------------+
+|        TYPE         | DRIVER  |  SCENARIO  | PARALLELISM | HOST NETWORK | SERVICE | EXTERNAL SERVER | UDN INFO | BRIDGE INFO | MESSAGE SIZE | BURST | SAME NODE | DURATION | SAMPLES | AVG VALUE  |
++---------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+------------+
+| TCP Retransmissions | netperf | TCP_STREAM | 1           | true         | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 115.600000 |
+| TCP Retransmissions | netperf | TCP_STREAM | 1           | false        | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 126.600000 |
+| UDP Loss Percent    | netperf | UDP_STREAM | 1           | true         | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 1.436027   |
+| UDP Loss Percent    | netperf | UDP_STREAM | 1           | false        | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 0.434704   |
++---------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+------------+
+INFO[2025-12-03 10:18:29] Cleaning resources created by k8s-netperf
+INFO[2025-12-03 10:18:29] ⏰ Waiting for netperf Namespace to be deleted...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As expected, the host network results (direct connectivity between hosts) where slightly better than the pod network ones (pod to pod connectivity through the CNI), though the difference is perfectly within the expected range. k8s-netperf will alert (and exit with error code 1) if the difference between host network and pod network results is significant (default alert threshold is 10%, can be adjusted though the <code>--tcp-tolerance</code> flag).</p>
 </div>
 <div class="paragraph">
 <p>This command will run a comprehensive set of tests, including TCP and UDP stream tests, as well as request/response tests.</p>
@@ -284,6 +384,139 @@ oc create sa -n netperf netperf</code></pre>
 <p><code>--uperf</code>: Uses uperf as the load driver for stream tests.</p>
 </li>
 </ul>
+</div>
+<div class="sect2">
+<h3 id="_indexing_the_results"><a class="anchor" href="#_indexing_the_results"></a>Indexing the results</h3>
+<div class="paragraph">
+<p>If no indexer is specified, k8s-netperf will store the results in a result-$id.csv file in the local directory.</p>
+</div>
+<div class="paragraph">
+<p>However, you can also index the results in a remote ElasticSearch/OpenSearch instance following the next steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get ElasticSearch password:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get ElasticSearch route URL:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Validate the ElasticSearch credentials:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -k $ES_INSTANCE</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">{
+  "name" : "elasticsearch-es-default-0",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "gfP33bmwQ82UMWI2btj2OQ",
+  "version" : {
+    "number" : "8.15.0",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "1a77947f34deddb41af25e6f0ddb8e830159c179",
+    "build_date" : "2024-08-05T10:05:34.233336849Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.11.1",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Run test with the following command:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">k8s-netperf --all --search=${ES_INSTANCE} --index=k8s-netperf</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">INFO[2025-12-03 11:06:05] Starting k8s-netperf (roce2@e2988034e0f9dd4e2a59f131f6ae7866b12fd6de)
+INFO[2025-12-03 11:06:05] 📒 Reading netperf.yml file.
+INFO[2025-12-03 11:06:05] 📒 Reading netperf.yml file - using ConfigV2 Method.
+INFO[2025-12-03 11:06:05] 🔬 prometheus discovered at openshift-monitoring
+INFO[2025-12-03 11:06:05] 🔨 Creating namespace: netperf
+INFO[2025-12-03 11:06:05] 🔨 Creating service account: netperf
+WARN[2025-12-03 11:06:05] ⚠️  No zone label
+WARN[2025-12-03 11:06:05] ⚠️  Single node per zone and/or no zone labels
+INFO[2025-12-03 11:06:05] 🚀 Creating service for netperf-service in namespace netperf
+INFO[2025-12-03 11:06:06] 🚀 Starting Deployment for: client-host in namespace: netperf
+INFO[2025-12-03 11:06:06] ⏰ Checking for client-host Pods to become ready...
+INFO[2025-12-03 11:06:08] Looking for pods with label role=host-client
+INFO[2025-12-03 11:06:08] 🚀 Starting Deployment for: client-across in namespace: netperf
+INFO[2025-12-03 11:06:08] ⏰ Checking for client-across Pods to become ready...
+INFO[2025-12-03 11:06:10] Looking for pods with label role=client-across
+INFO[2025-12-03 11:06:10] 🚀 Starting Deployment for: server-host in namespace: netperf
+INFO[2025-12-03 11:06:10] ⏰ Checking for server-host Pods to become ready...
+INFO[2025-12-03 11:06:12] Looking for pods with label role=host-server
+INFO[2025-12-03 11:06:12] 🚀 Starting Deployment for: server in namespace: netperf
+INFO[2025-12-03 11:06:12] ⏰ Checking for server Pods to become ready...
+INFO[2025-12-03 11:06:14] Looking for pods with label role=server
+INFO[2025-12-03 11:06:19] 🗒️  Running netperf TCP_STREAM (service false) for 30s
+INFO[2025-12-03 11:06:51] 🗒️  Running netperf TCP_STREAM (service false) for 30s
+INFO[2025-12-03 11:07:24] 🗒️  Running netperf TCP_STREAM (service false) for 30s
+INFO[2025-12-03 11:07:56] 🗒️  Running netperf TCP_STREAM (service false) for 30s
+INFO[2025-12-03 11:08:28] 🗒️  Running netperf UDP_STREAM (service false) for 30s
+INFO[2025-12-03 11:09:00] 🗒️  Running netperf UDP_STREAM (service false) for 30s
+INFO[2025-12-03 11:09:33] 🗒️  Running netperf UDP_STREAM (service false) for 30s
+INFO[2025-12-03 11:10:05] 🗒️  Running netperf UDP_STREAM (service false) for 30s
+INFO[2025-12-03 11:10:38] 📁 Creating indexer: elastic
+INFO[2025-12-03 11:10:38] Connected to : https://elastic:pcFY8NF1mc9cY1GJnqi4MO8v@elasticsearch-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io
+INFO[2025-12-03 11:10:38] Indexing [4] documents in k8s-netperf with UUID 8281a404-740c-4091-9548-4c6dc7bc89ac
+INFO[2025-12-03 11:10:38] Indexing finished in 100ms: created=4
++-------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+-------------------+------------------------------+
+|    RESULT TYPE    | DRIVER  |  SCENARIO  | PARALLELISM | HOST NETWORK | SERVICE | EXTERNAL SERVER | UDN INFO | BRIDGE INFO | MESSAGE SIZE | BURST | SAME NODE | DURATION | SAMPLES |     AVG VALUE     |   95% CONFIDENCE INTERVAL    |
++-------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+-------------------+------------------------------+
+| 📊 Stream Results | netperf | TCP_STREAM | 1           | true         | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 217.280000 (Mb/s) | 114.867990-319.692010 (Mb/s) |
+| 📊 Stream Results | netperf | TCP_STREAM | 1           | false        | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 216.245000 (Mb/s) | 182.255902-250.234098 (Mb/s) |
+| 📊 Stream Results | netperf | UDP_STREAM | 1           | true         | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 41.280000 (Mb/s)  | 36.324580-46.235420 (Mb/s)   |
+| 📊 Stream Results | netperf | UDP_STREAM | 1           | false        | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 39.765000 (Mb/s)  | 30.807126-48.722874 (Mb/s)   |
++-------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+-------------------+------------------------------+
++---------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+------------+
+|        TYPE         | DRIVER  |  SCENARIO  | PARALLELISM | HOST NETWORK | SERVICE | EXTERNAL SERVER | UDN INFO | BRIDGE INFO | MESSAGE SIZE | BURST | SAME NODE | DURATION | SAMPLES | AVG VALUE  |
++---------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+------------+
+| TCP Retransmissions | netperf | TCP_STREAM | 1           | true         | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 153.500000 |
+| TCP Retransmissions | netperf | TCP_STREAM | 1           | false        | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 67.500000  |
+| UDP Loss Percent    | netperf | UDP_STREAM | 1           | true         | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 0.943826   |
+| UDP Loss Percent    | netperf | UDP_STREAM | 1           | false        | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 0.316821   |
++---------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+------------+
+INFO[2025-12-03 11:10:38] Cleaning resources created by k8s-netperf
+INFO[2025-12-03 11:10:38] ⏰ Waiting for netperf Namespace to be deleted...</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>

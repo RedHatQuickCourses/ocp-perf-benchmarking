@@ -71,7 +71,7 @@
     <a class="nav-link" href="../chapter2/index.html">Monitoring OpenShift Performance with the Built-in Stack</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter2/section1.html">Hands-On Lab: Exploring the OpenShift Monitoring Stack</a>
+    <a class="nav-link" href="../chapter2/section1.html">Hands-on lab: Exploring the OpenShift monitoring stack</a>
   </li>
 </ul>
   </li>
@@ -286,7 +286,7 @@ oc get co    # ClusterOperators</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</code></pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -310,7 +310,7 @@ oc get co    # ClusterOperators</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -k -u elastic:$PASSWORD $ES_INSTANCE/_cluster/health?pretty</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -k -u elastic:$ES_PASSWORD $ES_INSTANCE/_cluster/health?pretty</code></pre>
 </div>
 </div>
 <div class="listingblock">

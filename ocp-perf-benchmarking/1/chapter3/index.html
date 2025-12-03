@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Overview of Benchmarking Suites :: OpenShift performance benchmarking guide</title>
+    <title>Overview of benchmarking suites :: OpenShift performance benchmarking guide</title>
     <link rel="prev" href="../chapter2/section1.html">
     <link rel="next" href="section1.html">
     <meta name="generator" content="Antora 3.1.3">
@@ -71,7 +71,7 @@
     <a class="nav-link" href="../chapter2/index.html">Monitoring OpenShift Performance with the Built-in Stack</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter2/section1.html">Hands-On Lab: Exploring the OpenShift Monitoring Stack</a>
+    <a class="nav-link" href="../chapter2/section1.html">Hands-on lab: Exploring the OpenShift monitoring stack</a>
   </li>
 </ul>
   </li>
@@ -186,7 +186,7 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Overview of Benchmarking Suites</h1>
+<h1 class="page">Overview of benchmarking suites</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
@@ -195,7 +195,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_network_benchmarking"><a class="anchor" href="#_network_benchmarking"></a>Network Benchmarking</h2>
+<h2 id="_network_benchmarking"><a class="anchor" href="#_network_benchmarking"></a>Network benchmarking</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Network benchmarking focuses on evaluating throughput, latency, jitter, and packet-handling efficiency between nodes. One of the most widely used tools in this category is <a href="https://iperf.fr/">iperf</a> (including <strong>iperf3</strong>), which allows users to measure TCP and UDP bandwidth across a point-to-point connection. Its simplicity and reliability make it a staple in both enterprise and academic environments. Another powerful and more flexible tool is <a href="https://uperf.org/">uperf</a>, which supports complex workload modeling and multi-protocol tests. Unlike iperf, uperf can generate realistic application-style flows and supports scripting test profiles, making it suitable for benchmarking virtualized and cloud systems. These tools help assess whether network hardware, drivers, and configurations meet expected performance goals.</p>
@@ -203,7 +203,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_storage_benchmarking"><a class="anchor" href="#_storage_benchmarking"></a>Storage Benchmarking</h2>
+<h2 id="_storage_benchmarking"><a class="anchor" href="#_storage_benchmarking"></a>Storage benchmarking</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Storage benchmarking tools evaluate disk throughput, latency, random I/O performance, and filesystem behavior under load. The most widely used tool in this domain is <a href="https://fio.readthedocs.io/">fio</a> (Flexible I/O Tester). fio supports a vast range of test patterns—from sequential reads to highly random write operations—and can target raw block devices, filesystems, or distributed storage layers. Its ability to emulate application-specific access patterns makes it a preferred choice for benchmarking local disks, SAN/NAS systems, and cloud storage. For simple disk stress workloads, <a href="https://man7.org/linux/man-pages/man1/dd.1.html">dd</a> is sometimes used, but it provides limited insight and should not replace more detailed tools like fio. These benchmarks guide decisions related to SSD/HDD selection, RAID configuration, and storage subsystem tuning.</p>
@@ -211,7 +211,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_cpu_and_memory_benchmarking"><a class="anchor" href="#_cpu_and_memory_benchmarking"></a>CPU and Memory Benchmarking</h2>
+<h2 id="_cpu_and_memory_benchmarking"><a class="anchor" href="#_cpu_and_memory_benchmarking"></a>CPU and memory benchmarking</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To evaluate compute resources, benchmarking tools focus on CPU throughput, cache efficiency, memory bandwidth, and system stability under load. One of the most common tools is <a href="https://manpages.org/stress-ng">stress-ng</a>, which provides hundreds of stressors targeting CPUs, memory, I/O paths, virtual memory systems, and kernel interfaces. It is frequently used for burn-in testing or identifying stability issues under extreme load conditions.</p>
@@ -219,7 +219,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_system_wide_and_mixed_workload_benchmarking"><a class="anchor" href="#_system_wide_and_mixed_workload_benchmarking"></a>System-Wide and Mixed-Workload Benchmarking</h2>
+<h2 id="_system_wide_and_mixed_workload_benchmarking"><a class="anchor" href="#_system_wide_and_mixed_workload_benchmarking"></a>System-wide and mixed-workload benchmarking</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Some benchmarking suites combine network, CPU, memory, and storage tests into composite workloads. <strong>Phoronix Test Suite</strong> is one of the most comprehensive frameworks available, providing hundreds of benchmarks across all major categories and supporting automated result comparison. It is widely used for comparing hardware platforms, kernel versions, and compiler optimizations. These system-wide benchmarks help administrators understand overall performance and make informed decisions about infrastructure upgrades or configuration changes.</p>
@@ -227,7 +227,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_virtualization_and_cloud_benchmarking"><a class="anchor" href="#_virtualization_and_cloud_benchmarking"></a>Virtualization and Cloud Benchmarking</h2>
+<h2 id="_virtualization_and_cloud_benchmarking"><a class="anchor" href="#_virtualization_and_cloud_benchmarking"></a>Virtualization and cloud benchmarking</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>As virtual machines, containers, and cloud platforms have become widely adopted, specialized benchmarking tools have emerged to measure hypervisor performance, VM density, and container overhead. <strong>specifically</strong>, the <strong>SPECvirt_sc</strong> suite evaluates virtualization performance under mixed enterprise workloads, although it requires licensing and is more commonly used by vendors and researchers. Tools like <strong>wrk</strong> complement system-level tests by generating high-performance HTTP workloads suitable for evaluating cloud-native applications. These suites help validate resource allocation strategies, ensure quality-of-service under multi-tenant conditions, and measure the overhead introduced by virtualization layers.</p>
@@ -235,7 +235,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_benchmark_interpretation_and_best_practices"><a class="anchor" href="#_benchmark_interpretation_and_best_practices"></a>Benchmark Interpretation and Best Practices</h2>
+<h2 id="_benchmark_interpretation_and_best_practices"><a class="anchor" href="#_benchmark_interpretation_and_best_practices"></a>Benchmark interpretation and best practices</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>While benchmarking tools provide valuable metrics, interpreting results requires careful consideration. Factors such as system background load, hardware differences, kernel tuning, and even thermal conditions can influence outcomes. Running each benchmark multiple times, using controlled test environments, and documenting test parameters are essential for obtaining reliable results. Combining tools from different categories gives engineers a more accurate understanding of performance characteristics and helps pinpoint specific bottlenecks. Ultimately, benchmarking is not just about generating numbers—it is about understanding system behavior well enough to make informed performance and capacity decisions.</p>
@@ -243,7 +243,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_see_also"><a class="anchor" href="#_see_also"></a>See Also</h2>
+<h2 id="_see_also"><a class="anchor" href="#_see_also"></a>See also</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -264,7 +264,7 @@
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="../chapter2/section1.html">Hands-On Lab: Exploring the OpenShift Monitoring Stack</a></span>
+  <span class="prev"><a href="../chapter2/section1.html">Hands-on lab: Exploring the OpenShift monitoring stack</a></span>
   <span class="next"><a href="section1.html">Kubernetes-native benchmarking tools</a></span>
 </nav>
 </article>
