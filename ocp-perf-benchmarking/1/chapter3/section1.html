@@ -221,7 +221,7 @@
 <h2 id="_virtualization"><a class="anchor" href="#_virtualization"></a>Virtualization</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Both kube-burner, through kube-burner-ocp virtualization related workloads (virt-density, virt-capacity-benchmark, virt-clone, virt-migration,  etc.) and k8s-netperf (through the <code>--vm</code> and <code>--vm-image</code> flags) support running workloads on top of OpenShift Virtualization, creating virtual machines at scale allowing operators to evaluate the cluster behavior under high-density conditions.</p>
+<p>Both kube-burner, through <a href="https://github.com/kube-burner/kube-burner-ocp/?tab=readme-ov-file#virt-workloads">kube-burner-ocp virtualization related workloads</a> (virt-density, virt-capacity-benchmark, virt-clone, virt-migration,  etc.) and k8s-netperf, through the <code>--vm</code> and <code>--vm-image</code> flags, support running workloads on top of OpenShift Virtualization, creating virtual machines at scale allowing operators to evaluate the cluster behavior under high-density conditions.</p>
 </div>
 </div>
 </div>
@@ -237,7 +237,7 @@
 <h2 id="_conclusion"><a class="anchor" href="#_conclusion"></a>Conclusion</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Overall, Kubernetes-native benchmarking tools complement traditional system benchmarks by providing visibility into cluster-level performance and cloud-native behaviors. While they are often lighter-weight and less detailed than dedicated tools like fio or iperf, they are crucial for evaluating dynamic, orchestrated environments. Subsequent chapters in this course will dive deeper into each of these tools, providing practical examples and configuration guidance.</p>
+<p>Overall, Kubernetes-native benchmarking tools complement traditional system benchmarks by providing visibility into cluster-level performance and cloud-native behaviors. Most of these tools allow indexing results on external ElasticSearch/OpenSearch instances in a cloud-native way. Subsequent chapters in this course will dive deeper into each of these tools, providing practical examples and configuration guidance.</p>
 </div>
 </div>
 </div>

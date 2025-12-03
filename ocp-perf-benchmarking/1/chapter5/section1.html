@@ -189,7 +189,7 @@
 <article class="doc">
 <h1 class="page">Configuring kube-burner jobs to simulate cluster churn</h1>
 <div class="sect1">
-<h2 id="_understanding_and_setting_up_cluster_churn_simulation_with_kube_burner"><a class="anchor" href="#_understanding_and_setting_up_cluster_churn_simulation_with_kube_burner"></a>Understanding and Setting Up Cluster Churn Simulation with kube-burner</h2>
+<h2 id="_understanding_and_setting_up_cluster_churn_simulation_with_kube_burner"><a class="anchor" href="#_understanding_and_setting_up_cluster_churn_simulation_with_kube_burner"></a>Understanding and setting up cluster churn simulation with kube-burner</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Kube-burner, a Golang-based tool, is designed to stress Kubernetes clusters by creating, deleting, and patching resources at a specified rate. This feature makes it an ideal instrument for simulating cluster churn – the process of adding or removing significant numbers of pods, services, or other objects in a short period, which can impact the control plane&#8217;s responsiveness.</p>
@@ -198,12 +198,12 @@
 <p>To configure kube-burner jobs for simulating cluster churn, you need to define specific settings within its configuration file or via command line flags. This section will guide you through these configurations step by step using practical examples.</p>
 </div>
 <div class="sect2">
-<h3 id="_1_configuration_basics"><a class="anchor" href="#_1_configuration_basics"></a>1. Configuration Basics</h3>
+<h3 id="_configuration_basics"><a class="anchor" href="#_configuration_basics"></a>Configuration basics</h3>
 <div class="paragraph">
 <p>Start by understanding the global and job-specific settings in your kube-burner configuration file (<code>kube-burner.yaml</code> or provided as a flag when invoking <code>kube-burner init</code>). Here are some key parameters to consider:</p>
 </div>
 <div class="sect3">
-<h4 id="_global_settings"><a class="anchor" href="#_global_settings"></a>Global Settings</h4>
+<h4 id="_global_settings"><a class="anchor" href="#_global_settings"></a>Global settings</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -216,7 +216,7 @@
 </div>
 </div>
 <div class="sect3">
-<h4 id="_job_specific_settings"><a class="anchor" href="#_job_specific_settings"></a>Job-specific Settings</h4>
+<h4 id="_job_specific_settings"><a class="anchor" href="#_job_specific_settings"></a>Job-specific settings</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -251,7 +251,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="_2_configuring_cluster_churn_simulation"><a class="anchor" href="#_2_configuring_cluster_churn_simulation"></a>2. Configuring Cluster Churn Simulation</h3>
+<h3 id="_configuring_cluster_churn_simulation"><a class="anchor" href="#_configuring_cluster_churn_simulation"></a>Configuring cluster churn simulation</h3>
 <div class="paragraph">
 <p>To simulate cluster churn, we&#8217;ll focus on creating and deleting objects (e.g., deployments) rapidly. Here&#8217;s an example configuration:</p>
 </div>
@@ -304,7 +304,7 @@ jobs:
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_running_the_simulation"><a class="anchor" href="#_3_running_the_simulation"></a>3. Running the Simulation</h3>
+<h3 id="_running_the_simulation"><a class="anchor" href="#_running_the_simulation"></a>Running the simulation</h3>
 <div class="paragraph">
 <p>Execute kube-burner with your configuration file using the following command:</p>
 </div>
