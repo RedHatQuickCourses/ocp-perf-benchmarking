@@ -12,7 +12,11 @@ Download and install latest stable release for your operating system and archite
 
 ```bash
 curl -Ls https://raw.githubusercontent.com/cloud-bulldozer/ingress-perf/refs/heads/main/hack/install.sh | sh
+```
 
+Validate the installation:
+```bash
+ingress-perf help
 ```
 
 === 2. Configuration
@@ -59,9 +63,6 @@ ingress-perf run -c ingress-perf.yaml
 
 The output will be similar to this:
 
-```bash
-ingress-perf run -c ingress-perf.yaml
-```
 ```
 time="2025-11-28 15:16:20" level=info msg="Running ingress-perf (heads/v0.6.0@e06373946c0c939445d3b94d871d52ccd8c7e8c4) with uuid f1bd5953-698b-4b48-88ba-c79bd6f783c8" file="ingress-perf.go:62"
 time="2025-11-28 15:16:20" level=info msg="Creating local indexer" file="runner.go:87"
