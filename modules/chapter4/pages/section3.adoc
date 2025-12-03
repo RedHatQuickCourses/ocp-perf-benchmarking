@@ -153,44 +153,47 @@ time="2025-12-03 09:11:17" level=info msg="Cleaning up resources" file="runner.g
 Let's create the *Ingress Performance nextgen* dashboard in Grafana and visualize the indexed data.
 
 1. Download the dasboard:
-```bash
-wget https://raw.githubusercontent.com/cloud-bulldozer/ingress-perf/refs/heads/main/dashboards/ingress-perf.json
-```
+
+    ```bash
+    wget https://raw.githubusercontent.com/cloud-bulldozer/ingress-perf/refs/heads/main/dashboards/ingress-perf.json
+    ```
 
 2. Grafana does NOT accept a raw dashboard JSON file, it requires a wrapper object around it:
-```bash
-jq -n --argfile dash ingress-perf.json '{
-  dashboard: $dash,
-  overwrite: true,
-  folderId: 0
-}' > ingress-perf-wrapped.json
-```
+
+    ```bash
+    jq -n --argfile dash ingress-perf.json '{
+      dashboard: $dash,
+      overwrite: true,
+      folderId: 0
+    }' > ingress-perf-wrapped.json
+    ```
 
 3. Finally, let's create the dashboard:
-```bash
-curl -X POST -sS --insecure \
-     -u admin:admin123 \
-     -H "Content-Type: application/json" \
-     -d @ingress-perf-wrapped.json \
-     https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import | jq .
-```
-```json
-{
-  "uid": "nlAhmRyVk",
-  "pluginId": "",
-  "title": "Ingress Performance nextgen",
-  "imported": true,
-  "importedUri": "db/ingress-performance-nextgen",
-  "importedUrl": "/d/nlAhmRyVk/ingress-performance-nextgen",
-  "slug": "ingress-performance-nextgen",
-  "dashboardId": 6,
-  "folderId": 0,
-  "folderUid": "",
-  "description": "",
-  "path": "",
-  "removed": false
-}
-```
+
+    ```bash
+    curl -X POST -sS --insecure \
+        -u admin:admin123 \
+        -H "Content-Type: application/json" \
+        -d @ingress-perf-wrapped.json \
+        https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import | jq .
+    ```
+    ```json
+    {
+      "uid": "nlAhmRyVk",
+      "pluginId": "",
+      "title": "Ingress Performance nextgen",
+      "imported": true,
+      "importedUri": "db/ingress-performance-nextgen",
+      "importedUrl": "/d/nlAhmRyVk/ingress-performance-nextgen",
+      "slug": "ingress-performance-nextgen",
+      "dashboardId": 6,
+      "folderId": 0,
+      "folderUid": "",
+      "description": "",
+      "path": "",
+      "removed": false
+    }
+    ```
 
 4. Let's make sure the ElasticSearch data source is properly configured:
 
