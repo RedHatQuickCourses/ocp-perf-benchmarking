@@ -269,19 +269,102 @@
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get node
-oc get co</code></pre>
+oc get co    # ClusterOperators</code></pre>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_elasticsearch"><a class="anchor" href="#_elasticsearch"></a>ElasticSearch</h3>
 <div class="paragraph">
-<p>Let&#8217;s make sure the ElasticSearch instance that we need to index the benchmarking results through the course is available and responsive:</p>
+<p>Let&#8217;s make sure the ElasticSearch instance that we need to index the benchmarking results through the course is available and responsive.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get password:</p>
+</li>
+</ol>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Get password
-PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
-
-# Check cluster health
-oc exec -n openshift-logging elasticsearch-es-default-0 -- curl -k -u elastic:$PASSWORD https://elasticsearch-es-http.openshift-logging.svc.cluster.local:9200/_cluster/health?pretty</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get ElasticSearch route URL:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath='https://{.spec.host}')</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check ElasticSearch endpoint health:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -k -u elastic:$PASSWORD $ES_INSTANCE/_cluster/health?pretty</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "cluster_name" : "elasticsearch",
+  "status" : "green",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 0,
+  "active_shards" : 0,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 0,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 100.0
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_grafana"><a class="anchor" href="#_grafana"></a>Grafana</h3>
+<div class="paragraph">
+<p>Let&#8217;s make sure the Grafana instance that we need to visualize the benchmarking results through the course is available and responsive.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get Grafana route URL:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">GRAFANA_URL=$(oc get route grafana-route -n openshift-logging -o jsonpath='https://{.spec.host}')
+echo "Grafana URL: $GRAFANA_URL"</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Login with <code>admin</code>/<code>admin123</code>:</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_elasticsearch_datasource"><a class="anchor" href="#_elasticsearch_datasource"></a>ElasticSearch datasource</h4>
+<div class="paragraph">
+<p>Check that the ElasticSearch datasource was properly configured and ready to use:</p>
+</div>
 </div>
 </div>
 </div>
