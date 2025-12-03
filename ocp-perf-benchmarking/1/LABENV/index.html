@@ -283,25 +283,28 @@ oc get co    # ClusterOperators</code></pre>
 <p>Get password:</p>
 <div class="literalblock">
 <div class="content">
-<pre>```bash
-ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
-```</pre>
+<pre>ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</pre>
 </div>
 </div>
 </li>
 <li>
-<p>Get ElasticSearch route URL:
-<code><code>bash
-ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath='https://{.spec.host}')
-</code></code></p>
+<p>Get ElasticSearch route URL:</p>
+<div class="literalblock">
+<div class="content">
+<pre>ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath='https://{.spec.host}')</pre>
+</div>
+</div>
 </li>
 <li>
-<p>Check ElasticSearch endpoint health:
-<code><code>bash
-curl -k -u elastic:$ES_PASSWORD $ES_INSTANCE/_cluster/health?pretty
-</code></code>
-<code><code>json
-{
+<p>Check ElasticSearch endpoint health:</p>
+<div class="literalblock">
+<div class="content">
+<pre>curl -k -u elastic:$ES_PASSWORD $ES_INSTANCE/_cluster/health?pretty</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>{
   "cluster_name" : "elasticsearch",
   "status" : "green",
   "timed_out" : false,
@@ -317,8 +320,9 @@ curl -k -u elastic:$ES_PASSWORD $ES_INSTANCE/_cluster/health?pretty
   "number_of_in_flight_fetch" : 0,
   "task_max_waiting_in_queue_millis" : 0,
   "active_shards_percent_as_number" : 100.0
-}
-</code></code></p>
+}</pre>
+</div>
+</div>
 </li>
 </ol>
 </div>
@@ -331,11 +335,13 @@ curl -k -u elastic:$ES_PASSWORD $ES_INSTANCE/_cluster/health?pretty
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Get Grafana route URL:
-<code><code>bash
-GRAFANA_URL=$(oc get route grafana-route -n openshift-logging -o jsonpath='https://{.spec.host}')
-echo "Grafana URL: $GRAFANA_URL"
-</code></code></p>
+<p>Get Grafana route URL:</p>
+<div class="literalblock">
+<div class="content">
+<pre>GRAFANA_URL=$(oc get route grafana-route -n openshift-logging -o jsonpath='https://{.spec.host}')
+echo "Grafana URL: $GRAFANA_URL"</pre>
+</div>
+</div>
 </li>
 <li>
 <p>Login with <code>admin</code>/<code>admin123</code>:</p>

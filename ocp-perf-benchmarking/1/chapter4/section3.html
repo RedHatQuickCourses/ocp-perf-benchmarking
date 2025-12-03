@@ -323,41 +323,30 @@ time="2025-11-28 15:25:10" level=info msg="Cleaning up resources" file="runner.g
 <ol class="arabic">
 <li>
 <p>Get ElasticSearch password:</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
+<div class="literalblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</code></pre>
+<pre>ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Get ElasticSearch route URL:</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
+<div class="literalblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging   -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")</code></pre>
+<pre>ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging   -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Run test with the following command:</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
+<div class="literalblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ingress-perf run -c ingress-perf.yaml --es-server=${ES_INSTANCE} --es-index=ingress-perf</code></pre>
+<pre>ingress-perf run -c ingress-perf.yaml --es-server=${ES_INSTANCE} --es-index=ingress-perf</pre>
 </div>
 </div>
-<div class="listingblock">
+<div class="literalblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">time="2025-12-03 09:07:04" level=info msg="Running ingress-perf (0.6.0@e06373946c0c939445d3b94d871d52ccd8c7e8c4) with uuid 71e97a64-d7a3-417c-9742-fb3b3a6eed58" file="ingress-perf.go:62"
+<pre>time="2025-12-03 09:07:04" level=info msg="Running ingress-perf (0.6.0@e06373946c0c939445d3b94d871d52ccd8c7e8c4) with uuid 71e97a64-d7a3-417c-9742-fb3b3a6eed58" file="ingress-perf.go:62"
 time="2025-12-03 09:07:04" level=info msg="Creating elastic indexer" file="runner.go:87"
 time="2025-12-03 09:07:04" level=info msg="HAProxy version: haproxy28-2.8.10-1.rhaos4.17.el9.x86_64" file="runner.go:170"
 time="2025-12-03 09:07:04" level=info msg="Deploying benchmark assets" file="runner.go:262"
@@ -380,8 +369,11 @@ time="2025-12-03 09:10:17" level=info msg="Running sample 2/2: 1m0s" file="exec.
 time="2025-12-03 09:11:17" level=info msg="edge: Rps=16991 avgLatency=12ms P95Latency=20ms" file="exec.go:149"
 time="2025-12-03 09:11:17" level=info msg="Scenario summary edge: Rps=16757 avgLatency=12ms P95Latency=20ms timeouts=0 http_errors=0" file="exec.go:157"
 time="2025-12-03 09:11:17" level=info msg="Indexing finished in 53ms: created=2" file="runner.go:234"
-time="2025-12-03 09:11:17" level=info msg="Cleaning up resources" file="runner.go:239"</code></pre>
+time="2025-12-03 09:11:17" level=info msg="Cleaning up resources" file="runner.go:239"</pre>
 </div>
+</div>
+</li>
+</ol>
 </div>
 </div>
 <div class="sect2">
@@ -395,9 +387,7 @@ time="2025-12-03 09:11:17" level=info msg="Cleaning up resources" file="runner.g
 <p>Download the dasboard:</p>
 <div class="literalblock">
 <div class="content">
-<pre>```bash
-wget https://raw.githubusercontent.com/cloud-bulldozer/ingress-perf/refs/heads/main/dashboards/ingress-perf.json
-```</pre>
+<pre>wget https://raw.githubusercontent.com/cloud-bulldozer/ingress-perf/refs/heads/main/dashboards/ingress-perf.json</pre>
 </div>
 </div>
 </li>
@@ -405,13 +395,11 @@ wget https://raw.githubusercontent.com/cloud-bulldozer/ingress-perf/refs/heads/m
 <p>Grafana does NOT accept a raw dashboard JSON file, it requires a wrapper object around it:</p>
 <div class="literalblock">
 <div class="content">
-<pre>```bash
-jq -n --argfile dash ingress-perf.json '{
+<pre>jq -n --argfile dash ingress-perf.json '{
   dashboard: $dash,
   overwrite: true,
   folderId: 0
-}' &gt; ingress-perf-wrapped.json
-```</pre>
+}' &gt; ingress-perf-wrapped.json</pre>
 </div>
 </div>
 </li>
@@ -419,15 +407,16 @@ jq -n --argfile dash ingress-perf.json '{
 <p>Finally, let&#8217;s create the dashboard:</p>
 <div class="literalblock">
 <div class="content">
-<pre>```bash
-curl -X POST -sS --insecure \
+<pre>curl -X POST -sS --insecure \
     -u admin:admin123 \
     -H "Content-Type: application/json" \
     -d @ingress-perf-wrapped.json \
-    https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import | jq .
-```
-```json
-{
+    https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import | jq .</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>{
   "uid": "nlAhmRyVk",
   "pluginId": "",
   "title": "Ingress Performance nextgen",

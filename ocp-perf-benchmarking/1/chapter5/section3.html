@@ -339,16 +339,14 @@ spec:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_visualization_of_results_in_grafana"><a class="anchor" href="#_visualization_of_results_in_grafana"></a>Visualization of results in Grafana</h4>
+<h4 id="_indexing_results_in_elasticsearch"><a class="anchor" href="#_indexing_results_in_elasticsearch"></a>Indexing results in ElasticSearch</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>Get ElasticSearch password:</p>
 <div class="literalblock">
 <div class="content">
-<pre>```bash
-ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
-```</pre>
+<pre>ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</pre>
 </div>
 </div>
 </li>
@@ -356,9 +354,7 @@ ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -
 <p>Get ElasticSearch route URL:</p>
 <div class="literalblock">
 <div class="content">
-<pre>```bash
-ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")
-```</pre>
+<pre>ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")</pre>
 </div>
 </div>
 </li>
@@ -366,11 +362,12 @@ ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath=
 <p>Check ElasticSearch authentication:</p>
 <div class="literalblock">
 <div class="content">
-<pre>```bash
-curl -k $ES_INSTANCE
-```
-```
-{
+<pre>curl -k $ES_INSTANCE</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>{
   "name" : "elasticsearch-es-default-0",
   "cluster_name" : "elasticsearch",
   "cluster_uuid" : "gfP33bmwQ82UMWI2btj2OQ",
@@ -386,8 +383,7 @@ curl -k $ES_INSTANCE
     "minimum_index_compatibility_version" : "7.0.0"
   },
   "tagline" : "You Know, for Search"
-}
-```</pre>
+}</pre>
 </div>
 </div>
 </li>
@@ -395,14 +391,15 @@ curl -k $ES_INSTANCE
 <p>Extract the node-density workload so we can change the default metrics endpoint from <code>opensearch</code> to <code>elastic</code>:</p>
 <div class="literalblock">
 <div class="content">
-<pre>```bash
-mkdir node-density
+<pre>mkdir node-density
 cd node-density/
 kube-burner-ocp node-density --extract
-ls
-```
-```
-alerts.yml         metrics-aggregated.yml       metrics-report.yml  pod.yml
+ls</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>alerts.yml         metrics-aggregated.yml       metrics-report.yml  pod.yml
 cnv-metrics.yml    metrics-egressip.yml         metrics.yml
 kueue-metrics.yml  metrics-report-stackrox.yml  node-density.yml
 ```</pre>
@@ -413,9 +410,7 @@ kueue-metrics.yml  metrics-report-stackrox.yml  node-density.yml
 <p>Change the default metrics endpoint from <code>opensearch</code> to <code>elastic</code>:</p>
 <div class="literalblock">
 <div class="content">
-<pre>```bash
-sed -i 's/opensearch/elastic/g' node-density.yml
-```</pre>
+<pre>sed -i 's/opensearch/elastic/g' node-density.yml</pre>
 </div>
 </div>
 </li>
@@ -423,11 +418,12 @@ sed -i 's/opensearch/elastic/g' node-density.yml
 <p>Run a small node-density workload and index results on the ElasticSearch instance:</p>
 <div class="literalblock">
 <div class="content">
-<pre>```bash
-kube-burner-ocp node-density --pods-per-node 75 --es-server $ES_INSTANCE --es-index kube-burner
-```
-```
-time="2025-12-03 08:35:17" level=info msg="❤️ Checking for Cluster Health" file="cluster-health.go:46"
+<pre>kube-burner-ocp node-density --pods-per-node 75 --es-server $ES_INSTANCE --es-index kube-burner</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>time="2025-12-03 08:35:17" level=info msg="❤️ Checking for Cluster Health" file="cluster-health.go:46"
 time="2025-12-03 08:35:17" level=info msg="Cluster is Healthy" file="cluster-health.go:54"
 time="2025-12-03 08:35:17" level=info msg="Config file node-density.yml available in the current directory, using it" file="file_reader.go:77"
 time="2025-12-03 08:35:17" level=info msg="📁 Creating elastic indexer: indexer-0" file="metrics.go:67"
@@ -793,8 +789,7 @@ time="2025-12-03 08:35:52" level=info msg="Indexing finished in 48ms: created=10
 time="2025-12-03 08:35:52" level=info msg="Finished execution with UUID: bfd5d1d4-029f-4dc2-9968-86b857f45137" file="job.go:263"
 time="2025-12-03 08:35:52" level=info msg="Garbage collecting jobs" file="job.go:290"
 time="2025-12-03 08:35:53" level=info msg="Deleting 1 namespaces with label: kube-burner-job=node-density" file="namespaces.go:66"
-time="2025-12-03 08:36:05" level=info msg="👋 kube-burner run completed with rc 0 for UUID bfd5d1d4-029f-4dc2-9968-86b857f45137" file="helpers.go:105"
-```</pre>
+time="2025-12-03 08:36:05" level=info msg="👋 kube-burner run completed with rc 0 for UUID bfd5d1d4-029f-4dc2-9968-86b857f45137" file="helpers.go:105"</pre>
 </div>
 </div>
 </li>
@@ -802,43 +797,46 @@ time="2025-12-03 08:36:05" level=info msg="👋 kube-burner run completed with r
 </div>
 </div>
 <div class="sect3">
-<h4 id="_visualization_of_results_in_grafana_2"><a class="anchor" href="#_visualization_of_results_in_grafana_2"></a>Visualization of results in Grafana</h4>
+<h4 id="_visualization_of_results_in_grafana"><a class="anchor" href="#_visualization_of_results_in_grafana"></a>Visualization of results in Grafana</h4>
 <div class="paragraph">
 <p>Let&#8217;s create the <strong>Kube-burner Report</strong> dashboard in Grafana and visualize the indexed data.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the dasboard:</p>
+<p>Download the latest version of the dashboard:</p>
 <div class="literalblock">
 <div class="content">
-<pre>```bash
-wget https://raw.githubusercontent.com/kube-burner/kube-burner-ocp/refs/heads/main/dashboards/Kube-burner.json
-```</pre>
+<pre>wget https://raw.githubusercontent.com/kube-burner/kube-burner-ocp/refs/heads/main/dashboards/Kube-burner.json</pre>
 </div>
 </div>
 </li>
 <li>
-<p>Grafana does NOT accept a raw dashboard JSON file, it requires a wrapper object around it:
-<code><code>bash
-jq -n --argfile dash Kube-burner.json '{
+<p>Grafana does NOT accept a raw dashboard JSON file, it requires a wrapper object around it:</p>
+<div class="literalblock">
+<div class="content">
+<pre>jq -n --argfile dash Kube-burner.json '{
   dashboard: $dash,
   overwrite: true,
   folderId: 0
-}' &gt; Kube-burner-wrapped.json
-</code></code></p>
+}' &gt; Kube-burner-wrapped.json</pre>
+</div>
+</div>
 </li>
 <li>
-<p>Finally, let&#8217;s create the dashboard:
-<code><code>bash
-curl -X POST -sS --insecure \
+<p>Finally, let&#8217;s create the dashboard:</p>
+<div class="literalblock">
+<div class="content">
+<pre>curl -X POST -sS --insecure \
     -u admin:admin123 \
     -H "Content-Type: application/json" \
     -d @Kube-burner-wrapped.json \
-    <a href="https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import" class="bare">https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import</a> | jq .
-</code></code>
-<code><code>json
-{
+    https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import | jq .</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>{
   "uid": "dbcfe71e",
   "pluginId": "",
   "title": "Kube-burner Report",
@@ -853,7 +851,9 @@ curl -X POST -sS --insecure \
   "path": "",
   "removed": false
 }
-</code></code></p>
+```</pre>
+</div>
+</div>
 </li>
 <li>
 <p>Let&#8217;s make sure the ElasticSearch data source is properly configured:</p>
