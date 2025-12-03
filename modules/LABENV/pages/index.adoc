@@ -39,20 +39,17 @@ Let's make sure the ElasticSearch instance that we need to index the benchmarkin
 
 1. Get password:
 
-    ```bash
     ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
-    ```
 
 2. Get ElasticSearch route URL:
-    ```bash
+
     ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath='https://{.spec.host}')
-    ```
+
 
 3. Check ElasticSearch endpoint health:
-    ```bash
+
     curl -k -u elastic:$ES_PASSWORD $ES_INSTANCE/_cluster/health?pretty
-    ```
-    ```json
+
     {
       "cluster_name" : "elasticsearch",
       "status" : "green",
@@ -70,17 +67,15 @@ Let's make sure the ElasticSearch instance that we need to index the benchmarkin
       "task_max_waiting_in_queue_millis" : 0,
       "active_shards_percent_as_number" : 100.0
     }
-    ```
 
 === Grafana
 
 Let's make sure the Grafana instance that we need to visualize the benchmarking results through the course is available and responsive.
 
 1. Get Grafana route URL:
-    ```bash
+
     GRAFANA_URL=$(oc get route grafana-route -n openshift-logging -o jsonpath='https://{.spec.host}')
     echo "Grafana URL: $GRAFANA_URL"
-    ```
 
 2. Login with `admin`/`admin123`:
 

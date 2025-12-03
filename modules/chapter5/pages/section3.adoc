@@ -92,26 +92,20 @@ Once the job completes, analyze the collected Prometheus metrics to evaluate con
 
 You can find more information on interpreting these metrics in kube-burner's documentation or through subsequent blog posts (as mentioned in the provided context).
 
-==== Visualization of results in Grafana
+==== Indexing results in ElasticSearch
 
 1. Get ElasticSearch password:
 
-    ```bash
     ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
-    ```
 
 2. Get ElasticSearch route URL:
 
-    ```bash
     ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")
-    ```
 
 3. Check ElasticSearch authentication:
 
-    ```bash
     curl -k $ES_INSTANCE
-    ```
-    ```
+
     {
       "name" : "elasticsearch-es-default-0",
       "cluster_name" : "elasticsearch",
@@ -129,17 +123,14 @@ You can find more information on interpreting these metrics in kube-burner's doc
       },
       "tagline" : "You Know, for Search"
     }
-    ```
 
 4. Extract the node-density workload so we can change the default metrics endpoint from `opensearch` to `elastic`:
 
-    ```bash
     mkdir node-density
     cd node-density/
     kube-burner-ocp node-density --extract
     ls
-    ```
-    ```
+
     alerts.yml         metrics-aggregated.yml       metrics-report.yml  pod.yml
     cnv-metrics.yml    metrics-egressip.yml         metrics.yml
     kueue-metrics.yml  metrics-report-stackrox.yml  node-density.yml
@@ -147,16 +138,12 @@ You can find more information on interpreting these metrics in kube-burner's doc
 
 5. Change the default metrics endpoint from `opensearch` to `elastic`:
 
-    ```bash
     sed -i 's/opensearch/elastic/g' node-density.yml
-    ```
 
 6. Run a small node-density workload and index results on the ElasticSearch instance:
 
-    ```bash
     kube-burner-ocp node-density --pods-per-node 75 --es-server $ES_INSTANCE --es-index kube-burner
-    ```
-    ```
+
     time="2025-12-03 08:35:17" level=info msg="❤️ Checking for Cluster Health" file="cluster-health.go:46"
     time="2025-12-03 08:35:17" level=info msg="Cluster is Healthy" file="cluster-health.go:54"
     time="2025-12-03 08:35:17" level=info msg="Config file node-density.yml available in the current directory, using it" file="file_reader.go:77"
@@ -524,36 +511,31 @@ You can find more information on interpreting these metrics in kube-burner's doc
     time="2025-12-03 08:35:52" level=info msg="Garbage collecting jobs" file="job.go:290"
     time="2025-12-03 08:35:53" level=info msg="Deleting 1 namespaces with label: kube-burner-job=node-density" file="namespaces.go:66"
     time="2025-12-03 08:36:05" level=info msg="👋 kube-burner run completed with rc 0 for UUID bfd5d1d4-029f-4dc2-9968-86b857f45137" file="helpers.go:105"
-    ```
 
 ==== Visualization of results in Grafana
 
 Let's create the *Kube-burner Report* dashboard in Grafana and visualize the indexed data.
 
-1. Download the dasboard:
+1. Download the latest version of the dashboard:
 
-    ```bash
     wget https://raw.githubusercontent.com/kube-burner/kube-burner-ocp/refs/heads/main/dashboards/Kube-burner.json
-    ```
 
 2. Grafana does NOT accept a raw dashboard JSON file, it requires a wrapper object around it:
-    ```bash
+
     jq -n --argfile dash Kube-burner.json '{
       dashboard: $dash,
       overwrite: true,
       folderId: 0
     }' > Kube-burner-wrapped.json
-    ```
 
 3. Finally, let's create the dashboard:
-    ```bash
+
     curl -X POST -sS --insecure \
         -u admin:admin123 \
         -H "Content-Type: application/json" \
         -d @Kube-burner-wrapped.json \
         https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import | jq .
-    ```
-    ```json
+
     {
       "uid": "dbcfe71e",
       "pluginId": "",

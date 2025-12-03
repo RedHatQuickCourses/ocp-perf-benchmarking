@@ -160,6 +160,7 @@ However, you can also index the results in a remote ElasticSearch/OpenSearch ins
 3. Validate the ElasticSearch credentials:
 
     curl -k $ES_INSTANCE
+
     {
       "name" : "elasticsearch-es-default-0",
       "cluster_name" : "elasticsearch",
