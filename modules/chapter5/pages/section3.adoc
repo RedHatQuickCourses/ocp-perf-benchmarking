@@ -521,6 +521,59 @@ time="2025-12-03 08:35:52" level=info msg="Garbage collecting jobs" file="job.go
 time="2025-12-03 08:35:53" level=info msg="Deleting 1 namespaces with label: kube-burner-job=node-density" file="namespaces.go:66"
 time="2025-12-03 08:36:05" level=info msg="👋 kube-burner run completed with rc 0 for UUID bfd5d1d4-029f-4dc2-9968-86b857f45137" file="helpers.go:105"
 ```
+==== Visualization of results in Grafana
+
+Let's create the *Kube-burner Report* dashboard in Grafana and visualize the indexed data.
+
+1. Download the dasboard:
+```bash
+wget https://raw.githubusercontent.com/kube-burner/kube-burner-ocp/refs/heads/main/dashboards/Kube-burner.json
+```
+
+2. Grafana does NOT accept a raw dashboard JSON file, it requires a wrapper object around it:
+```bash
+jq -n --argfile dash Kube-burner.json '{
+  dashboard: $dash,
+  overwrite: true,
+  folderId: 0
+}' > Kube-burner-wrapped.json
+```
+
+3. Finally, let's create the dashboard:
+```bash
+curl -X POST -sS --insecure \
+     -u admin:admin123 \
+     -H "Content-Type: application/json" \
+     -d @Kube-burner-wrapped.json \
+     https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import | jq .
+```
+```json
+{
+  "uid": "dbcfe71e",
+  "pluginId": "",
+  "title": "Kube-burner Report",
+  "imported": true,
+  "importedUri": "db/kube-burner-report",
+  "importedUrl": "/d/dbcfe71e/kube-burner-report",
+  "slug": "kube-burner-report",
+  "dashboardId": 3,
+  "folderId": 0,
+  "folderUid": "",
+  "description": "",
+  "path": "",
+  "removed": false
+}
+```
+
+4. Let's make sure the ElasticSearch data source is properly configured:
+
+.ElasticSearch setup
+image::images/grafana-es-config.png[width=300]
+
+5. Let's visualize the report in the newly created *Kube-burner Report* dashboard:
+
+.Kube-burner Report dashboard
+image::images/grafana-kb.png[width=700]
 
 ### Conclusion
 

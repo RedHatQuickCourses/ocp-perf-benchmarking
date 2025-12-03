@@ -6,7 +6,7 @@ Same as k8s-netperf, this tool receives periodic updates with bugfixes and enhan
 
 == Starting with Ingress-perf
 
-=== 1. Downloading latest stable version
+=== Downloading latest stable version
 
 Download and install latest stable release for your operating system and architecture with the command below.
 
@@ -19,7 +19,7 @@ Validate the installation:
 ingress-perf help
 ```
 
-=== 2. Configuration
+=== Configuration
 
 As mentioned before, ingress-perf uses a simple YAML configuration file to define the test scenarios. They are documented at the https://github.com/cloud-bulldozer/ingress-perf/?tab=readme-ov-file#reference[project's site]
 
@@ -28,7 +28,7 @@ This configuration contains a list of scenarios that Ingress-perf uses to deploy
 Once these assets are deployed, ingress-perf will run the benchmarks with specified configuration, like the http termination, test concurrency, number of connections, etc.
 
 
-=== 3. Running ingress-perf
+=== Running ingress-perf
 
 Run Ingress-perf with this basic `ingress-perf.yaml` configuration file to run two benchmark scenarios with similar parameters, but different termination types: http and edge.
 
@@ -91,12 +91,14 @@ time="2025-11-28 15:25:10" level=info msg="File output/f1bd5953-698b-4b48-88ba-c
 time="2025-11-28 15:25:10" level=info msg="Cleaning up resources" file="runner.go:239"
 ```
 
+Check out the `ingress-perf run --help` for more info about the allowed flags.
+
 The metrics
 
 Note that ingress-perf cleans up the resources after the benchmarks are complete, so you don't need to clean up manually.
 
 
-=== 4. Indexing the results
+=== Indexing the results
 
 If no indexer is specified, ingress-perf will store the results in the local directory specified by `--output-dir`, by default `output`.
 
@@ -119,5 +121,83 @@ ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging   -o jsonpat
 ```bash
 ingress-perf run -c ingress-perf.yaml --es-server=${ES_INSTANCE} --es-index=ingress-perf
 ```
+```
+time="2025-12-03 09:07:04" level=info msg="Running ingress-perf (0.6.0@e06373946c0c939445d3b94d871d52ccd8c7e8c4) with uuid 71e97a64-d7a3-417c-9742-fb3b3a6eed58" file="ingress-perf.go:62"
+time="2025-12-03 09:07:04" level=info msg="Creating elastic indexer" file="runner.go:87"
+time="2025-12-03 09:07:04" level=info msg="HAProxy version: haproxy28-2.8.10-1.rhaos4.17.el9.x86_64" file="runner.go:170"
+time="2025-12-03 09:07:04" level=info msg="Deploying benchmark assets" file="runner.go:262"
+time="2025-12-03 09:07:05" level=info msg="Running test 1/2" file="runner.go:177"
+time="2025-12-03 09:07:05" level=info msg="Tool:wrk termination:http servers:45 concurrency:18 procs:1 connections:200 duration:1m0s http2:false" file="runner.go:178"
+time="2025-12-03 09:07:05" level=info msg="Waiting for replicas from deployment nginx in ns ingress-perf to be ready" file="runner.go:403"
+time="2025-12-03 09:07:11" level=info msg="Waiting for replicas from deployment ingress-perf-client in ns ingress-perf to be ready" file="runner.go:403"
+time="2025-12-03 09:07:15" level=info msg="Running sample 1/2: 1m0s" file="exec.go:102"
+time="2025-12-03 09:08:15" level=info msg="http: Rps=21404 avgLatency=170ms P95Latency=218ms" file="exec.go:149"
+time="2025-12-03 09:08:15" level=info msg="Running sample 2/2: 1m0s" file="exec.go:102"
+time="2025-12-03 09:09:15" level=info msg="http: Rps=19686 avgLatency=184ms P95Latency=236ms" file="exec.go:149"
+time="2025-12-03 09:09:15" level=info msg="Scenario summary http: Rps=20545 avgLatency=177ms P95Latency=227ms timeouts=0 http_errors=0" file="exec.go:157"
+time="2025-12-03 09:09:15" level=info msg="Indexing finished in 103ms: created=2" file="runner.go:234"
+time="2025-12-03 09:09:15" level=info msg="Running test 2/2" file="runner.go:177"
+time="2025-12-03 09:09:15" level=info msg="Tool:wrk termination:edge servers:45 concurrency:1 procs:1 connections:200 duration:1m0s http2:false" file="runner.go:178"
+time="2025-12-03 09:09:15" level=info msg="Waiting for replicas from deployment ingress-perf-client in ns ingress-perf to be ready" file="runner.go:403"
+time="2025-12-03 09:09:16" level=info msg="Running sample 1/2: 1m0s" file="exec.go:102"
+time="2025-12-03 09:10:17" level=info msg="edge: Rps=16523 avgLatency=12ms P95Latency=20ms" file="exec.go:149"
+time="2025-12-03 09:10:17" level=info msg="Running sample 2/2: 1m0s" file="exec.go:102"
+time="2025-12-03 09:11:17" level=info msg="edge: Rps=16991 avgLatency=12ms P95Latency=20ms" file="exec.go:149"
+time="2025-12-03 09:11:17" level=info msg="Scenario summary edge: Rps=16757 avgLatency=12ms P95Latency=20ms timeouts=0 http_errors=0" file="exec.go:157"
+time="2025-12-03 09:11:17" level=info msg="Indexing finished in 53ms: created=2" file="runner.go:234"
+time="2025-12-03 09:11:17" level=info msg="Cleaning up resources" file="runner.go:239"
+```
 
-Check out the `ingress-perf run --help` for more info about the allowed flags.
+=== Visualize the results in Grafana
+
+Let's create the *Ingress Performance nextgen* dashboard in Grafana and visualize the indexed data.
+
+1. Download the dasboard:
+```bash
+wget https://raw.githubusercontent.com/cloud-bulldozer/ingress-perf/refs/heads/main/dashboards/ingress-perf.json
+```
+
+2. Grafana does NOT accept a raw dashboard JSON file, it requires a wrapper object around it:
+```bash
+jq -n --argfile dash ingress-perf.json '{
+  dashboard: $dash,
+  overwrite: true,
+  folderId: 0
+}' > ingress-perf-wrapped.json
+```
+
+3. Finally, let's create the dashboard:
+```bash
+curl -X POST -sS --insecure \
+     -u admin:admin123 \
+     -H "Content-Type: application/json" \
+     -d @ingress-perf-wrapped.json \
+     https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import | jq .
+```
+```json
+{
+  "uid": "nlAhmRyVk",
+  "pluginId": "",
+  "title": "Ingress Performance nextgen",
+  "imported": true,
+  "importedUri": "db/ingress-performance-nextgen",
+  "importedUrl": "/d/nlAhmRyVk/ingress-performance-nextgen",
+  "slug": "ingress-performance-nextgen",
+  "dashboardId": 6,
+  "folderId": 0,
+  "folderUid": "",
+  "description": "",
+  "path": "",
+  "removed": false
+}
+```
+
+4. Let's make sure the ElasticSearch data source is properly configured:
+
+.ElasticSearch setup
+image::images/ingress-es.png[width=300]
+
+5. Let's visualize the report in the newly created *Ingress Performance nextgen* dashboard:
+
+.Ingress Performance nextgen dashboard
+image::images/ingress-dashboard.png[width=700]

@@ -27,6 +27,7 @@ control-plane-cluster-vjm62-1   1190m        7%          11489Mi         37%
 control-plane-cluster-vjm62-2   1134m        7%          9270Mi          29%
 control-plane-cluster-vjm62-3   1455m        9%          5783Mi          18%
 worker-cluster-vjm62-1          2096m        13%         8249Mi          26%
+worker-cluster-vjm62-2          2734m        15%         8438Mi          29%
 ----
 
 Display main pod offenders across all namespaces:
