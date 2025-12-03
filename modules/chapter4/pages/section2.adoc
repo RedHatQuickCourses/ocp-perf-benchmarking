@@ -151,9 +151,10 @@ However, you can also index the results in a remote ElasticSearch/OpenSearch ins
 
 1. Get ElasticSearch password:
 
-    ```bash
+    [source,bash]
+    ----
     ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
-    ```
+    ----
 
 2. Get ElasticSearch route URL:
 
