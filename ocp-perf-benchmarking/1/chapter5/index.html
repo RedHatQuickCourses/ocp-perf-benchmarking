@@ -187,26 +187,101 @@
 </aside>
 <article class="doc">
 <h1 class="page">Control Plane and Scalability Testing with kube-burner</h1>
-<div id="preamble">
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://github.com/kube-burner/kube-burner">kube-burner</a> is a CNCF hosted project designed for Kubernetes control plane performance testing. It enables users to simulate various scenarios, such as node failures or updates, to assess how the control plane responds under stress. Key features include:</p>
+<p>Modern Kubernetes and OpenShift environments operate at massive scale, where even small inefficiencies in the control plane can lead to significant reliability, performance, and cost issues. Continuous control plane and scalability testing is essential to ensure that clusters remain stable and responsive as workload density, node count, and API activity increase.</p>
+</div>
+<div class="paragraph">
+<p>This tutorial introduces <a href="https://github.com/kube-burner/kube-burner">kube-burner</a>, a CNCF project with advanced performance and scale testing toolset designed to generate realistic k8s workloads and stress patterns. You will learn how kube-burner can be used to validate cluster scalability, uncover regressions, measure key performance indicators (KPIs), and provide actionable insights for both infrastructure and platform teams.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_youll_learn"><a class="anchor" href="#_what_youll_learn"></a>What You&#8217;ll Learn</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By the end of this tutorial, you will be able to:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Configuring kube-burner jobs for customized testing environments</p>
+<p>Understand the role of control plane and scalability testing in Kubernetes and OpenShift.</p>
 </li>
 <li>
-<p>Measuring Control Plane Responsiveness by observing key metrics during simulated churn events</p>
+<p>Set up and configure kube-burner for large-scale workload generation.</p>
 </li>
 <li>
-<p>Hands-on experience with kube-burner, providing practical understanding of cluster behavior and control plane resilience</p>
+<p>Execute benchmark and custom workload scenarios to simulate real-world cluster behavior.</p>
+</li>
+<li>
+<p>Measure and analyze some key performance metrics such as:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>API server latency and throughput</p>
+</li>
+<li>
+<p>Etcd performance</p>
+</li>
+<li>
+<p>Runtime measurements like pod readiness latency</p>
+</li>
+<li>
+<p>Control plane resource utilization</p>
 </li>
 </ul>
 </div>
+</li>
+<li>
+<p>Ways to collect and visualize kube-burner metrics.</p>
+</li>
+<li>
+<p>Integrate kube-burner into CI/CD pipelines for Continuous Performance Testing (CPT).</p>
+</li>
+<li>
+<p>Interpret results to drive capacity planning, tuning, and product readiness decisions.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion"><a class="anchor" href="#_conclusion"></a>Conclusion</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>To get started, create a dedicated namespace and service account for kube-burner using the provided shell commands. If running tests with <code>hostNetwork</code> enabled, additional permissions are required for the netperf service account. Run your first test with <code>./bin/k8s-netperf --all</code>, which performs comprehensive network performance assessments including TCP, UDP, and request/response tests. Customize tests further using available command-line options like <code>--across</code> to schedule pods across availability zones or <code>--json</code> for JSON output of test results.</p>
+<p>Scalability and control plane performance are foundational to the reliability of any Kubernetes-based platform. kube-burner enables teams to move from reactive performance testing to a proactive, automated, and data-driven testing strategy. By combining large-scale workload generation, metrics collection, and deep observability, kube-burner helps ensure that your platform remains performant as features, releases, and customer usage evolve.</p>
+</div>
+<div class="paragraph">
+<p>Adopting kube-burner as part of your continuous testing strategy strengthens product quality, reduces production risk, and accelerates confident release cycles.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To continue your learning journey:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Start with the kube-burner installation and setup guide.</p>
+</li>
+<li>
+<p>Learn to configure and simulate a churn job.</p>
+</li>
+<li>
+<p>Explore custom workload profiles tailored to your environment.</p>
+</li>
+<li>
+<p>Connect test results to monitoring dashboards (Prometheus, Grafana, Elasticsearch, etc.) for deeper analysis.</p>
+</li>
+<li>
+<p>Try kube-burner hands on in the lab environment.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -216,7 +291,25 @@
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://kube-burner.github.io/kube-burner/latest/" target="_blank" rel="noopener">Kubeburner documentation</a></p>
+<p><a href="https://developers.redhat.com/articles/2024/03/04/test-kubernetes-performance-and-scale-kube-burner">kube-burner Blog Post</a></p>
+</li>
+<li>
+<p><a href="https://dl.acm.org/doi/10.1145/3629527.3651405">kube-burner ICPE Publication</a></p>
+</li>
+<li>
+<p><a href="https://github.com/kube-burner/kube-burner">kube-burner GitHub Repository</a></p>
+</li>
+<li>
+<p><a href="https://kube-burner.github.io/kube-burner/latest/">kube-burner Official Documentation</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=gaKnW5o_FIk">Performance &amp; Scale testing with kube-burner</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/@jay.gokani/observability-with-prometheus-and-grafana-c865b68617b2">Prometheus &amp; Grafana for Performance Observability</a></p>
+</li>
+<li>
+<p><a href="https://developers.redhat.com/articles/2025/10/15/how-red-hat-has-redefined-continuous-performance-testing#what_s_next">Continuous Performance Testing (CPT) in CI/CD</a></p>
 </li>
 </ul>
 </div>
