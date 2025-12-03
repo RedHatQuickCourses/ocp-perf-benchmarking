@@ -84,6 +84,28 @@ echo "Grafana URL: $GRAFANA_URL"
 
 2. Login with `admin`/`admin123`:
 
+.Grafana login screen
+image::images/grafana-login-1.png[width=300]
+
+.Grafana welcome page
+image::images/grafana-login-2.png[width=700]
+
 ==== ElasticSearch datasource
 
 Check that the ElasticSearch datasource was properly configured and ready to use:
+
+.Grafana ElasticSearch data source
+image::images/grafana-es-datasource.png[width=700]
+
+== Bring your own lab
+
+Pre-requisites:
+
+ * OpenShift cluster with a couple of workers (4.18 or higher)
+ * ElasticSearch instance
+ * Grafana Instance
+ * Grafana ElasticSearch datasource
+
+=== Vanilla Kubernetes
+
+While they are some OpenShift specific components highlighted through the course, it should be possible to follow the course with some adjustments in vanilla Kubernetes environments, given the pre-requisites are satisfied.
