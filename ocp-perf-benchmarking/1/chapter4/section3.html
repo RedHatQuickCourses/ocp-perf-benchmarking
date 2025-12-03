@@ -204,23 +204,11 @@
 <div class="sect2">
 <h3 id="_1_downloading_latest_stable_version"><a class="anchor" href="#_1_downloading_latest_stable_version"></a>1. Downloading latest stable version</h3>
 <div class="paragraph">
-<p>Download the latest stable release for your operating system and architecture from the <a href="https://github.com/cloud-bulldozer/ingress-perf/releases/latest">GitHub releases page</a>.</p>
-</div>
-<div class="paragraph">
-<p>For example, from the lab bastion host (Linux and amd64 architecture), you can download the v0.6.0 stable release with the following command:</p>
+<p>Download and install latest stable release for your operating system and architecture with the command below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -L https://github.com/cloud-bulldozer/ingress-perf/releases/download/v0.6.0/ingress-perf-Linux-v0.6.0-x86_64.tar.gz -o ingress-perf.tar.gz
-tar -xzf ingress-perf.tar.gz ingress-perf</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then you can move the ingress-perf binary to a directory in your path, for example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sudo mv ingress-perf /usr/local/bin/</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Ls https://raw.githubusercontent.com/cloud-bulldozer/ingress-perf/refs/heads/main/hack/install.sh | sh</code></pre>
 </div>
 </div>
 </div>
@@ -247,7 +235,7 @@ tar -xzf ingress-perf.tar.gz ingress-perf</code></pre>
 - termination: http
   connections: 200
   samples: 2
-  duration: 2m
+  duration: 1m
   path: /1024.html
   concurrency: 18
   tool: wrk
@@ -257,7 +245,7 @@ tar -xzf ingress-perf.tar.gz ingress-perf</code></pre>
 - termination: edge
   connections: 200
   samples: 2
-  duration: 2m
+  duration: 1m
   path: /1024.html
   concurrency: 1
   tool: wrk
@@ -288,22 +276,22 @@ time="2025-11-28 15:16:20" level=info msg="Creating local indexer" file="runner.
 time="2025-11-28 15:16:24" level=info msg="HAProxy version: haproxy28-2.8.10-1.rhaos4.17.el9.x86_64" file="runner.go:170"
 time="2025-11-28 15:16:24" level=info msg="Deploying benchmark assets" file="runner.go:262"
 time="2025-11-28 15:16:26" level=info msg="Running test 1/2" file="runner.go:177"
-time="2025-11-28 15:16:26" level=info msg="Tool:wrk termination:http servers:45 concurrency:18 procs:1 connections:200 duration:2m0s http2:false" file="runner.go:178"
+time="2025-11-28 15:16:26" level=info msg="Tool:wrk termination:http servers:45 concurrency:18 procs:1 connections:200 duration:1m0s http2:false" file="runner.go:178"
 time="2025-11-28 15:16:27" level=info msg="Waiting for replicas from deployment nginx in ns ingress-perf to be ready" file="runner.go:403"
 time="2025-11-28 15:16:29" level=info msg="Waiting for replicas from deployment ingress-perf-client in ns ingress-perf to be ready" file="runner.go:403"
-time="2025-11-28 15:16:35" level=info msg="Running sample 1/2: 2m0s" file="exec.go:102"
+time="2025-11-28 15:16:35" level=info msg="Running sample 1/2: 1m0s" file="exec.go:102"
 time="2025-11-28 15:21:03" level=info msg="Scenario summary http: Rps=90731 avgLatency=42ms P95Latency=46ms timeouts=0 http_errors=0" file="exec.go:157"
 time="2025-11-28 15:21:03" level=info msg="Running test 2/2" file="runner.go:177"
-time="2025-11-28 15:21:03" level=info msg="Tool:wrk termination:edge servers:45 concurrency:1 procs:1 connections:200 duration:2m0s http2:false" file="runner.go:178"
+time="2025-11-28 15:21:03" level=info msg="Tool:wrk termination:edge servers:45 concurrency:1 procs:1 connections:200 duration:1m0s http2:false" file="runner.go:178"
 time="2025-11-28 15:21:03" level=info msg="Waiting for replicas from deployment ingress-perf-client in ns ingress-perf to be ready" file="runner.go:403"
-time="2025-11-28 15:21:04" level=info msg="Running sample 1/2: 2m0s" file="exec.go:102"
+time="2025-11-28 15:21:04" level=info msg="Running sample 1/2: 1m0s" file="exec.go:102"
 time="2025-11-28 15:21:03" level=info msg="Scenario summary http: Rps=90731 avgLatency=42ms P95Latency=46ms timeouts=0 http_errors=0" file="exec.go:157"
 time="2025-11-28 15:21:03" level=info msg="Running test 2/2" file="runner.go:177"
-time="2025-11-28 15:21:03" level=info msg="Tool:wrk termination:edge servers:45 concurrency:1 procs:1 connections:200 duration:2m0s http2:false" file="runner.go:178"
+time="2025-11-28 15:21:03" level=info msg="Tool:wrk termination:edge servers:45 concurrency:1 procs:1 connections:200 duration:1m0s http2:false" file="runner.go:178"
 time="2025-11-28 15:21:03" level=info msg="Waiting for replicas from deployment ingress-perf-client in ns ingress-perf to be ready" file="runner.go:403"
-time="2025-11-28 15:21:04" level=info msg="Running sample 1/2: 2m0s" file="exec.go:102"
+time="2025-11-28 15:21:04" level=info msg="Running sample 1/2: 1m0s" file="exec.go:102"
 time="2025-11-28 15:23:07" level=info msg="edge: Rps=67920 avgLatency=3ms P95Latency=4ms" file="exec.go:149"
-time="2025-11-28 15:23:07" level=info msg="Running sample 2/2: 2m0s" file="exec.go:102"
+time="2025-11-28 15:23:07" level=info msg="Running sample 2/2: 1m0s" file="exec.go:102"
 time="2025-11-28 15:25:10" level=info msg="edge: Rps=66230 avgLatency=3ms P95Latency=4ms" file="exec.go:149"
 time="2025-11-28 15:25:10" level=info msg="Scenario summary edge: Rps=67075 avgLatency=3ms P95Latency=4ms timeouts=0 http_errors=0" file="exec.go:157"
 time="2025-11-28 15:25:10" level=info msg="File output/f1bd5953-698b-4b48-88ba-c79bd6f783c8.json created with 3 documents" file="runner.go:234"
@@ -325,9 +313,40 @@ time="2025-11-28 15:25:10" level=info msg="Cleaning up resources" file="runner.g
 <div class="paragraph">
 <p>However, you can also index the results in a remote ElasticSearch/OpenSearch instance with:</p>
 </div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get ElasticSearch password:</p>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ingress-perf run -c ingress-perf.yaml --es-server=https://your.es-endpoint.com --es-index=ingress-perf</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get ElasticSearch route URL:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging   -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Run test with the following command:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ingress-perf run -c ingress-perf.yaml --es-server=${ES_INSTANCE} --es-index=ingress-perf</code></pre>
 </div>
 </div>
 <div class="paragraph">
