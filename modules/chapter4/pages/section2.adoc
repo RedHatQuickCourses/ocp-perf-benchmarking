@@ -151,29 +151,20 @@ However, you can also index the results in a remote ElasticSearch/OpenSearch ins
 
 1. Get ElasticSearch password:
 
-+
-[source,bash]
-----
-ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
-----
+    ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
 
 2. Get ElasticSearch route URL:
 
-    ```bash
     ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")
-    ```
 
 3. Validate the ElasticSearch credentials:
 
-    ```bash
     curl -k $ES_INSTANCE
-    ```
-    ```json
     {
-    "name" : "elasticsearch-es-default-0",
-    "cluster_name" : "elasticsearch",
-    "cluster_uuid" : "gfP33bmwQ82UMWI2btj2OQ",
-    "version" : {
+      "name" : "elasticsearch-es-default-0",
+      "cluster_name" : "elasticsearch",
+      "cluster_uuid" : "gfP33bmwQ82UMWI2btj2OQ",
+      "version" : {
         "number" : "8.15.0",
         "build_flavor" : "default",
         "build_type" : "docker",
@@ -183,17 +174,14 @@ ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -
         "lucene_version" : "9.11.1",
         "minimum_wire_compatibility_version" : "7.17.0",
         "minimum_index_compatibility_version" : "7.0.0"
-    },
-    "tagline" : "You Know, for Search"
+      },
+      "tagline" : "You Know, for Search"
     }
-    ```
 
 4. Run test with the following command:
 
-    ```bash
     k8s-netperf --all --search=${ES_INSTANCE} --index=k8s-netperf
-    ```
-    ```
+
     INFO[2025-12-03 11:06:05] Starting k8s-netperf (roce2@e2988034e0f9dd4e2a59f131f6ae7866b12fd6de)
     INFO[2025-12-03 11:06:05] 📒 Reading netperf.yml file.
     INFO[2025-12-03 11:06:05] 📒 Reading netperf.yml file - using ConfigV2 Method.
@@ -245,7 +233,6 @@ ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -
     +---------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+------------+
     INFO[2025-12-03 11:10:38] Cleaning resources created by k8s-netperf
     INFO[2025-12-03 11:10:38] ⏰ Waiting for netperf Namespace to be deleted...
-    ```
 
 == Advanced Usage
 
