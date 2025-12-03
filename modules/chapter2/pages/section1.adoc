@@ -62,7 +62,7 @@ Access the OpenShift Console and navigate to *Observe*.
 
 === Dashboards
 
-Navigate to *Observe* -> *Dashboards* for some great default dashboards, including the *API Performance* one showcasing API request durations, rates, long running requests, registered watchers, etc:
+Navigate to *Observe* -> *Dashboards* for some great default dashboards, including the *API Performance* one showcasing API request durations, rates, long running requests, registered watchers, etc.:
 
 .Built-in API Performance dashboard
 image::images/prom-dashboard.png[width=700]
@@ -81,7 +81,7 @@ Navigate to *Observe* -> *Metrics*:
 .Custom queries with PromQL
 image::images/prom-query.png[width=700]
 
-Useful PromQL Queries You Should Know:
+Useful PromQL queries you may try:
 
 [cols="1,2", options="header"]
 |===

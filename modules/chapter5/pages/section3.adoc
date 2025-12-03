@@ -561,9 +561,10 @@ image::images/grafana-es-config.png[width=300]
 
 5. Let's visualize the report in the newly created *Kube-burner Report* dashboard:
 
++
 .Kube-burner Report dashboard
 image::images/grafana-kb.png[width=700]
 
-### Conclusion
+=== Conclusion
 
 This hands-on activity has demonstrated how to configure and run kube-burner jobs for simulating control plane churn and measuring responsiveness. Through practical exercises like this, users can gain valuable insights into Kubernetes cluster performance under stress conditions. Remember to consult the comprehensive [kube-burner documentation](https://cloud-bulldozer.github.io/kube-burner/) for more in-depth guidance on using kube-burner's features and understanding test results.

@@ -8,7 +8,7 @@ Red Hat OpenShift's development team is constantly updating and improving its so
 
 Getting started with k8s-netperf is a straightforward process. Here's a quick guide to get you up and running:
 
-=== 1. Installation - Build from git
+=== Installation
 
 ```bash
 curl -Ls https://raw.githubusercontent.com/cloud-bulldozer/k8s-netperf/refs/heads/main/hack/install.sh | sh
@@ -19,7 +19,7 @@ Validate the installation:
 k8s-netperf -h
 ```
 
-=== 2. Node Labeling (Optional)
+=== Node labeling (optional)
 
 k8s-netperf schedules a client and a server pod in your OpenShift cluster to run the network throughput and latency tests. Allowing for node labeling allows the user to control which nodes the network performance tests run on - for example to not cross regions or availability zones, which could lead to higher latency. To also ensure that these pods land on the correct nodes, you use node labels.
 ```bash
@@ -41,7 +41,7 @@ oc label node worker-cluster-vjm62-2 netperf=server
 
 If for some reason you want to place the client and server pods on the same node you can use the `--local` flag.
 
-=== 3. Namespace and Service Account (Optional)
+=== Namespace and service account setup (optional)
 
 You'll need a dedicated namespace and service account for k8s-netperf. You can create them with the following commands:
 ```bash
@@ -51,7 +51,7 @@ oc create sa -n netperf netperf
 
 If you plan to run tests with hostNetwork enabled, you'll need to grant the netperf service account additional permissions.
 
-== Running Your First Test
+== Running your first test
 
 With the setup complete, you're now ready to run your first network performance test. k8s-netperf offers a wide range of options to customize your tests. Here's a basic example:
 
