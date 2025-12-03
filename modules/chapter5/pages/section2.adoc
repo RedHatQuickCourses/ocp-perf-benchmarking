@@ -1,22 +1,22 @@
-= Measuring Control Plane Responsiveness
+= Measuring control plane responsiveness
 
 Measuring control plane responsiveness is crucial for ensuring a Kubernetes (k8s) cluster's stability and performance under varying loads, particularly when simulating churn scenarios with tools like kube-burner. The control plane components, including the API server, etcd, and controller manager, must be responsive to maintain optimal cluster operations.
 
-## Understanding Control Plane Metrics
+## Understanding control plane metrics
 
 Before diving into measuring control plane responsiveness, it's essential to understand relevant metrics:
 
-1. **API Server Latency**: Measures how quickly the API server responds to client requests in milliseconds (ms). High latency may indicate performance issues or overloaded resources.
+1. **API server latency**: Measures how quickly the API server responds to client requests in milliseconds (ms). High latency may indicate performance issues or overloaded resources.
 
-2. **etcd Performance**: etcd is responsible for k8s cluster state persistence. Key metrics include read/write operation success rates, latency, and resource usage like CPU and memory.
+2. **etcd performance**: etcd is responsible for k8s cluster state persistence. Key metrics include read/write operation success rates, latency, and resource usage like CPU and memory.
 
-3. **Controller Manager Responsiveness**: This metric assesses how efficiently controllers process the cluster's desired state, replicating it in reality. Delays here might lead to pod scheduling failures or other control loop issues.
+3. **Controller Manager responsiveness**: This metric assesses how efficiently controllers process the cluster's desired state, replicating it in reality. Delays here might lead to pod scheduling failures or other control loop issues.
 
 ## Utilizing kube-burner for Control Plane Testing
 
 kube-burner is a powerful tool designed to simulate various churn scenarios within a k8s cluster, providing valuable insights into its behavior under stress and helping to validate its resilience. Here’s how to configure kube-burner jobs for measuring control plane responsiveness:
 
-### 1. Enable Pod Latency Measurements
+### Enable pod latency measurements
 
 Kube-burner collects pod latency metrics across different phases of pod startup, crucial for evaluating the API server's performance. To enable this feature:
 
@@ -27,7 +27,7 @@ global:
     - name: serviceLatency
 ```
 
-### 2. Configure kube-burner Jobs
+### Configure kube-burner jobs
 
 Next, set up specific jobs tailored for control plane responsiveness testing:
 
@@ -44,7 +44,7 @@ jobs:
 
 This job simulates creating and deleting 50 pods within the `kube-burner` namespace over a 60-minute period, stressing control plane components like the API server and etcd.
 
-### 3. Analyze Results
+### Analyze results
 
 After running the job with `kubeburner run controlplane_stress`, kube-burner will generate detailed metrics and logs. Focus on pod latency measurements from the `global.measurements.podLatency` output, which reflects API server responsiveness under stress:
 
@@ -53,7 +53,7 @@ After running the job with `kubeburner run controlplane_stress`, kube-burner wil
 kubectl exec -n kube-burner <kube-burner-pod> -- cat /var/lib/kube-burner/results.json | jq '.results[].measurements[] | select(.name == "podLatency") | .values'
 ```
 
-### 4. Troubleshooting
+### Troubleshooting
 
 Should control plane latency exceed acceptable thresholds, investigate potential causes:
 

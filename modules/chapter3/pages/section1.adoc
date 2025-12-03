@@ -16,7 +16,7 @@ For applications exposed via HTTP or other ingress protocols, https://github.com
 
 == Virtualization
 
-Both kube-burner, through kube-burner-ocp virtualization related workloads (virt-density, virt-capacity-benchmark, virt-clone, virt-migration,  etc.) and k8s-netperf (through the `--vm` and `--vm-image` flags) support running workloads on top of OpenShift Virtualization, creating virtual machines at scale allowing operators to evaluate the cluster behavior under high-density conditions.
+Both kube-burner, through https://github.com/kube-burner/kube-burner-ocp/?tab=readme-ov-file#virt-workloads[kube-burner-ocp virtualization related workloads] (virt-density, virt-capacity-benchmark, virt-clone, virt-migration,  etc.) and k8s-netperf, through the `--vm` and `--vm-image` flags, support running workloads on top of OpenShift Virtualization, creating virtual machines at scale allowing operators to evaluate the cluster behavior under high-density conditions.
 
 == Storage
 
@@ -24,5 +24,5 @@ https://github.com/jtaleric/k8s-io[k8s-IO] is a lightweight Go-based CLI tool fo
 
 == Conclusion
 
-Overall, Kubernetes-native benchmarking tools complement traditional system benchmarks by providing visibility into cluster-level performance and cloud-native behaviors. While they are often lighter-weight and less detailed than dedicated tools like fio or iperf, they are crucial for evaluating dynamic, orchestrated environments. Subsequent chapters in this course will dive deeper into each of these tools, providing practical examples and configuration guidance.
+Overall, Kubernetes-native benchmarking tools complement traditional system benchmarks by providing visibility into cluster-level performance and cloud-native behaviors. Most of these tools allow indexing results on external ElasticSearch/OpenSearch instances in a cloud-native way. Subsequent chapters in this course will dive deeper into each of these tools, providing practical examples and configuration guidance.
 

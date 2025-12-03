@@ -1,6 +1,5 @@
 = Overview of benchmarking suites
 
-
 Benchmarking suites provide standardized, repeatable ways to evaluate different aspects of system performance, including network throughput, storage I/O, CPU load, and overall system stress. These tools are essential for validating infrastructure performance, comparing hardware options, and understanding how applications behave under controlled stress scenarios. Because benchmarking results are sensitive to configuration and environment, engineers often combine multiple tools—each specialized in a certain domain—to obtain a holistic picture of system behavior. The sections below outline commonly used benchmarking categories and the tools associated with them.
 
 == Network benchmarking

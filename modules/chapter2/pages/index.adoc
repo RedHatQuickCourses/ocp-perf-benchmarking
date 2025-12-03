@@ -4,7 +4,7 @@
 
 OpenShift provides a fully integrated, opinionated monitoring stack that gives operators deep visibility into cluster health, performance, and resource usage without requiring external tools. This chapter introduces the core components—Prometheus, Alertmanager, Cluster Monitoring Operator, cluster operator health reporting, and administrative utilities such as oc adm—and explains how they work together to deliver real-time observability. You'll see how OpenShift continuously gathers metrics, evaluates alerts, and exposes system-level insights that help maintain stability, diagnose issues, and ensure that workloads run efficiently.
 
-== What You'll Learn
+== What you'll learn
 
  * How Prometheus and the Cluster Monitoring Operator collect and manage metrics for nodes, pods, and control-plane components
  * The purpose of native alerts and how Alertmanager uses alerting rules to detect abnormal conditions.
@@ -53,6 +53,6 @@ After completing this module, you'll be ready to:
  * Experiment with Alertmanager routing and custom alert rules tailored to your environment
  * Dive into workload-level observability using the User Workload Monitoring stack
 
-== See Also
+== See also
 
 * link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/monitoring/index[OpenShift Monitoring guide,window=_blank]

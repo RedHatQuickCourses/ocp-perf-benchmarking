@@ -1,17 +1,17 @@
-= Understanding Openshift Networking
+= Understanding Openshift networking
 
 OpenShift networking is the foundation that enables communication **within a cluster** as well as **between the cluster and external systems**. Effective networking is critical for ensuring application performance, reliability, and security.
 
 Traffic in OpenShift is generally categorized into two types, north-south and east-west, which we will describe in the next sections.
 
-== North-South Traffic
+== North-South traffic
 
  * **Definition:** Traffic that **enters or exits** the cluster, originating from clients, external services, or the internet.
  * **Example:** A user accesses a web application hosted in OpenShift via an external URL. The request passes through the OpenShift **ingress controller**, which routes it to the appropriate pod serving the application.
 
 North-South traffic represents the interaction between the cluster and the outside world, and it must be managed to ensure secure and efficient access. Includes ingress and egress scenarios.
 
-== East-West Traffic
+== East-West traffic
 
  * **Definition:** Traffic between pods **within the cluster** or between nodes.
  * **Example:** A backend service pod communicates with a database pod located on a different node. This traffic remains internal to the cluster network and is optimized for low-latency, high-throughput communication.
@@ -26,7 +26,7 @@ In summary, OpenShift networking ensures that applications can communicate **eff
 
 OpenShift leverages https://ovn-kubernetes.io/[OVN-Kubernetes], a powerful Container Network Interface (CNI) plugin, to provide a scalable, SDN-based networking backend that delivers advanced routing, policy, and overlay capabilities across the cluster.
 
-== Next Steps
+== Next steps
 
 After completing this module, you'll be ready to:
 
@@ -38,7 +38,7 @@ After completing this module, you'll be ready to:
    ** virtual traffic (pod to pod, pod to service)
    ** ingress traffic
 
-== See Also
+== See also
 
 * link:https://docs.openshift.com/container-platform/latest/virt/vm_networking/virt-about-vm-networking.html[OpenShift Virtualization Networking,window=_blank]
 * link:https://docs.openshift.com/container-platform/latest/networking/ovn_kubernetes_network_provider/about-ovn-kubernetes.html[About OVN-Kubernetes,window=_blank]

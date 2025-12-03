@@ -1,10 +1,10 @@
-= Ingress Controller Benchmarking with ingress-perf
+= Ingress controller benchmarking with ingress-perf
 
 https://github.com/cloud-bulldozer/ingress-perf/[Ingress-perf] is an open-source tool aimed at deploying and orchestrating performance benchmarks over the ingress stack of the given OpenShift cluster. Written in golang, this tool makes straight forward to define different test scenarios by using a simple YAML configuration file.
 
 Same as k8s-netperf, this tool receives periodic updates with bugfixes and enhancements, as it's currently used to detect potential performance regressions in new OpenShift versions.
 
-== Starting with Ingress-perf
+== Starting with ingress-perf
 
 === Downloading latest stable version
 
@@ -185,6 +185,7 @@ Let's create the *Ingress Performance nextgen* dashboard in Grafana and visualiz
 
 4. Let's make sure the ElasticSearch data source is properly configured:
 
++
 .ElasticSearch setup
 image::images/ingress-es.png[width=300]
 

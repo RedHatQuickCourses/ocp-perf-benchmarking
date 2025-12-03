@@ -4,7 +4,7 @@
 
 This module introduces the fundamentals of performance engineering within computer networks, focusing on how benchmarking provides measurable, repeatable insights into system behavior under load. It explains why modern infrastructures—spanning physical, virtualized, and cloud-native components—require systematic performance evaluation to validate design choices, uncover bottlenecks, and ensure reliability at scale.
 
-== What You'll Learn
+== What you'll learn
 
 In this section, you will learn:
 
@@ -33,7 +33,7 @@ A key aspect of effective benchmarking is *repeatability*. Results must be consi
 
 *Automation* plays an increasingly important role in benchmarking practices. Continuous performance testing pipelines, integrated into CI/CD workflows, allow engineers to detect performance regressions as part of routine software development. Automated test harnesses can deploy environments, generate traffic, collect telemetry, and analyze results without manual intervention. This shift enables teams to evaluate performance at scale and at the pace demanded by modern development cycles.
 
-== Next Steps
+== Next steps
 
 After completing this module, you'll be ready to:
 
@@ -41,6 +41,6 @@ After completing this module, you'll be ready to:
  * Learn how to design repeatable, automated benchmarking pipelines
  * Apply these concepts to Kubernetes and OpenShift environments, where cloud-native architectures introduce new performance considerations
 
-== See Also
+== See also
 
 * link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/scalability_and_performance/index[OpenShift Scaling and Performance Guide,window=_blank]

@@ -1,10 +1,10 @@
-= Network Performance Testing with k8s-netperf
+= Network performance testing with k8s-netperf
 
 https://github.com/cloud-bulldozer/k8s-netperf/[k8s-netperf] is an open-source tool designed to make it easy to run networking performance tests against your OpenShift clusters. It's built by the team at Red Hat who contribute to the https://github.com/cloud-bulldozer[cloud-bulldozer] organization, and it's a powerful and simple way to understand how your network is performing and to identify any potential bottlenecks.
 
 Red Hat OpenShift's development team is constantly updating and improving its source code and the Kernel networking data-path is part of that source code! In order to ensure the OpenShift network performance stays lightning fast, we have k8s-netperf running constantly on new releases of OpenShift in our pipeline.
 
-== Quick Getting Started with k8s-netperf
+== Getting started with k8s-netperf
 
 Getting started with k8s-netperf is a straightforward process. Here's a quick guide to get you up and running:
 
@@ -235,7 +235,7 @@ However, you can also index the results in a remote ElasticSearch/OpenSearch ins
     INFO[2025-12-03 11:10:38] Cleaning resources created by k8s-netperf
     INFO[2025-12-03 11:10:38] ⏰ Waiting for netperf Namespace to be deleted...
 
-== Advanced Usage
+== Advanced usage
 
 k8s-netperf also supports more advanced use cases, such as:
 
@@ -243,7 +243,7 @@ k8s-netperf also supports more advanced use cases, such as:
  * Using a **Linux Bridge Interface**: The `--bridge` option allows you to test network performance over a Linux bridge interface.
  * Integrating with **Prometheus**: You can use the `--prom` option to specify a Prometheus URL for scraping metrics.
 
-== Interpreting the Results
+== Interpreting the results
 
 The output of k8s-netperf will vary depending on the tests you run. However, you'll typically see metrics such as:
 

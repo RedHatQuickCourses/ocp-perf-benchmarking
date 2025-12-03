@@ -1,21 +1,21 @@
 = Configuring kube-burner jobs to simulate cluster churn
 
-== Understanding and Setting Up Cluster Churn Simulation with kube-burner
+== Understanding and setting up cluster churn simulation with kube-burner
 
 Kube-burner, a Golang-based tool, is designed to stress Kubernetes clusters by creating, deleting, and patching resources at a specified rate. This feature makes it an ideal instrument for simulating cluster churn – the process of adding or removing significant numbers of pods, services, or other objects in a short period, which can impact the control plane's responsiveness.
 
 To configure kube-burner jobs for simulating cluster churn, you need to define specific settings within its configuration file or via command line flags. This section will guide you through these configurations step by step using practical examples.
 
-### 1. Configuration Basics
+### Configuration basics
 
 Start by understanding the global and job-specific settings in your kube-burner configuration file (`kube-burner.yaml` or provided as a flag when invoking `kube-burner init`). Here are some key parameters to consider:
 
-#### Global Settings
+#### Global settings
 
 - `writeToFile`: A boolean that determines if metrics should be written to files (default is `true`).
 - `metricsDirectory`: The directory where collected metrics will be stored (default is `collected-metrics`).
 
-#### Job-specific Settings
+#### Job-specific settings
 
 - `name`: A unique identifier for the job.
 - `jobIterations`: The number of times this job should run.
@@ -27,7 +27,7 @@ Start by understanding the global and job-specific settings in your kube-burner 
 - `jobPause`: The duration between successive iterations of the job.
 - `objects`: An array specifying object templates and their configurations, including the number of replicas.
 
-### 2. Configuring Cluster Churn Simulation
+### Configuring cluster churn simulation
 
 To simulate cluster churn, we'll focus on creating and deleting objects (e.g., deployments) rapidly. Here's an example configuration:
 
@@ -59,7 +59,7 @@ In this setup:
 - The job pauses for one second between iterations (`jobPause: 1s`) to avoid overwhelming the control plane and measure its responsiveness accurately.
 - A single deployment object with one replica is created per iteration (`objects`).
 
-### 3. Running the Simulation
+### Running the simulation
 
 Execute kube-burner with your configuration file using the following command:
 
