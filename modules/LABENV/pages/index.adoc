@@ -30,14 +30,77 @@
 Let's make sure the environment healthy and ready to continue with the training:
 ```bash
 oc get node
-oc get co
+oc get co    # ClusterOperators
 ```
 
-Let's make sure the ElasticSearch instance that we need to index the benchmarking results through the course is available and responsive:
-```bash
-# Get password
-PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
+=== ElasticSearch
 
-# Check cluster health
-oc exec -n openshift-logging elasticsearch-es-default-0 -- curl -k -u elastic:$PASSWORD https://elasticsearch-es-http.openshift-logging.svc.cluster.local:9200/_cluster/health?pretty
-```
+Let's make sure the ElasticSearch instance that we need to index the benchmarking results through the course is available and responsive.
+
+1. Get password:
+
+    ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
+
+2. Get ElasticSearch route URL:
+
+    ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath='https://{.spec.host}')
+
+
+3. Check ElasticSearch endpoint health:
+
+    curl -k -u elastic:$ES_PASSWORD $ES_INSTANCE/_cluster/health?pretty
+
+    {
+      "cluster_name" : "elasticsearch",
+      "status" : "green",
+      "timed_out" : false,
+      "number_of_nodes" : 1,
+      "number_of_data_nodes" : 1,
+      "active_primary_shards" : 0,
+      "active_shards" : 0,
+      "relocating_shards" : 0,
+      "initializing_shards" : 0,
+      "unassigned_shards" : 0,
+      "delayed_unassigned_shards" : 0,
+      "number_of_pending_tasks" : 0,
+      "number_of_in_flight_fetch" : 0,
+      "task_max_waiting_in_queue_millis" : 0,
+      "active_shards_percent_as_number" : 100.0
+    }
+
+=== Grafana
+
+Let's make sure the Grafana instance that we need to visualize the benchmarking results through the course is available and responsive.
+
+1. Get Grafana route URL:
+
+    GRAFANA_URL=$(oc get route grafana-route -n openshift-logging -o jsonpath='https://{.spec.host}')
+    echo "Grafana URL: $GRAFANA_URL"
+
+2. Login with `admin`/`admin123`:
+
+.Grafana login screen
+image::images/grafana-login-1.png[width=300]
+
+.Grafana welcome page
+image::images/grafana-login-2.png[width=700]
+
+==== ElasticSearch datasource
+
+Check that the ElasticSearch datasource was properly configured and ready to use:
+
+.Grafana ElasticSearch data source
+image::images/grafana-es-datasource.png[width=700]
+
+== Bring your own lab
+
+Pre-requisites:
+
+ * OpenShift cluster with a couple of workers (4.18 or higher)
+ * ElasticSearch instance
+ * Grafana Instance
+ * Grafana ElasticSearch datasource
+
+=== Vanilla Kubernetes
+
+While they are some OpenShift specific components highlighted through the course, it should be possible to follow the course with some adjustments in vanilla Kubernetes environments, given the pre-requisites are satisfied.

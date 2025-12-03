@@ -4,15 +4,25 @@ Kubernetes-native benchmarking tools are specifically designed to measure the pe
 
 == Control plane
 
-One widely used tool in this space is https://kube-burner.github.io/kube-burner/latest/[kube-burner], which is designed to generate configurable workloads for Kubernetes clusters. It can create pods, services, and other Kubernetes objects at scale, allowing operators to evaluate cluster behavior under high-density conditions. kube-burner is often used to test API server performance, scheduler responsiveness, and overall cluster throughput, providing metrics that help identify scaling limits and bottlenecks.
+One widely used tool in this space is https://kube-burner.github.io/kube-burner/latest/[kube-burner], which is designed to generate configurable workloads for Kubernetes clusters. It can create pods, services, and other Kubernetes objects at scale, allowing operators to evaluate the cluster behavior under high-density conditions. kube-burner is often used to test API server performance, scheduler responsiveness, and overall cluster throughput, providing metrics that help identify scaling limits and bottlenecks.
+
+Building on top of kube-burner, https://github.com/kube-burner/kube-burner-ocp/[kube-burner-ocp] is a very opinionated OpenShift wrapper designed to simplify the execution of different control-plane related workloads in this Kubernetes distribution. It greatly simplifies the execution of the supported workloads adding the corresponding OpenShift metadata and automatically discovering the Prometheus URL and authentication tokens.
 
 == Networking
 
-https://github.com/cloud-bulldozer/k8s-netperf[k8s-netperf] is another Kubernetes-specific benchmarking tool focused on network performance. It supports several backends mentioned in the previous section, like https://hewlettpackard.github.io/netperf[netperf], iperf and uperf to be able to measure latency, throughput, and other network characteristics across the cluster. By running tests between pods on different nodes, k8s-netperf provides insight into how networking plugins, CNI configurations, and overlay networks affect communication performance in a cloud-native environment.
+https://github.com/cloud-bulldozer/k8s-netperf[k8s-netperf] is another Kubernetes-specific benchmarking tool focused on network performance. It supports several backends mentioned in the previous section, like netperf, iperf and uperf to be able to measure latency, throughput, and other network characteristics across the cluster. By running tests between pods on different nodes, k8s-netperf provides insight into how networking plugins, CNI configurations, and overlay networks affect communication performance in a cloud-native environment.
 
 For applications exposed via HTTP or other ingress protocols, https://github.com/cloud-bulldozer/ingress-perf[ingress-perf] offers a way to benchmark the performance of Kubernetes ingress controllers. It can simulate concurrent connections, measure request latency, and generate traffic patterns similar to real-world application workloads. This helps teams understand how ingress controllers behave under stress and how configuration changes or resource constraints impact application availability and responsiveness.
 
+== Virtualization
+
+Both kube-burner, through https://github.com/kube-burner/kube-burner-ocp/?tab=readme-ov-file#virt-workloads[kube-burner-ocp virtualization related workloads] (virt-density, virt-capacity-benchmark, virt-clone, virt-migration,  etc.) and k8s-netperf, through the `--vm` and `--vm-image` flags, support running workloads on top of OpenShift Virtualization, creating virtual machines at scale allowing operators to evaluate the cluster behavior under high-density conditions.
+
+== Storage
+
+https://github.com/jtaleric/k8s-io[k8s-IO] is a lightweight Go-based CLI tool for running benchmark workloads on Kubernetes clusters. Unlike operator-based solutions, it provides a simple command-line interface for executing benchmarks without requiring cluster-wide operator deployments, supporting multiple benchmark types like fio or HammerDB (for database performance benchmarking).
+
 == Conclusion
 
-Overall, Kubernetes-native benchmarking tools complement traditional system benchmarks by providing visibility into cluster-level performance and cloud-native behaviors. While they are often lighter-weight and less detailed than dedicated tools like fio or iperf, they are crucial for evaluating dynamic, orchestrated environments. Subsequent chapters in this course will dive deeper into each of these tools, providing practical examples and configuration guidance.
+Overall, Kubernetes-native benchmarking tools complement traditional system benchmarks by providing visibility into cluster-level performance and cloud-native behaviors. Most of these tools allow indexing results on external ElasticSearch/OpenSearch instances in a cloud-native way. Subsequent chapters in this course will dive deeper into each of these tools, providing practical examples and configuration guidance.
 

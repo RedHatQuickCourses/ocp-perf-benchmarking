@@ -1,16 +1,16 @@
-= Monitoring OpenShift Performance with the Built-in Stack
+= Monitoring OpenShift performance with the built-in stack
 
 == Overview
 
-OpenShift provides a fully integrated, opinionated monitoring stack that gives operators deep visibility into cluster health, performance, and resource usage without requiring external tools. This chapter introduces the core components—Prometheus, Alertmanager, Cluster Monitoring Operator, cluster operator health reporting, and administrative utilities such as oc adm—and explains how they work together to deliver real-time observability. You’ll see how OpenShift continuously gathers metrics, evaluates alerts, and exposes system-level insights that help maintain stability, diagnose issues, and ensure that workloads run efficiently.
+OpenShift provides a fully integrated, opinionated monitoring stack that gives operators deep visibility into cluster health, performance, and resource usage without requiring external tools. This chapter introduces the core components—Prometheus, Alertmanager, Cluster Monitoring Operator, cluster operator health reporting, and administrative utilities such as oc adm—and explains how they work together to deliver real-time observability. You'll see how OpenShift continuously gathers metrics, evaluates alerts, and exposes system-level insights that help maintain stability, diagnose issues, and ensure that workloads run efficiently.
 
-== What You'll Learn
+== What you'll learn
 
  * How Prometheus and the Cluster Monitoring Operator collect and manage metrics for nodes, pods, and control-plane components
  * The purpose of native alerts and how Alertmanager uses alerting rules to detect abnormal conditions.
  * How cluster operators signal the overall health of OpenShift subsystems using the Available, Progressing, and Degraded conditions
  * Practical use of `oc adm` commands for inspecting resource usage, gathering diagnostics, and performing cluster-level investigations
- * How OpenShift’s built-in dashboards and metrics endpoints provide actionable visibility into performance trends
+ * How OpenShift's built-in dashboards and metrics endpoints provide actionable visibility into performance trends
  * How workload-level monitoring (User Workload Monitoring) extend observability across the platform
 
 == Introduction
@@ -37,7 +37,7 @@ Additionally, OpenShift integrates *application-level monitoring* through the Us
 
 For *command-line-driven diagnostics*, OpenShift offers a rich set of administrative tools under `oc adm`. Administrators can inspect API server performance, audit resource usage, collect must-gather bundles for troubleshooting, and review cluster feature states. Commands such as `oc adm top nodes` and `oc adm top pods` provide quick insights into real-time resource consumption, helping identify hotspots or imbalance conditions.
 
-.Figure 1: Cluster Monitoring Architecture
+.Cluster Monitoring Architecture
 image::images/monitoring-architecture.png[width=700]
 
 == Conclusion
@@ -53,6 +53,6 @@ After completing this module, you'll be ready to:
  * Experiment with Alertmanager routing and custom alert rules tailored to your environment
  * Dive into workload-level observability using the User Workload Monitoring stack
 
-== See Also
+== See also
 
 * link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/monitoring/index[OpenShift Monitoring guide,window=_blank]

@@ -2,7 +2,7 @@
 
 In OpenShift, **OVN-Kubernetes (OVN-K)** provides the networking fabric that connects pods across nodes. Consider **Pod A** on Node 1 communicating with **Pod B** on Node 2. The major components involved are explained below, using **ovnkube-controller as the CMS equivalent**.
 
-== OVN Components
+== OVN components
 
 
 === ovnkube-controller (CMS)
@@ -14,7 +14,7 @@ In OpenShift, **OVN-Kubernetes (OVN-K)** provides the networking fabric that con
 - **Performance and scale:** In large clusters, it must process thousands of pod and network policy updates efficiently to prevent connectivity delays.
 
 
-=== OVN Northbound Database (nbdb)
+=== OVN northbound database (nbdb)
 - Stores **high-level logical network configuration**:
   * Logical switches (pod networks)
   * Logical routers (routing between networks)
@@ -29,7 +29,7 @@ In OpenShift, **OVN-Kubernetes (OVN-K)** provides the networking fabric that con
 - Calculates routes and encodings for pods across nodes.
 - Ensures traffic is **policy-compliant** and optimized for latency and throughput.
 
-=== OVN Southbound Database (SBDB)
+=== OVN southbound database (SBDB)
 - Stores **low-level instructions** for each node to implement the logical network.
 - Contains:
   * **Physical Network (PN) tables:** How to reach each node.
