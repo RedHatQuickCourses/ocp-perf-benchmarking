@@ -1,13 +1,45 @@
 = Control Plane and Scalability Testing with kube-burner
 
-https://github.com/kube-burner/kube-burner[kube-burner] is a CNCF hosted project designed for Kubernetes control plane performance testing. It enables users to simulate various scenarios, such as node failures or updates, to assess how the control plane responds under stress. Key features include:
+== Overview
+Modern Kubernetes and OpenShift environments operate at massive scale, where even small inefficiencies in the control plane can lead to significant reliability, performance, and cost issues. Continuous control plane and scalability testing is essential to ensure that clusters remain stable and responsive as workload density, node count, and API activity increase.
 
-- Configuring kube-burner jobs for customized testing environments
-- Measuring Control Plane Responsiveness by observing key metrics during simulated churn events
-- Hands-on experience with kube-burner, providing practical understanding of cluster behavior and control plane resilience
+This tutorial introduces https://github.com/kube-burner/kube-burner[kube-burner], a CNCF project with advanced performance and scale testing toolset designed to generate realistic k8s workloads and stress patterns. You will learn how kube-burner can be used to validate cluster scalability, uncover regressions, measure key performance indicators (KPIs), and provide actionable insights for both infrastructure and platform teams.
 
-To get started, create a dedicated namespace and service account for kube-burner using the provided shell commands. If running tests with `hostNetwork` enabled, additional permissions are required for the netperf service account. Run your first test with `./bin/k8s-netperf --all`, which performs comprehensive network performance assessments including TCP, UDP, and request/response tests. Customize tests further using available command-line options like `--across` to schedule pods across availability zones or `--json` for JSON output of test results.
+== What You'll Learn
+By the end of this tutorial, you will be able to:
+
+* Understand the role of control plane and scalability testing in Kubernetes and OpenShift.
+* Set up and configure kube-burner for large-scale workload generation.
+* Execute benchmark and custom workload scenarios to simulate real-world cluster behavior.
+* Measure and analyze some key performance metrics such as:
+** API server latency and throughput
+** Etcd performance
+** Runtime measurements like pod readiness latency
+** Control plane resource utilization
+*  Ways to collect and visualize kube-burner metrics.
+* Integrate kube-burner into CI/CD pipelines for Continuous Performance Testing (CPT).
+* Interpret results to drive capacity planning, tuning, and product readiness decisions.
+
+== Conclusion
+Scalability and control plane performance are foundational to the reliability of any Kubernetes-based platform. kube-burner enables teams to move from reactive performance testing to a proactive, automated, and data-driven testing strategy. By combining large-scale workload generation, metrics collection, and deep observability, kube-burner helps ensure that your platform remains performant as features, releases, and customer usage evolve.
+
+Adopting kube-burner as part of your continuous testing strategy strengthens product quality, reduces production risk, and accelerates confident release cycles.
+
+== Next Steps
+To continue your learning journey: 
+
+* Start with the kube-burner installation and setup guide.
+* Learn to configure and simulate a churn job.
+* Explore custom workload profiles tailored to your environment.
+* Connect test results to monitoring dashboards (Prometheus, Grafana, Elasticsearch, etc.) for deeper analysis.
+* Try kube-burner hands on in the lab environment.
 
 == See Also
 
-* link:https://kube-burner.github.io/kube-burner/latest/[Kubeburner documentation,window=_blank]
+* https://developers.redhat.com/articles/2024/03/04/test-kubernetes-performance-and-scale-kube-burner[kube-burner Blog Post]
+* https://dl.acm.org/doi/10.1145/3629527.3651405[kube-burner ICPE Publication]
+* https://github.com/kube-burner/kube-burner[kube-burner GitHub Repository]
+* https://kube-burner.github.io/kube-burner/latest/[kube-burner Official Documentation]
+* https://www.youtube.com/watch?v=gaKnW5o_FIk[Performance & Scale testing with kube-burner]
+* https://medium.com/@jay.gokani/observability-with-prometheus-and-grafana-c865b68617b2[Prometheus & Grafana for Performance Observability]
+* https://developers.redhat.com/articles/2025/10/15/how-red-hat-has-redefined-continuous-performance-testing#what_s_next[Continuous Performance Testing (CPT) in CI/CD]
