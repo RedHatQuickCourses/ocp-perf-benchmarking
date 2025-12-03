@@ -1,6 +1,6 @@
-= Hands-On Lab: Exploring the OpenShift Monitoring Stack
+= Hands-on lab: Exploring the OpenShift monitoring stack
 
-== Check Cluster Operator Health
+== Check cluster operators health
 
 [source,bash]
 ----
@@ -13,7 +13,9 @@ Identify any degraded or progressing operators:
 oc get co -o jsonpath='{range .items[*]}{.metadata.name}: {.status.conditions[?(@.type=="Degraded")].status}{"\n"}{end}'
 ----
 
-== Use oc adm Top to Inspect Resource Usage
+== Use oc adm top to inspect resource usage
+
+Display node resource consumption:
 
 [source,bash]
 ----
@@ -27,6 +29,7 @@ control-plane-cluster-vjm62-3   1455m        9%          5783Mi          18%
 worker-cluster-vjm62-1          2096m        13%         8249Mi          26%
 ----
 
+Display main pod offenders across all namespaces:
 [source,bash]
 ----
 oc adm top pods -A | head
@@ -44,7 +47,7 @@ openshift-authentication-operator                  authentication-operator-576f9
 openshift-catalogd                                 catalogd-controller-manager-5fd54d45c8-qdlpb                   2m           107Mi
 ----
 
-== Collect a Must-Gather Bundle
+== Collect a Must-Gather bundle
 
 This bundle contains operator logs, metrics service status and overall cluster diagnostics:
 [source,bash]
@@ -83,19 +86,19 @@ Useful PromQL Queries You Should Know:
 |===
 | Description | PromQL Query
 
-| Node CPU Usage
+| Node CPU usage
 | `instance:node_cpu:rate:sum`
 
-| API Server Request Latency
+| API server request latency
 | `apiserver_request_duration_seconds_bucket{verb="GET",scope="resource"}`
 
-| etcd Operation Latency
+| etcd operation latency
 | `etcd_request_duration_seconds_bucket`
 
-| Pod Restart Count
+| Pod restart count
 | `kube_pod_container_status_restarts_total`
 
-| Network Receive Throughput (per node)
+| Network receive throughput (per node)
 | `node_network_receive_bytes_total`
 |===
 

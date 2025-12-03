@@ -1,8 +1,8 @@
-= Monitoring OpenShift Performance with the Built-in Stack
+= Monitoring OpenShift performance with the built-in stack
 
 == Overview
 
-OpenShift provides a fully integrated, opinionated monitoring stack that gives operators deep visibility into cluster health, performance, and resource usage without requiring external tools. This chapter introduces the core components—Prometheus, Alertmanager, Cluster Monitoring Operator, cluster operator health reporting, and administrative utilities such as oc adm—and explains how they work together to deliver real-time observability. You’ll see how OpenShift continuously gathers metrics, evaluates alerts, and exposes system-level insights that help maintain stability, diagnose issues, and ensure that workloads run efficiently.
+OpenShift provides a fully integrated, opinionated monitoring stack that gives operators deep visibility into cluster health, performance, and resource usage without requiring external tools. This chapter introduces the core components—Prometheus, Alertmanager, Cluster Monitoring Operator, cluster operator health reporting, and administrative utilities such as oc adm—and explains how they work together to deliver real-time observability. You'll see how OpenShift continuously gathers metrics, evaluates alerts, and exposes system-level insights that help maintain stability, diagnose issues, and ensure that workloads run efficiently.
 
 == What You'll Learn
 
@@ -10,7 +10,7 @@ OpenShift provides a fully integrated, opinionated monitoring stack that gives o
  * The purpose of native alerts and how Alertmanager uses alerting rules to detect abnormal conditions.
  * How cluster operators signal the overall health of OpenShift subsystems using the Available, Progressing, and Degraded conditions
  * Practical use of `oc adm` commands for inspecting resource usage, gathering diagnostics, and performing cluster-level investigations
- * How OpenShift’s built-in dashboards and metrics endpoints provide actionable visibility into performance trends
+ * How OpenShift's built-in dashboards and metrics endpoints provide actionable visibility into performance trends
  * How workload-level monitoring (User Workload Monitoring) extend observability across the platform
 
 == Introduction
