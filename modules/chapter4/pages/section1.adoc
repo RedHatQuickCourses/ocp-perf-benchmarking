@@ -1,63 +1,74 @@
-= Understanding OVN-Kubernetes
+= Configuring kube-burner jobs to simulate cluster churn
 
-In OpenShift, **OVN-Kubernetes (OVN-K)** provides the networking fabric that connects pods across nodes. Consider **Pod A** on Node 1 communicating with **Pod B** on Node 2. The major components involved are explained below, using **ovnkube-controller as the CMS equivalent**.
+== Understanding and setting up cluster churn simulation with kube-burner
 
-== OVN components
+Kube-burner, a Golang-based tool, is designed to stress Kubernetes clusters by creating, deleting, and patching resources at a specified rate. This feature makes it an ideal instrument for simulating cluster churn – the process of adding or removing significant numbers of pods, services, or other objects in a short period, which can impact the control plane's responsiveness.
 
+To configure kube-burner jobs for simulating cluster churn, you need to define specific settings within its configuration file or via command line flags. This section will guide you through these configurations step by step using practical examples.
 
-=== ovnkube-controller (CMS)
-- Runs on the **control plane node(s)**.
-- Acts as the **central authority** for cluster networking.
-- Responsibilities:
-  * Maintains the logical network representation for all pods and namespaces.
-  * Synchronizes network policies and logical switches/routers with the OVN Northbound Database (NBDB).
-- **Performance and scale:** In large clusters, it must process thousands of pod and network policy updates efficiently to prevent connectivity delays.
+### Configuration basics
 
+Start by understanding the global and job-specific settings in your kube-burner configuration file (`kube-burner.yaml` or provided as a flag when invoking `kube-burner init`). Here are some key parameters to consider:
 
-=== OVN northbound database (nbdb)
-- Stores **high-level logical network configuration**:
-  * Logical switches (pod networks)
-  * Logical routers (routing between networks)
-  * Access control policies (who can communicate with whom)
-- Receives updates from the **ovnkube-controller**.
-- **Clients:** `ovnkube-controller` (above) and `ovn-northd` (below).
-- **Scale note:** As cluster size increases, NBDB grows; ovn-northd ensures updates are efficiently propagated to SBDB.
+#### Global settings
 
+- `writeToFile`: A boolean that determines if metrics should be written to files (default is `true`).
+- `metricsDirectory`: The directory where collected metrics will be stored (default is `collected-metrics`).
 
-=== ovn-northd
-- Translates the **logical network configuration** from NBDB into **node-level flows** stored in the Southbound Database (SBDB).
-- Calculates routes and encodings for pods across nodes.
-- Ensures traffic is **policy-compliant** and optimized for latency and throughput.
+#### Job-specific settings
 
-=== OVN southbound database (SBDB)
-- Stores **low-level instructions** for each node to implement the logical network.
-- Contains:
-  * **Physical Network (PN) tables:** How to reach each node.
-  * **Logical Network (LN) tables:** Pod-to-pod connectivity rules.
-  * **Binding tables:** Maps logical network elements to physical nodes.
-- **Clients:** ovn-northd above, ovn-controller on each node below.
-- **Performance:** Must scale with node and pod count; large clusters may require SBDB optimization.
+- `name`: A unique identifier for the job.
+- `jobIterations`: The number of times this job should run.
+- `qps` (Queries Per Second): Controls the rate at which operations are performed (e.g., creating or deleting objects).
+- `burst`: Specifies the maximum burst above the qps rate.
+- `namespacedIterations`: A boolean to indicate if iterations should be namespace-specific.
+- `cleanup`: Determines whether resources created during a job iteration should be cleaned up afterward.
+- `namespace`: The target namespace for the job's operations.
+- `jobPause`: The duration between successive iterations of the job.
+- `objects`: An array specifying object templates and their configurations, including the number of replicas.
 
+### Configuring cluster churn simulation
 
-=== ovn-controller (per node)
-- Runs on every **worker node**.
-- Responsibilities:
-  * Reads SBDB to configure **Open vSwitch flows**.
-  * Updates PN and Binding tables with node and pod status.
-  * Handles **encapsulation/decapsulation** for pod-to-pod traffic (usually via Geneve tunnels).
-- **Scale/performance:** Each node handles all local pod traffic; efficient flow programming minimizes latency.
+To simulate cluster churn, we'll focus on creating and deleting objects (e.g., deployments) rapidly. Here's an example configuration:
 
+```yaml
+global:
+  writeToFile: true
+  metricsDirectory: collected-metrics
+jobs:
+  - name: cluster-churn-job
+    jobIterations: 5
+    qps: 20
+    burst: 40
+    namespacedIterations: true
+    cleanup: true
+    namespace: kube-burner-job-ns
+    jobPause: 1s
+    objects:
+      - objectTemplate: objectTemplates/deployment.yml
+        replicas: 1
+```
 
-=== ovs-vswitchd and ovsdb-server
-- **ovs-vswitchd:** Local software switch that forwards traffic according to flows programmed by ovn-controller.
-- **ovsdb-server:** Stores node-level Open vSwitch configuration.
-- Ensures Pod A → Pod B traffic is **encapsulated, routed, and delivered** correctly.
+In this setup:
 
+- We define a job named `cluster-churn-job`.
+- The job will run five iterations (`jobIterations`).
+- It aims to create or delete resources at a rate of 20 operations per second (`qps`) with occasional bursts up to 40 operations/second (`burst`).
+- Each iteration occurs in a different namespace (`namespacedIterations` is set to `true`), allowing for targeted churn testing.
+- Resources are cleaned up after each iteration (`cleanup: true`).
+- The job pauses for one second between iterations (`jobPause: 1s`) to avoid overwhelming the control plane and measure its responsiveness accurately.
+- A single deployment object with one replica is created per iteration (`objects`).
 
-== Summary of traffic flow
-(Data path) Pod 1 → ovs-vswitchd → Geneve encapsulation → ovs-vswitchd → Pod 2
+### Running the simulation
 
-(Control path) ovnkube-controller → NBDB → ovn-northd → SBDB → ovn-controller → ovs-vswitchd
+Execute kube-burner with your configuration file using the following command:
 
+```bash
+kube-burner init -f kube-burner.yaml
+```
 
-This architecture ensures **scalable, reliable, and high-performance pod-to-pod communication** in OpenShift clusters.
+Kube-burner will start simulating cluster churn according to your defined parameters, allowing you to observe and measure the control plane's responsiveness under load.
+
+### Conclusion
+
+By carefully configuring kube-burner jobs, you can simulate realistic cluster churn scenarios and assess how well your Kubernetes control plane performs under various stress conditions. Remember to adjust parameters like `qps`, `burst`, and object types as needed for targeted testing in diverse environments.

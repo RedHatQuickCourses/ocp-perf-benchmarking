@@ -1,1 +1,4 @@
-* xref:index.adoc[Final Review and Key Takeaways]
+* xref:index.adoc[Understanding Openshift Networking]
+** xref:section1.adoc[Understanding OVN-Kubernetes]
+** xref:section2.adoc[Network Performance Testing with k8s-netperf]
+** xref:section3.adoc[Ingress Controller Benchmarking and Analysis]
