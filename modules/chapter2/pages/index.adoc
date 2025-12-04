@@ -38,7 +38,7 @@ Additionally, OpenShift integrates *application-level monitoring* through the Us
 For *command-line-driven diagnostics*, OpenShift offers a rich set of administrative tools under `oc adm`. Administrators can inspect API server performance, audit resource usage, collect must-gather bundles for troubleshooting, and review cluster feature states. Commands such as `oc adm top nodes` and `oc adm top pods` provide quick insights into real-time resource consumption, helping identify hotspots or imbalance conditions.
 
 .Cluster Monitoring Architecture
-image::images/monitoring-architecture.png[width=700]
+image::monitoring-architecture.png[width=700]
 
 == Conclusion
 
