@@ -9,4 +9,5 @@ nav:
   - modules/ch3-bench/nav.adoc
   - modules/ch4-kubeburner/nav.adoc
   - modules/ch5-network/nav.adoc
-  - modules/ch6-final/nav.adoc
+  - modules/ch6-storage/nav.adoc
+  - modules/ch7-final/nav.adoc
