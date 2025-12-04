@@ -1,46 +1,26 @@
 = Storage benchmarking
 
-OpenShift networking is the foundation that enables communication **within a cluster** as well as **between the cluster and external systems**. Effective networking is critical for ensuring application performance, reliability, and security.
+== Overview
 
-Traffic in OpenShift is generally categorized into two types, north-south and east-west, which we will describe in the next sections.
+Storage performance is a critical pillar of any OpenShift deployment.
+Whether you are running stateful applications, databases, logging stacks, or AI/ML workloads, understanding how your storage backend behaves under load is essential for ensuring reliability, scalability, and predictable latency.
 
-== North-South traffic
+== What you’ll learn
 
- * **Definition:** Traffic that **enters or exits** the cluster, originating from clients, external services, or the internet.
- * **Example:** A user accesses a web application hosted in OpenShift via an external URL. The request passes through the OpenShift **ingress controller**, which routes it to the appropriate pod serving the application.
+This chapter provides a practical, hands-on introduction to benchmarking storage in OpenShift.
+You will learn how to evaluate the efficiency of different storage backends, measure throughput and latency, detect bottlenecks, and interpret performance metrics that matter for real-world workloads.
 
-North-South traffic represents the interaction between the cluster and the outside world, and it must be managed to ensure secure and efficient access. Includes ingress and egress scenarios.
-
-== East-West traffic
-
- * **Definition:** Traffic between pods **within the cluster** or between nodes.
- * **Example:** A backend service pod communicates with a database pod located on a different node. This traffic remains internal to the cluster network and is optimized for low-latency, high-throughput communication.
-
-East-West traffic is essential for internal application interactions, supporting the communication patterns of distributed and microservices-based architectures. Includes host-networked scenarios (node to node) along with virtual traffic scenarios (pod to pod, pod to service, etc.)
-
----
-
-OpenShift leverages a **software-defined network (SDN)** to manage these traffic flows. The SDN abstracts the underlying network, enabling seamless pod-to-pod communication, enforcing network policies, and providing reliable connectivity across nodes.
-
-In summary, OpenShift networking ensures that applications can communicate **efficiently and securely**, whether traffic is flowing **internally within the cluster** or **externally to clients**.
-
-OpenShift leverages https://ovn-kubernetes.io/[OVN-Kubernetes], a powerful Container Network Interface (CNI) plugin, to provide a scalable, SDN-based networking backend that delivers advanced routing, policy, and overlay capabilities across the cluster.
+We'll explore Kubernetes-native tools, industry-standard benchmarking suites, and OpenShift-integrated observability features to help you validate the storage performance of OpenShift clusters.
 
 == Next steps
 
-After completing this module, you'll be ready to:
+After completing this module, you will have a solid foundation for designing reliable and performance-aware storage deployments on OpenShift:
 
- * Benchmark the data plane using different cloud-native tooling:
-   ** k8s-netperf
-   ** ingress-perf
- * Differentiate between different network traffic patterns:
-   ** host-network traffic (node to node)
-   ** virtual traffic (pod to pod, pod to service)
-   ** ingress traffic
+ * Validate the performance characteristics of your Persistent Volumes (PVs).
+ * Compare multiple storage classes or providers on equal terms.
+ * Build repeatable, automated benchmarking workflows.
+ * Translate raw metrics into actionable insights for capacity planning and optimization.
 
 == See also
 
-* link:https://docs.openshift.com/container-platform/latest/virt/vm_networking/virt-about-vm-networking.html[OpenShift Virtualization Networking,window=_blank]
-* link:https://docs.openshift.com/container-platform/latest/networking/ovn_kubernetes_network_provider/about-ovn-kubernetes.html[About OVN-Kubernetes,window=_blank]
-* link:https://github.com/cloud-bulldozer/k8s-netperf/[k8s-netperf,window=_blank]
-* link:https://github.com/cloud-bulldozer/ingress-perf[ingress-perf,window=_blank]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/storage/index[Configuring and managing storage in OpenShift Container Platform ,window=_blank]
