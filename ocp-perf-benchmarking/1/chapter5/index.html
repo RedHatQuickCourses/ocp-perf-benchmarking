@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Final review and key takeaways :: OpenShift performance benchmarking guide</title>
+    <title>Understanding Openshift networking :: OpenShift performance benchmarking guide</title>
     <link rel="prev" href="../chapter4/section3.html">
-    <link rel="next" href="../chapter6/index.html">
+    <link rel="next" href="section1.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -94,16 +94,16 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter4/index.html">Understanding Openshift Networking</a>
+    <a class="nav-link" href="../chapter4/index.html">Control Plane and Scalability Testing with kube-burner</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter4/section1.html">Understanding OVN-Kubernetes</a>
+    <a class="nav-link" href="../chapter4/section1.html">Configuring kube-burner jobs to simulate cluster churn</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter4/section2.html">Network Performance Testing with k8s-netperf</a>
+    <a class="nav-link" href="../chapter4/section2.html">Measuring Control Plane Responsiveness</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter4/section3.html">Ingress Controller Benchmarking and Analysis</a>
+    <a class="nav-link" href="../chapter4/section3.html">Hands-on with kube-burner</a>
   </li>
 </ul>
   </li>
@@ -112,26 +112,26 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="index.html">Final Review and Key Takeaways</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Understanding Openshift Networking</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section1.html">Understanding OVN-Kubernetes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section2.html">Network Performance Testing with k8s-netperf</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section3.html">Ingress Controller Benchmarking and Analysis</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter6/index.html">Control Plane and Scalability Testing with kube-burner</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter6/section1.html">Configuring kube-burner jobs to simulate cluster churn</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter6/section2.html">Measuring Control Plane Responsiveness</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter6/section3.html">Hands-on with kube-burner</a>
-  </li>
-</ul>
+    <a class="nav-link" href="../chapter6/index.html">Final Review and Key Takeaways</a>
   </li>
 </ul>
   </li>
@@ -164,7 +164,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">OpenShift performance benchmarking guide</a></li>
-    <li><a href="index.html">Final Review and Key Takeaways</a></li>
+    <li><a href="index.html">Understanding Openshift Networking</a></li>
   </ul>
 </nav>
 </div>
@@ -173,70 +173,128 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Final review and key takeaways</h1>
+<h1 class="page">Understanding Openshift networking</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This course has taken you through the essential techniques and best practices for benchmarking the performance of an OpenShift cluster using Kubernetes-native tooling. By combining the platform&#8217;s built-in observability stack with powerful tools such as kube-burner, k8s-netperf, ingress-perf, etc. you&#8217;ve gained practical experience in evaluating cluster behavior under load, identifying bottlenecks, and building repeatable testing workflows.</p>
+<p>OpenShift networking is the foundation that enables communication <strong>within a cluster</strong> as well as <strong>between the cluster and external systems</strong>. Effective networking is critical for ensuring application performance, reliability, and security.</p>
 </div>
 <div class="paragraph">
-<p>Throughout the hands-on labs, you learned how to:</p>
+<p>Traffic in OpenShift is generally categorized into two types, north-south and east-west, which we will describe in the next sections.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_north_south_traffic"><a class="anchor" href="#_north_south_traffic"></a>North-South traffic</h2>
+<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Define performance objectives</strong> that align with real operational needs.</p>
+<p><strong>Definition:</strong> Traffic that <strong>enters or exits</strong> the cluster, originating from clients, external services, or the internet.</p>
 </li>
 <li>
-<p><strong>Establish reliable baselines</strong> to detect performance regressions over time.</p>
-</li>
-<li>
-<p><strong>Stress-test the control plane</strong> to understand API server behavior, scheduling pressure and cluster stability under load.</p>
-</li>
-<li>
-<p><strong>Benchmark the data plane</strong>, including network throughput, latency and corresponding resource consumption.</p>
-</li>
-<li>
-<p><strong>Interpret and visualize results</strong> using Prometheus, Grafana, and other native observability tools.</p>
-</li>
-<li>
-<p><strong>Apply structured analysis</strong> to derive clear, actionable insights from your benchmarking runs.</p>
+<p><strong>Example:</strong> A user accesses a web application hosted in OpenShift via an external URL. The request passes through the OpenShift <strong>ingress controller</strong>, which routes it to the appropriate pod serving the application.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Although storage, application benchmarks, and chaos engineering were out of scope, you now possess a strong foundation to continue exploring more advanced performance domains.</p>
+<p>North-South traffic represents the interaction between the cluster and the outside world, and it must be managed to ensure secure and efficient access. Includes ingress and egress scenarios.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_key_takeaways"><a class="anchor" href="#_key_takeaways"></a>Key Takeaways</h3>
+<div class="sect1">
+<h2 id="_east_west_traffic"><a class="anchor" href="#_east_west_traffic"></a>East-West traffic</h2>
+<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Performance benchmarking is proactive, not reactive</strong> — establishing baselines and running routine tests helps detect issues before they become outages.</p>
+<p><strong>Definition:</strong> Traffic between pods <strong>within the cluster</strong> or between nodes.</p>
 </li>
 <li>
-<p><strong>Kubernetes-native tools are powerful and lightweight</strong>, allowing you to test using the same APIs and workflows the platform itself relies on.</p>
-</li>
-<li>
-<p><strong>Observability is inseparable from performance</strong> — meaningful benchmarking requires metrics, logs and structured dashboards.</p>
-</li>
-<li>
-<p><strong>Repeatability is essential</strong> — consistent methodologies and parameterized test runs ensure your data is trustworthy and comparable over time.</p>
-</li>
-<li>
-<p><strong>Every cluster is different</strong> — performance tuning is an iterative, environment-specific process driven by real data, not guesswork.</p>
+<p><strong>Example:</strong> A backend service pod communicates with a database pod located on a different node. This traffic remains internal to the cluster network and is optimized for low-latency, high-throughput communication.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>With these skills, you are now better equipped to ensure your OpenShift environments remain stable, resilient, and efficient—even under demanding workloads.</p>
+<p>East-West traffic is essential for internal application interactions, supporting the communication patterns of distributed and microservices-based architectures. Includes host-networked scenarios (node to node) along with virtual traffic scenarios (pod to pod, pod to service, etc.)</p>
+</div>
+<hr>
+<div class="paragraph">
+<p>OpenShift leverages a <strong>software-defined network (SDN)</strong> to manage these traffic flows. The SDN abstracts the underlying network, enabling seamless pod-to-pod communication, enforcing network policies, and providing reliable connectivity across nodes.</p>
+</div>
+<div class="paragraph">
+<p>In summary, OpenShift networking ensures that applications can communicate <strong>efficiently and securely</strong>, whether traffic is flowing <strong>internally within the cluster</strong> or <strong>externally to clients</strong>.</p>
+</div>
+<div class="paragraph">
+<p>OpenShift leverages <a href="https://ovn-kubernetes.io/">OVN-Kubernetes</a>, a powerful Container Network Interface (CNI) plugin, to provide a scalable, SDN-based networking backend that delivers advanced routing, policy, and overlay capabilities across the cluster.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After completing this module, you&#8217;ll be ready to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Benchmark the data plane using different cloud-native tooling:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>k8s-netperf</p>
+</li>
+<li>
+<p>ingress-perf</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Differentiate between different network traffic patterns:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>host-network traffic (node to node)</p>
+</li>
+<li>
+<p>virtual traffic (pod to pod, pod to service)</p>
+</li>
+<li>
+<p>ingress traffic</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_see_also"><a class="anchor" href="#_see_also"></a>See also</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.openshift.com/container-platform/latest/virt/vm_networking/virt-about-vm-networking.html" target="_blank" rel="noopener">OpenShift Virtualization Networking</a></p>
+</li>
+<li>
+<p><a href="https://docs.openshift.com/container-platform/latest/networking/ovn_kubernetes_network_provider/about-ovn-kubernetes.html" target="_blank" rel="noopener">About OVN-Kubernetes</a></p>
+</li>
+<li>
+<p><a href="https://github.com/cloud-bulldozer/k8s-netperf/" target="_blank" rel="noopener">k8s-netperf</a></p>
+</li>
+<li>
+<p><a href="https://github.com/cloud-bulldozer/ingress-perf" target="_blank" rel="noopener">ingress-perf</a></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="../chapter4/section3.html">Ingress Controller Benchmarking and Analysis</a></span>
-  <span class="next"><a href="../chapter6/index.html">Control Plane and Scalability Testing with kube-burner</a></span>
+  <span class="prev"><a href="../chapter4/section3.html">Hands-on with kube-burner</a></span>
+  <span class="next"><a href="section1.html">Understanding OVN-Kubernetes</a></span>
 </nav>
 </article>
   </div>
