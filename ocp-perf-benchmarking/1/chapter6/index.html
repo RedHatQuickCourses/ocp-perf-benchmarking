@@ -173,18 +173,65 @@
 </aside>
 <article class="doc">
 <h1 class="page">Final review and key takeaways</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>In this section, we cover&#8230;&#8203; FIXME</p>
+<p>This course has taken you through the essential techniques and best practices for benchmarking the performance of an OpenShift cluster using Kubernetes-native tooling. By combining the platform&#8217;s built-in observability stack with powerful tools such as kube-burner, k8s-netperf, ingress-perf, etc. you&#8217;ve gained practical experience in evaluating cluster behavior under load, identifying bottlenecks, and building repeatable testing workflows.</p>
+</div>
+<div class="paragraph">
+<p>Throughout the hands-on labs, you learned how to:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Add or remove section entries in the <code>antora.yaml</code> file as needed.</p>
+<p><strong>Define performance objectives</strong> that align with real operational needs.</p>
 </li>
 <li>
-<p>Ensure you create or delete the corresponding directory for the chapter accordingly.</p>
+<p><strong>Establish reliable baselines</strong> to detect performance regressions over time.</p>
+</li>
+<li>
+<p><strong>Stress-test the control plane</strong> to understand API server behavior, scheduling pressure and cluster stability under load.</p>
+</li>
+<li>
+<p><strong>Benchmark the data plane</strong>, including network throughput, latency and corresponding resource consumption.</p>
+</li>
+<li>
+<p><strong>Interpret and visualize results</strong> using Prometheus, Grafana, and other native observability tools.</p>
+</li>
+<li>
+<p><strong>Apply structured analysis</strong> to derive clear, actionable insights from your benchmarking runs.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>Although storage, application benchmarks, and chaos engineering were out of scope, you now possess a strong foundation to continue exploring more advanced performance domains.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_key_takeaways"><a class="anchor" href="#_key_takeaways"></a>Key Takeaways</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Performance benchmarking is proactive, not reactive</strong> — establishing baselines and running routine tests helps detect issues before they become outages.</p>
+</li>
+<li>
+<p><strong>Kubernetes-native tools are powerful and lightweight</strong>, allowing you to test using the same APIs and workflows the platform itself relies on.</p>
+</li>
+<li>
+<p><strong>Observability is inseparable from performance</strong> — meaningful benchmarking requires metrics, logs and structured dashboards.</p>
+</li>
+<li>
+<p><strong>Repeatability is essential</strong> — consistent methodologies and parameterized test runs ensure your data is trustworthy and comparable over time.</p>
+</li>
+<li>
+<p><strong>Every cluster is different</strong> — performance tuning is an iterative, environment-specific process driven by real data, not guesswork.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>With these skills, you are now better equipped to ensure your OpenShift environments remain stable, resilient, and efficient—even under demanding workloads.</p>
+</div>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="../chapter5/section3.html">Hands-on with kube-burner</a></span>
