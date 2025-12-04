@@ -287,8 +287,11 @@ Churn is supported only for create jobs and only for namespace-based jobs.
 </li>
 </ul>
 </div>
-<div class="sect2">
-<h3 id="_basic_churn_configuration_example"><a class="anchor" href="#_basic_churn_configuration_example"></a>Basic churn configuration example</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_basic_churn_configuration_example"><a class="anchor" href="#_basic_churn_configuration_example"></a>Basic churn configuration example</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The following example:</p>
 </div>
@@ -368,8 +371,10 @@ Churn is supported only for create jobs and only for namespace-based jobs.
 </ol>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_churn_termination_conditions"><a class="anchor" href="#_churn_termination_conditions"></a>Churn termination conditions</h3>
+</div>
+<div class="sect1">
+<h2 id="_termination_conditions"><a class="anchor" href="#_termination_conditions"></a>Termination conditions</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Churn stops when either condition is met first:</p>
 </div>
@@ -383,8 +388,8 @@ Churn is supported only for create jobs and only for namespace-based jobs.
 </li>
 </ul>
 </div>
-<div class="sect3">
-<h4 id="_cycle_based_churn"><a class="anchor" href="#_cycle_based_churn"></a>Cycle-based churn</h4>
+<div class="sect2">
+<h3 id="_cycle_based_churn"><a class="anchor" href="#_cycle_based_churn"></a>Cycle-based churn</h3>
 <div class="paragraph">
 <p>The following configuration churn runs exactly 10 iterations, regardless of time:</p>
 </div>
@@ -396,8 +401,8 @@ Churn is supported only for create jobs and only for namespace-based jobs.
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_duration_based_churn"><a class="anchor" href="#_duration_based_churn"></a>Duration-based churn</h4>
+<div class="sect2">
+<h3 id="_duration_based_churn"><a class="anchor" href="#_duration_based_churn"></a>Duration-based churn</h3>
 <div class="paragraph">
 <p>Churn runs only by time, ignoring cycles:</p>
 </div>
@@ -411,8 +416,10 @@ Churn is supported only for create jobs and only for namespace-based jobs.
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_churn_delay_between_cycles"><a class="anchor" href="#_churn_delay_between_cycles"></a>Churn delay between cycles</h3>
+</div>
+<div class="sect1">
+<h2 id="_delay_between_cycles"><a class="anchor" href="#_delay_between_cycles"></a>Delay between cycles</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>You can pause between churn operations using <code>delay</code>:</p>
 </div>
@@ -428,13 +435,15 @@ Churn is supported only for create jobs and only for namespace-based jobs.
 <p>Each churn wave waits 2 minutes before starting the next delete/recreate cycle.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_namespace_vs_object_modes"><a class="anchor" href="#_namespace_vs_object_modes"></a>Namespace vs Object modes</h3>
+</div>
+<div class="sect1">
+<h2 id="_namespace_vs_object_modes"><a class="anchor" href="#_namespace_vs_object_modes"></a>Namespace vs Object modes</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>By default, kube-burner churns entire namespaces. You can switch to object-level churning with <code>mode: objects</code>.</p>
 </div>
-<div class="sect3">
-<h4 id="_namespace_churn_default"><a class="anchor" href="#_namespace_churn_default"></a>Namespace churn (default)</h4>
+<div class="sect2">
+<h3 id="_namespace_churn_default"><a class="anchor" href="#_namespace_churn_default"></a>Namespace churn (default)</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">churnConfig:
@@ -453,8 +462,8 @@ Churn is supported only for create jobs and only for namespace-based jobs.
 </ul>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_object_level_churn"><a class="anchor" href="#_object_level_churn"></a>Object-level churn</h4>
+<div class="sect2">
+<h3 id="_object_level_churn"><a class="anchor" href="#_object_level_churn"></a>Object-level churn</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">churnConfig:
@@ -477,8 +486,10 @@ Churn is supported only for create jobs and only for namespace-based jobs.
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_excluding_specific_objects"><a class="anchor" href="#_excluding_specific_objects"></a>Excluding specific objects</h3>
+</div>
+<div class="sect1">
+<h2 id="_excluding_specific_objects"><a class="anchor" href="#_excluding_specific_objects"></a>Excluding specific objects</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Some objects should never be deleted, such as:</p>
 </div>
@@ -516,8 +527,10 @@ Churn is supported only for create jobs and only for namespace-based jobs.
 <p>The Deployment will never be deleted during churn, but Services will.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_advanced_example"><a class="anchor" href="#_advanced_example"></a>Advanced example</h3>
+</div>
+<div class="sect1">
+<h2 id="_advanced_example"><a class="anchor" href="#_advanced_example"></a>Advanced example</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The following configuration:</p>
 </div>
@@ -570,8 +583,10 @@ Churn is supported only for create jobs and only for namespace-based jobs.
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_key_rules_and_constraints"><a class="anchor" href="#_key_rules_and_constraints"></a>Key rules and constraints</h3>
+</div>
+<div class="sect1">
+<h2 id="_key_rules_and_constraints"><a class="anchor" href="#_key_rules_and_constraints"></a>Key rules and constraints</h2>
+<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
@@ -605,8 +620,10 @@ Churn is supported only for create jobs and only for namespace-based jobs.
 </ul>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_summary"><a class="anchor" href="#_summary"></a>Summary</h3>
+</div>
+<div class="sect1">
+<h2 id="_summary"><a class="anchor" href="#_summary"></a>Summary</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>kube-burner&#8217;s churning feature allows you to:</p>
 </div>
@@ -631,7 +648,6 @@ Churn is supported only for create jobs and only for namespace-based jobs.
 </div>
 <div class="paragraph">
 <p>It is a first-class primitive for realistic k8s performance testing and should be part of any serious scale or soak test strategy.</p>
-</div>
 </div>
 </div>
 </div>
