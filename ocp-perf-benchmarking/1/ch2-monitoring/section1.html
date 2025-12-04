@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Hands-on lab: Exploring the OpenShift monitoring stack :: OpenShift performance benchmarking guide</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">OpenShift performance benchmarking guide</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/ocp-perf-benchmarking/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ocp-perf-benchmarking" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">OpenShift performance benchmarking guide</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment Setup</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">OpenShift performance benchmarking guide</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">OpenShift performance benchmarking guide</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">OpenShift performance benchmarking guide</a></li>
+    <li><a href="section1.html">Hands-on lab: Exploring the OpenShift monitoring stack</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Hands-on lab: Exploring the OpenShift monitoring stack</h1>
+<div class="sect1">
+<h2 id="_check_cluster_operators_health"><a class="anchor" href="#_check_cluster_operators_health"></a>Check cluster operators health</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get clusteroperators</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Identify any degraded or progressing operators:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get co -o jsonpath='{range .items[*]}{.metadata.name}: {.status.conditions[?(@.type=="Degraded")].status}{"\n"}{end}'</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_use_oc_adm_top_to_inspect_resource_usage"><a class="anchor" href="#_use_oc_adm_top_to_inspect_resource_usage"></a>Use oc adm top to inspect resource usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Display node resource consumption:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc adm top nodes</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NAME                            CPU(cores)   CPU%        MEMORY(bytes)   MEMORY%
+control-plane-cluster-vjm62-1   1190m        7%          11489Mi         37%
+control-plane-cluster-vjm62-2   1134m        7%          9270Mi          29%
+control-plane-cluster-vjm62-3   1455m        9%          5783Mi          18%
+worker-cluster-vjm62-1          2096m        13%         8249Mi          26%
+worker-cluster-vjm62-2          2734m        15%         8438Mi          29%</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Display main pod offenders across all namespaces:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc adm top pods -A | head</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NAMESPACE                                          NAME                                                           CPU(cores)   MEMORY(bytes)
+openshift-apiserver                                apiserver-6df4569b8c-mts6l                                     21m          485Mi
+openshift-apiserver                                apiserver-6df4569b8c-w858d                                     41m          471Mi
+openshift-apiserver                                apiserver-6df4569b8c-x7ftk                                     15m          498Mi
+openshift-apiserver-operator                       openshift-apiserver-operator-b9ff4697-vwsm2                    21m          227Mi
+openshift-authentication                           oauth-openshift-55479d787c-4zrx4                               4m           99Mi
+openshift-authentication                           oauth-openshift-55479d787c-l562w                               3m           104Mi
+openshift-authentication                           oauth-openshift-55479d787c-lvjcs                               6m           100Mi
+openshift-authentication-operator                  authentication-operator-576f97686b-9hpfb                       98m          211Mi
+openshift-catalogd                                 catalogd-controller-manager-5fd54d45c8-qdlpb                   2m           107Mi</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_collect_a_must_gather_bundle"><a class="anchor" href="#_collect_a_must_gather_bundle"></a>Collect a Must-Gather bundle</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This bundle contains operator logs, metrics service status and overall cluster diagnostics:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc adm must-gather</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prometheus"><a class="anchor" href="#_prometheus"></a>Prometheus</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Access the OpenShift Console and navigate to <strong>Observe</strong>.</p>
+</div>
+<div class="sect2">
+<h3 id="_dashboards"><a class="anchor" href="#_dashboards"></a>Dashboards</h3>
+<div class="paragraph">
+<p>Navigate to <strong>Observe</strong> &#8594; <strong>Dashboards</strong> for some great default dashboards, including the <strong>API Performance</strong> one showcasing API request durations, rates, long running requests, registered watchers, etc.:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/prom-dashboard.png" alt="prom dashboard" width="700">
+</div>
+<div class="title">Figure 1. Built-in API Performance dashboard</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_inspect_prometheus_targets"><a class="anchor" href="#_inspect_prometheus_targets"></a>Inspect Prometheus Targets</h3>
+<div class="paragraph">
+<p>To verify which components are being scraped, navigate to <strong>Observe</strong> &#8594; <strong>Targets</strong>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/prom-targets.png" alt="prom targets" width="700">
+</div>
+<div class="title">Figure 2. Prometheus Targets</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_query_cluster_metrics_using_promql"><a class="anchor" href="#_query_cluster_metrics_using_promql"></a>Query Cluster Metrics Using PromQL</h3>
+<div class="paragraph">
+<p>Navigate to <strong>Observe</strong> &#8594; <strong>Metrics</strong>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/prom-query.png" alt="prom query" width="700">
+</div>
+<div class="title">Figure 3. Custom queries with PromQL</div>
+</div>
+<div class="paragraph">
+<p>Useful PromQL queries you may try:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">PromQL Query</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Node CPU usage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>instance:node_cpu:rate:sum</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API server request latency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiserver_request_duration_seconds_bucket{verb="GET",scope="resource"}</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">etcd operation latency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>etcd_request_duration_seconds_bucket</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pod restart count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>kube_pod_container_status_restarts_total</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Network receive throughput (per node)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>node_network_receive_bytes_total</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

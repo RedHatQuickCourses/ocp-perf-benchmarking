@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Measuring control plane responsiveness :: OpenShift performance benchmarking guide</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">OpenShift performance benchmarking guide</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/ocp-perf-benchmarking/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ocp-perf-benchmarking" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">OpenShift performance benchmarking guide</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment Setup</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">OpenShift performance benchmarking guide</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">OpenShift performance benchmarking guide</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">OpenShift performance benchmarking guide</a></li>
+    <li><a href="section2.html">Measuring control plane responsiveness</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Measuring control plane responsiveness</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Measuring control plane responsiveness is crucial for ensuring a Kubernetes (k8s) cluster&#8217;s stability and performance under varying loads, particularly when simulating churn scenarios with tools like kube-burner. The control plane components, including the API server, etcd, and controller manager, must be responsive to maintain optimal cluster operations.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_understanding_control_plane_metrics"><a class="anchor" href="#_understanding_control_plane_metrics"></a>Understanding control plane metrics</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before diving into measuring control plane responsiveness, it&#8217;s essential to understand relevant metrics:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>API server latency</strong>: Measures how quickly the API server responds to client requests in milliseconds (ms). High latency may indicate performance issues or overloaded resources.</p>
+</li>
+<li>
+<p><strong>etcd performance</strong>: etcd is responsible for k8s cluster state persistence. Key metrics include read/write operation success rates, latency, and resource usage like CPU and memory.</p>
+</li>
+<li>
+<p><strong>Controller Manager responsiveness</strong>: This metric assesses how efficiently controllers process the cluster&#8217;s desired state, replicating it in reality. Delays here might lead to pod scheduling failures or other control loop issues.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_utilizing_kube_burner_for_control_plane_testing"><a class="anchor" href="#_utilizing_kube_burner_for_control_plane_testing"></a>Utilizing kube-burner for Control Plane Testing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>kube-burner is a powerful tool designed to simulate various churn scenarios within a k8s cluster, providing valuable insights into its behavior under stress and helping to validate its resilience. Here’s how to configure kube-burner jobs for measuring control plane responsiveness:</p>
+</div>
+<div class="sect2">
+<h3 id="_enable_pod_latency_measurements"><a class="anchor" href="#_enable_pod_latency_measurements"></a>Enable pod latency measurements</h3>
+<div class="paragraph">
+<p>Kube-burner collects pod latency metrics across different phases of pod startup, crucial for evaluating the API server&#8217;s performance. To enable this feature:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">global:
+  measurements:
+    - name: podLatency
+    - name: serviceLatency</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configure_kube_burner_jobs"><a class="anchor" href="#_configure_kube_burner_jobs"></a>Configure kube-burner jobs</h3>
+<div class="paragraph">
+<p>Next, set up specific jobs tailored for control plane responsiveness testing:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">jobs:
+- name: controlplane_stress
+  # Specify the type of churn you want to simulate, e.g., pod creations/deletions
+  type: pod_create_delete
+  duration: 60m
+  args:
+    - --namespace=kube-burner
+    - --count=50</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This job simulates creating and deleting 50 pods within the <code>kube-burner</code> namespace over a 60-minute period, stressing control plane components like the API server and etcd.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_analyze_results"><a class="anchor" href="#_analyze_results"></a>Analyze results</h3>
+<div class="paragraph">
+<p>After running the job with <code>kubeburner run controlplane_stress</code>, kube-burner will generate detailed metrics and logs. Focus on pod latency measurements from the <code>global.measurements.podLatency</code> output, which reflects API server responsiveness under stress:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell"># Example of examining pod latency using jq (requires jq to be installed)
+kubectl exec -n kube-burner &lt;kube-burner-pod&gt; -- cat /var/lib/kube-burner/results.json | jq '.results[].measurements[] | select(.name == "podLatency") | .values'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_troubleshooting"><a class="anchor" href="#_troubleshooting"></a>Troubleshooting</h3>
+<div class="paragraph">
+<p>Should control plane latency exceed acceptable thresholds, investigate potential causes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Resource Constraints</strong>: Check if the control plane nodes are adequately provisioned (CPU, memory).</p>
+</li>
+<li>
+<p><strong>etcd Performance</strong>: Inspect etcd metrics for bottlenecks or high load conditions.</p>
+</li>
+<li>
+<p><strong>Network Latency</strong>: Ensure network communication between control plane components is not introducing delays.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion"><a class="anchor" href="#_conclusion"></a>Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Measuring control plane responsiveness with kube-burner provides invaluable insights into a k8s cluster&#8217;s performance and resilience under simulated churn scenarios. By carefully configuring jobs to focus on relevant metrics and thoroughly analyzing the results, you can identify and address performance bottlenecks, ensuring your cluster operates efficiently even under heavy loads.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

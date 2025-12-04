@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Kubernetes/OpenShift performance landscape :: OpenShift performance benchmarking guide</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">OpenShift performance benchmarking guide</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/ocp-perf-benchmarking/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ocp-perf-benchmarking" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">OpenShift performance benchmarking guide</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment Setup</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">OpenShift performance benchmarking guide</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">OpenShift performance benchmarking guide</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">OpenShift performance benchmarking guide</a></li>
+    <li><a href="section1.html">Kubernetes/OpenShift performance landscape</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Kubernetes/OpenShift performance landscape</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In Kubernetes and OpenShift environments, performance benchmarking becomes especially important due to the dynamic and distributed nature of cloud-native systems. Unlike traditional monolithic deployments where the application and its dependencies are mostly static, containerized workloads scale, move, and redeploy frequently. Benchmarking helps validate that applications and platform components can maintain expected performance levels even as pods reschedule, nodes autoscale, and workloads fluctuate. This is essential in environments where microservices communicate over the network extensively and performance issues can propagate quickly across service boundaries.</p>
+</div>
+<div class="paragraph">
+<p>Cloud-native architectures introduce layers such as service meshes, ingress controllers, CNI plugins and distributed storage backends. Each of these components influences latency, throughput, and overall system responsiveness. Benchmarking allows engineers to isolate and quantify the performance characteristics of each layer. For example, comparing CNI implementations, measuring service mesh overhead, or evaluating ingress controller throughput provides actionable insights for tuning cluster performance. In highly abstracted environments like OpenShift, benchmarking is also key to understanding how platform-level features such as Operators, security layers, or network policies impact application behavior.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_autoscaling"><a class="anchor" href="#_autoscaling"></a>Autoscaling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Benchmarking in these environments also helps validate <strong>autoscaling strategies</strong>. Horizontal Pod Autoscalers (HPA), Vertical Pod Autoscalers (VPA) and Cluster Autoscalers operate based on resource usage metrics. By simulating realistic workloads, engineers can verify how quickly and accurately the autoscaling policies react under stress. Poorly tuned scaling configurations can either overreact—causing cost inefficiency—or underreact, resulting in service degradation. Performance benchmarks expose these issues early and guide optimization.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_multi_tenancy"><a class="anchor" href="#_multi_tenancy"></a>Multi-tenancy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Finally, Kubernetes and OpenShift place strong emphasis on <strong>multi-tenancy and shared resources</strong>. Benchmarking allows organizations to understand how workloads from different teams interact, compete for resources, or impact one another. By measuring performance under contention, teams can enforce better resource quotas, limits, and scheduling decisions. In regulated or high-reliability environments, these benchmarks form part of the validation needed to ensure that the cluster behaves predictably even under heavy, mixed, or adversarial loads.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_shift_left"><a class="anchor" href="#_shift_left"></a>Shift-left</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <strong>shift-left approach</strong> in DevOps further increases the relevance of benchmarking. By integrating performance tests earlier in the development lifecycle, teams can identify bottlenecks long before an application reaches production. Kubernetes makes this process more accessible through ephemeral test environments and GitOps workflows where automated pipelines can deploy full stacks, run synthetic traffic tests, and collect metrics. This reduces late-stage surprises and ensures that performance becomes a core quality attribute rather than an afterthought.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

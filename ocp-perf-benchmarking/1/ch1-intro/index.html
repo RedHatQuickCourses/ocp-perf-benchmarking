@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Introduction to Performance Benchmarking :: OpenShift performance benchmarking guide</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">OpenShift performance benchmarking guide</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/ocp-perf-benchmarking/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ocp-perf-benchmarking" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">OpenShift performance benchmarking guide</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment Setup</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">OpenShift performance benchmarking guide</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">OpenShift performance benchmarking guide</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">OpenShift performance benchmarking guide</a></li>
+    <li><a href="index.html">Introduction to Performance Benchmarking</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Introduction to Performance Benchmarking</h1>
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This module introduces the fundamentals of performance engineering within computer networks, focusing on how benchmarking provides measurable, repeatable insights into system behavior under load. It explains why modern infrastructures—spanning physical, virtualized, and cloud-native components—require systematic performance evaluation to validate design choices, uncover bottlenecks, and ensure reliability at scale.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_youll_learn"><a class="anchor" href="#_what_youll_learn"></a>What you&#8217;ll learn</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section, you will learn:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The role of performance benchmarking in evaluating network throughput, latency, jitter, and scalability</p>
+</li>
+<li>
+<p>How realistic traffic patterns and controlled test scenarios help reveal bottlenecks and validate design decisions</p>
+</li>
+<li>
+<p>Why performance engineering must account for cloud-native and virtualized components such as SDN controllers, service meshes, and microservices</p>
+</li>
+<li>
+<p>The importance of repeatability in benchmarking and how standardized methodologies ensure consistent, meaningful results</p>
+</li>
+<li>
+<p>How automation and CI/CD-driven pipelines enable continuous performance validation and regression detection</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_performance_engineering"><a class="anchor" href="#_performance_engineering"></a>Performance engineering</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Performance benchmarking in computer networks is the systematic process of measuring, comparing, and evaluating how network components behave under specific workloads. It provides engineers, operators, and architects with quantifiable evidence of performance characteristics such as throughput, latency, jitter, and resource utilization. Rather than relying on intuition or vendor claims, benchmarking establishes repeatable, data-driven insights that help determine whether a network meets its intended service objectives.</p>
+</div>
+<div class="paragraph">
+<p>One of the core goals of performance benchmarking is to simulate <strong>realistic traffic patterns</strong> and operational conditions. Networks experience a wide range of workloads—from bursty interactive flows to sustained high-bandwidth transfers—and each stresses the system differently. Benchmarking tools and methodologies attempt to mimic these behaviors so that engineers can understand how devices such as switches, routers, load balancers, or virtualized network functions respond under stress. This allows teams to uncover bottlenecks that may remain invisible during normal operation.</p>
+</div>
+<div class="paragraph">
+<p>Benchmarking also helps validate network design decisions before they are deployed into production. For example, performance tests can verify whether a new routing protocol configuration improves convergence times, whether a firewall can sustain expected peak loads, or whether a virtualized network function performs comparably to its hardware-based equivalent. By measuring performance early, organizations reduce deployment risks and avoid costly redesigns later in the lifecycle.</p>
+</div>
+<div class="paragraph">
+<p>In modern infrastructures, benchmarking extends beyond physical devices to include <strong>virtualized and cloud-native network components</strong>. Technologies such as SDN controllers, service meshes, and microservice-based load balancers introduce new performance considerations. Their behavior often depends not only on the network but also on compute, storage, and orchestration layers. As a result, performance benchmarking in contemporary environments must adopt a holistic approach that captures system-wide interactions.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_repeatability"><a class="anchor" href="#_repeatability"></a>Repeatability</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A key aspect of effective benchmarking is <strong>repeatability</strong>. Results must be consistent across multiple runs, environments, and configurations. To achieve this, benchmarks rely on controlled testbeds, standardized procedures, and well-defined test parameters. Repeatable tests ensure that performance deviations are meaningful and reflect true system behavior rather than noise.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_automation"><a class="anchor" href="#_automation"></a>Automation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Automation</strong> plays an increasingly important role in benchmarking practices. Continuous performance testing pipelines, integrated into CI/CD workflows, allow engineers to detect performance regressions as part of routine software development. Automated test harnesses can deploy environments, generate traffic, collect telemetry, and analyze results without manual intervention. This shift enables teams to evaluate performance at scale and at the pace demanded by modern development cycles.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After completing this module, you&#8217;ll be ready to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Explore specific benchmarking tools and suites for networking, compute, and storage</p>
+</li>
+<li>
+<p>Learn how to design repeatable, automated benchmarking pipelines</p>
+</li>
+<li>
+<p>Apply these concepts to Kubernetes and OpenShift environments, where cloud-native architectures introduce new performance considerations</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_see_also"><a class="anchor" href="#_see_also"></a>See also</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/scalability_and_performance/index" target="_blank" rel="noopener">OpenShift Scaling and Performance Guide</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

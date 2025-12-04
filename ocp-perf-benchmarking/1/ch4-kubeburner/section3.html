@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Hands-on with kube-burner :: OpenShift performance benchmarking guide</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">OpenShift performance benchmarking guide</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/ocp-perf-benchmarking/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ocp-perf-benchmarking" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">OpenShift performance benchmarking guide</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment Setup</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">OpenShift performance benchmarking guide</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">OpenShift performance benchmarking guide</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">OpenShift performance benchmarking guide</a></li>
+    <li><a href="section3.html">Hands-on with kube-burner</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Hands-on with kube-burner</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section, we will walk through a practical hands-on activity that illustrates how to use kube-burner for simulating cluster churn and measuring Control Plane responsiveness. This exercise assumes you have basic familiarity with Kubernetes and its command-line interface (kubectl).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites:</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Install <code>kube-burner</code> binary or use the container image on your preferred system. Refer to the [installation guide](<a href="https://cloud-bulldozer.github.io/kube-burner/" class="bare">https://cloud-bulldozer.github.io/kube-burner/</a>) for more details.</p>
+</li>
+<li>
+<p>Access a running Kubernetes cluster (either local or cloud-based).</p>
+</li>
+<li>
+<p>Ensure <code>kubectl</code> is configured and can communicate with your target Kubernetes cluster.</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_install_kube_burner_ocp"><a class="anchor" href="#_install_kube_burner_ocp"></a>Install kube-burner-ocp</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Ls https://raw.githubusercontent.com/kube-burner/kube-burner-ocp/refs/heads/main/hack/install.sh | sh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Validate the installation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kube-burner-ocp help</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_objective"><a class="anchor" href="#_objective"></a>Objective:</h3>
+<div class="paragraph">
+<p>By the end of this lab activity, you should be able to:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configure kube-burner jobs to simulate various control plane churn scenarios.</p>
+</li>
+<li>
+<p>Measure and observe the control plane&#8217;s responsiveness under stress.</p>
+</li>
+<li>
+<p>Analyze test results and interpret key performance metrics.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_step_by_step_hands_on_activity"><a class="anchor" href="#_step_by_step_hands_on_activity"></a>Step-by-step Hands-on Activity:</h3>
+<div class="sect3">
+<h4 id="_1_setting_up_kube_burner_configuration_files"><a class="anchor" href="#_1_setting_up_kube_burner_configuration_files"></a>1. Setting up kube-burner configuration files</h4>
+<div class="paragraph">
+<p>kube-burner uses YAML configuration files to define jobs, which dictate the resources it will create, delete, or manipulate in your Kubernetes cluster. You can find example configuration files and metrics profiles in the [kube-burner examples directory](<a href="https://github.com/cloud-bulldozer/kube-burner/tree/master/examples" class="bare">https://github.com/cloud-bulldozer/kube-burner/tree/master/examples</a>).</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s start by creating a simple <code>job.yaml</code> file to simulate control plane churn:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: kubeburner.cloud-bulldozer.io/v1alpha1
+kind: Job
+metadata:
+  name: controlplane-churn-job
+spec:
+  # Specify the type of resource you want to test
+  resources:
+    - kind: Deployment
+  # Define the number of operations for each kind of resource
+  operations:
+    - name: Create
+      count: 10
+    - name: Update
+      count: 10
+    - name: Delete
+      count: 10</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This configuration instructs kube-burner to create, update, and delete 10 Kubernetes Deployments. Adjust the <code>count</code> values as needed for your specific testing requirements.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_running_kube_burner_job"><a class="anchor" href="#_2_running_kube_burner_job"></a>2. Running kube-burner job</h4>
+<div class="paragraph">
+<p>Now that we have a configuration file ready, let&#8217;s run our job against the target Kubernetes cluster:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f job.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>kube-burner will start creating, updating, and deleting Deployments according to your <code>job.yaml</code> specifications. You can monitor the progress using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl -n kube-burner logs &lt;pod-name&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Replace <code>&lt;pod-name&gt;</code> with the name of the pod generated by kube-burner for executing the job.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_3_measuring_control_plane_responsiveness"><a class="anchor" href="#_3_measuring_control_plane_responsiveness"></a>3. Measuring Control Plane Responsiveness</h4>
+<div class="paragraph">
+<p>While the job is running, kube-burner will collect Prometheus metrics related to control plane components (kube-apiserver, etcd, etc.). To view these metrics, set up Grafana with a predefined dashboard or use <code>curl</code> to fetch metrics directly from the Kube-API server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl top node &lt;node-name&gt; --format=json | jq '.containers[] | select(.name=="kube-apiserver") | .metrics'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Replace <code>&lt;node-name&gt;</code> with the name of a node in your cluster running kube-apiserver. This command extracts and displays metrics related to kube-apiserver performance.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_4_analyzing_results"><a class="anchor" href="#_4_analyzing_results"></a>4. Analyzing Results</h4>
+<div class="paragraph">
+<p>Once the job completes, analyze the collected Prometheus metrics to evaluate control plane responsiveness under stress. Key metrics to observe include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Request latency</p>
+</li>
+<li>
+<p>Error rates (5xx)</p>
+</li>
+<li>
+<p>Throughput</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can find more information on interpreting these metrics in kube-burner&#8217;s documentation or through subsequent blog posts (as mentioned in the provided context).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_indexing_results_in_elasticsearch"><a class="anchor" href="#_indexing_results_in_elasticsearch"></a>Indexing results in ElasticSearch</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get ElasticSearch password:</p>
+<div class="literalblock">
+<div class="content">
+<pre>ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Get ElasticSearch route URL:</p>
+<div class="literalblock">
+<div class="content">
+<pre>ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check ElasticSearch authentication:</p>
+<div class="literalblock">
+<div class="content">
+<pre>curl -k $ES_INSTANCE</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>{
+  "name" : "elasticsearch-es-default-0",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "gfP33bmwQ82UMWI2btj2OQ",
+  "version" : {
+    "number" : "8.15.0",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "1a77947f34deddb41af25e6f0ddb8e830159c179",
+    "build_date" : "2024-08-05T10:05:34.233336849Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.11.1",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Extract the node-density workload so we can change the default metrics endpoint from <code>opensearch</code> to <code>elastic</code>:</p>
+<div class="literalblock">
+<div class="content">
+<pre>mkdir node-density
+cd node-density/
+kube-burner-ocp node-density --extract
+ls</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>alerts.yml         metrics-aggregated.yml       metrics-report.yml  pod.yml
+cnv-metrics.yml    metrics-egressip.yml         metrics.yml
+kueue-metrics.yml  metrics-report-stackrox.yml  node-density.yml
+```</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Change the default metrics endpoint from <code>opensearch</code> to <code>elastic</code>:</p>
+<div class="literalblock">
+<div class="content">
+<pre>sed -i 's/opensearch/elastic/g' node-density.yml</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run a small node-density workload and index results on the ElasticSearch instance:</p>
+<div class="literalblock">
+<div class="content">
+<pre>kube-burner-ocp node-density --pods-per-node 75 --es-server $ES_INSTANCE --es-index kube-burner</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>time="2025-12-03 08:35:17" level=info msg="❤️ Checking for Cluster Health" file="cluster-health.go:46"
+time="2025-12-03 08:35:17" level=info msg="Cluster is Healthy" file="cluster-health.go:54"
+time="2025-12-03 08:35:17" level=info msg="Config file node-density.yml available in the current directory, using it" file="file_reader.go:77"
+time="2025-12-03 08:35:17" level=info msg="📁 Creating elastic indexer: indexer-0" file="metrics.go:67"
+time="2025-12-03 08:35:18" level=info msg="👽 Initializing prometheus client with URL: https://prometheus-k8s-openshift-monitoring.apps.cluster-vjm62.dynamic.redhatworkshops.io" file="prometheus.go:45"
+time="2025-12-03 08:35:18" level=info msg="Config file metrics.yml available in the current directory, using it" file="file_reader.go:77"
+time="2025-12-03 08:35:18" level=info msg="Config file metrics-report.yml available in the current directory, using it" file="file_reader.go:77"
+time="2025-12-03 08:35:18" level=info msg="🔔 Initializing alert manager for prometheus: https://prometheus-k8s-openshift-monitoring.apps.cluster-vjm62.dynamic.redhatworkshops.io" file="alert_manager.go:91"
+time="2025-12-03 08:35:18" level=info msg="Config file alerts.yml available in the current directory, using it" file="file_reader.go:77"
+time="2025-12-03 08:35:18" level=info msg="🔥 Starting kube-burner (1.8.1@feeba2e8ce333cf69862208df78ec6a916096b14) with UUID bfd5d1d4-029f-4dc2-9968-86b857f45137" file="job.go:90"
+time="2025-12-03 08:35:18" level=info msg="Config file pod.yml available in the current directory, using it" file="file_reader.go:77"
+time="2025-12-03 08:35:18" level=info msg="Pre-load: images from job node-density" file="pre_load.go:73"
+time="2025-12-03 08:35:18" level=info msg="Pre-load: Creating DaemonSet using images [registry.k8s.io/pause:3.1] in namespace preload-kube-burner" file="pre_load.go:195"
+time="2025-12-03 08:35:18" level=info msg="Pre-load: Sleeping for 10s" file="pre_load.go:86"
+time="2025-12-03 08:35:28" level=info msg="Deleting 1 namespaces with label: kube-burner-preload=true" file="namespaces.go:66"
+time="2025-12-03 08:35:39" level=info msg="Initializing measurements for job: node-density" file="factory.go:99"
+time="2025-12-03 08:35:39" level=info msg="Registered measurement: podLatency" file="factory.go:134"
+time="2025-12-03 08:35:39" level=info msg="Creating /v1, Resource=pods latency watcher for node-density" file="base_measurement.go:69"
+time="2025-12-03 08:35:39" level=info msg="Triggering job: node-density" file="job.go:121"
+time="2025-12-03 08:35:39" level=info msg="6/66 iterations completed" file="create.go:116"
+time="2025-12-03 08:35:39" level=info msg="12/66 iterations completed" file="create.go:116"
+time="2025-12-03 08:35:39" level=info msg="18/66 iterations completed" file="create.go:116"
+time="2025-12-03 08:35:40" level=info msg="24/66 iterations completed" file="create.go:116"
+time="2025-12-03 08:35:40" level=info msg="30/66 iterations completed" file="create.go:116"
+time="2025-12-03 08:35:40" level=info msg="36/66 iterations completed" file="create.go:116"
+time="2025-12-03 08:35:40" level=info msg="42/66 iterations completed" file="create.go:116"
+time="2025-12-03 08:35:41" level=info msg="48/66 iterations completed" file="create.go:116"
+time="2025-12-03 08:35:41" level=info msg="54/66 iterations completed" file="create.go:116"
+time="2025-12-03 08:35:41" level=info msg="60/66 iterations completed" file="create.go:116"
+time="2025-12-03 08:35:42" level=info msg="Waiting up to 4h0m0s for actions to be completed" file="create.go:169"
+time="2025-12-03 08:35:46" level=info msg="Actions in namespace node-density-0 completed" file="waiters.go:74"
+time="2025-12-03 08:35:46" level=info msg="Verifying created objects" file="utils.go:137"
+time="2025-12-03 08:35:46" level=info msg="Job node-density took 7s" file="job.go:190"
+time="2025-12-03 08:35:46" level=info msg="Stopping measurement: podLatency" file="factory.go:163"
+time="2025-12-03 08:35:46" level=info msg="Evaluating latency thresholds" file="metrics.go:48"
+time="2025-12-03 08:35:46" level=info msg="node-density: PodReadyToStartContainers 99th: 0 max: 0 avg: 0" file="base_measurement.go:111"
+time="2025-12-03 08:35:46" level=info msg="node-density: PodScheduled 99th: 0 max: 0 avg: 0" file="base_measurement.go:111"
+time="2025-12-03 08:35:46" level=info msg="node-density: ContainersReady 99th: 4000 max: 4000 avg: 2833" file="base_measurement.go:111"
+time="2025-12-03 08:35:46" level=info msg="node-density: Initialized 99th: 1000 max: 1000 avg: 30" file="base_measurement.go:111"
+time="2025-12-03 08:35:46" level=info msg="node-density: Ready 99th: 4000 max: 4000 avg: 2833" file="base_measurement.go:111"
+time="2025-12-03 08:35:46" level=info msg="Indexing collected data from measurement: podLatency" file="factory.go:175"
+time="2025-12-03 08:35:46" level=info msg="Indexing metric podLatencyMeasurement" file="base_measurement.go:134"
+time="2025-12-03 08:35:46" level=info msg="Deleting Pods labeled with kube-burner-job=node-density in node-density-0" file="namespaces.go:55"
+time="2025-12-03 08:35:46" level=info msg="Indexing finished in 361ms: created=66" file="base_measurement.go:143"
+time="2025-12-03 08:35:46" level=info msg="Indexing metric podLatencyQuantilesMeasurement" file="base_measurement.go:134"
+time="2025-12-03 08:35:46" level=info msg="Indexing finished in 80ms: created=5" file="base_measurement.go:143"
+time="2025-12-03 08:35:46" level=info msg="Evaluating alerts for job node-density in: https://prometheus-k8s-openshift-monitoring.apps.cluster-vjm62.dynamic.redhatworkshops.io" file="alert_manager.go:126"
+time="2025-12-03 08:35:47" level=info msg="Indexing alerts" file="alert_manager.go:222"
+time="2025-12-03 08:35:47" level=info msg="Indexing finished in 98ms: created=3 redundantskipped=1" file="alert_manager.go:228"
+time="2025-12-03 08:35:47" level=info msg="Indexing job summaries" file="metadata.go:48"
+time="2025-12-03 08:35:47" level=info msg="Indexing finished in 104ms: created=1" file="metadata.go:65"
+time="2025-12-03 08:35:47" level=info msg="🔍 Endpoint: https://prometheus-k8s-openshift-monitoring.apps.cluster-vjm62.dynamic.redhatworkshops.io; profile: metrics.yml start: 2025-12-03T13:35:39Z end: 2025-12-03T13:35:46Z; job: node-density, metricsClosing: afterJobPause" file="prometheus.go:68"
+time="2025-12-03 08:35:48" level=info msg="🔍 Endpoint: https://prometheus-k8s-openshift-monitoring.apps.cluster-vjm62.dynamic.redhatworkshops.io; profile: metrics-report.yml start: 2025-12-03T13:35:39Z end: 2025-12-03T13:35:46Z; job: node-density, metricsClosing: afterJobPause" file="prometheus.go:68"
+time="2025-12-03 08:35:49" level=info msg="Indexing [0] documents from metric cpu-etcd" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [0] documents from metric memory-masters" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [0] documents from metric max-memory-sum-crio" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [0] documents from metric cgroupMemoryRSS-Infra" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [10] documents from metric nodeMajorFaults" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing finished in 109ms: created=10" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [0] documents from metric avg-ro-apicalls-latency" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [0] documents from metric cpu-kube-apiserver" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [0] documents from metric max-memory-multus" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [0] documents from metric max-cpu-infra" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [12] documents from metric 99thEtcdRoundTripTimeSeconds" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing finished in 81ms: created=12" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [108] documents from metric cgroupCPUSeconds-namespaces" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing finished in 73ms: created=108" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [0] documents from metric max-cpu-multus" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [0] documents from metric max-cpu-ovnkube-node" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [0] documents from metric cpu-workers" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [0] documents from metric memory-prometheus" file="prometheus.go:222"
+time="2025-12-03 08:35:49" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:49" level=info msg="Indexing [10] documents from metric cgroupCPUSeconds-Masters-start" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 145ms: created=10" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric max-cpu-ovn-control-plane" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric max-mutating-apicalls-latency" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [24] documents from metric nodeCPU-Workers" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 107ms: created=24" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [6] documents from metric 99thEtcdCompaction" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 20ms: created=6" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric 99thEtcdDiskBackendCommit" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [3] documents from metric 99thEtcdCompaction-raw" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 17ms: created=3" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric max-memory-openshift-apiserver" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric cpu-ovn-control-plane" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric memory-cluster-usage-ratio" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [34] documents from metric nodeRxNetwork" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 94ms: created=34" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [10] documents from metric cgroupCPUSeconds-Workers" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 26ms: created=10" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric max-memory-kubelet" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric max-cpu-kube-apiserver" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [1] documents from metric serviceCount" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 17ms: created=1" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric max-cpu-kubelet" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric cpu-crio" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric 99thEtcdRoundTripTime" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [2] documents from metric crioCPU" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 70ms: created=2" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [2] documents from metric kubeletMemory" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 14ms: created=2" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric 99thEtcdDefrag" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [2] documents from metric namespaceCount" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 86ms: created=2" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric cpu-kube-controller-manager" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric max-cpu-etcd" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric memory-infra" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric cpu-router" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [172] documents from metric readOnlyAPICallsLatency" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 189ms: created=172" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [108] documents from metric cgroupCPUSeconds-namespaces-start" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 77ms: created=108" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [3] documents from metric 99thEtcdDefrag-raw" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 25ms: created=3" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric max-memory-sum-workers" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [2] documents from metric crioMemory" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing finished in 12ms: created=2" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric max-99thEtcdDiskBackendCommit" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric max-memory-workers" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric max-memory-prometheus" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [0] documents from metric max-memory-router" file="prometheus.go:222"
+time="2025-12-03 08:35:50" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:50" level=info msg="Indexing [108] documents from metric cgroupMemoryRSS-namespaces-start" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 74ms: created=81 redundantskipped=27" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [10] documents from metric podStatusCount" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 16ms: created=10" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [3] documents from metric 99thEtcdDefrag-raw-start" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 13ms: created=3" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric memory-etcd" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric max-memory-sum-masters" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [1] documents from metric memory-sum-workers" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 12ms: created=1" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric nodeNetworkErrTXTotal" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric max-cpu-crio" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric nodeCPUSeconds-Infra" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [2] documents from metric kubeletCPU" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 28ms: created=2" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric cgroupCPUSeconds-Infra" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric max-ro-apicalls-latency" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric memory-ovnkube-node" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric memory-workers" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [331] documents from metric APIRequestRate" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 174ms: created=331" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [2] documents from metric prometheus-ingestionrate" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 29ms: created=2" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [8] documents from metric nodeStatus" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 67ms: created=8" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [4] documents from metric nodeMemoryUtilization-Workers" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 31ms: created=4" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric nodeMemoryUtilization-Infra" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [1] documents from metric routeCount" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 14ms: created=1" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [16] documents from metric nodeRoles" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 91ms: created=16" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric cpu-kubelet" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric memory-kubelet" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric max-cpu-openshift-apiserver" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [32] documents from metric nodeTxNetwork" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 31ms: created=32" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [1] documents from metric configmapCount" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 12ms: created=1" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric cgroupCPUSeconds-Infra-start" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric max-99thEtcdDiskWalFsync" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric cpu-openshift-apiserver" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric memory-openshift-apiserver" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric max-memory-etcd" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric memory-openshift-controller-manager" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [1] documents from metric etcdVersion" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 62ms: created=1" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric max-cpu-cluster-usage-ratio" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [6] documents from metric 99thEtcdDiskWalFsyncDurationSeconds" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 31ms: created=6" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [16] documents from metric nodeCPUSeconds-Masters" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 32ms: created=16" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [40] documents from metric cgroupMemoryRSS" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 36ms: created=40" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric memory-crio" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric 99thEtcdDiskWalFsync" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [0] documents from metric max-memory-cluster-usage-ratio" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [662] documents from metric containerCPU" file="prometheus.go:222"
+time="2025-12-03 08:35:51" level=info msg="Indexing finished in 172ms: created=662" file="prometheus.go:227"
+time="2025-12-03 08:35:51" level=info msg="Indexing [10] documents from metric cgroupMemoryRSS-Workers" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 50ms: created=7 redundantskipped=3" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [3] documents from metric 99thEtcdCompaction-raw-start" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 16ms: created=3" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-sum-etcd" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric cpu-infra" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [10] documents from metric cgroupMemoryRSS-Workers-start" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 15ms: created=7 redundantskipped=3" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [1] documents from metric deploymentCount" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 13ms: created=1" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [16] documents from metric nodeCPUSeconds-Workers-start" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 26ms: created=16" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [10] documents from metric cgroupCPUSeconds-Workers-start" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 16ms: created=10" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [10] documents from metric cgroupMemoryRSS-Masters-start" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 28ms: created=10" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-sum-kubelet" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-ovnkube-node" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric memory-router" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric nodeNetworkDeviceDropTXTotal" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [2] documents from metric prometheus-timeseriestotal" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 16ms: created=2" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric cpu-prometheus" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [6] documents from metric 99thEtcdDiskBackendCommitDurationSeconds" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 33ms: created=6" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric memory-ovn-control-plane" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-openshift-controller-manager" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [108] documents from metric cgroupMemoryRSS-namespaces" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 38ms: created=93 redundantskipped=15" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric cpu-ovnkube-node" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [10] documents from metric cgroupMemoryRSS-Masters" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 20ms: created=7 redundantskipped=3" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric memory-kube-controller-manager" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-cpu-router" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [40] documents from metric cgroupCPU" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 23ms: created=40" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-99thEtcdCompaction" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-99thEtcdDefrag" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-sum-kube-controller-manager" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric memory-kube-apiserver" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [6] documents from metric nodeMemoryUtilization-Masters" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 23ms: created=6" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric memory-multus" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric cpu-masters" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-masters" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-cpu-prometheus" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric avg-mutating-apicalls-latency" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-kube-apiserver" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-sum-kube-apiserver" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric nodeCPUSeconds-Infra-start" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [36] documents from metric nodeCPU-Masters" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 36ms: created=36" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-99thEtcdRoundTripTime" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-sum-infra" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric nodeNetworkErrRXTotal" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric cpu-multus" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [1] documents from metric memory-sum-workers-start" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 23ms: created=1" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric cpu-cluster-usage-ratio" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [10] documents from metric cgroupCPUSeconds-Masters" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 32ms: created=10" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-cpu-kube-controller-manager" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric cpu-openshift-controller-manager" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-cpu-openshift-controller-manager" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-ovn-control-plane" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-cpu-masters" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-infra" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric containerNetworkSetupLatency" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-sum-openshift-apiserver" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-crio" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [16] documents from metric nodeCPUSeconds-Workers" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 30ms: created=16" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric cgroupMemoryRSS-Infra-start" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-memory-kube-controller-manager" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric max-cpu-workers" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [738] documents from metric containerMemory" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 164ms: created=738" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric nodeNetworkDeviceDropRXTotal" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [0] documents from metric nodeCPU-Infra" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing skipped due to 0 docs" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [1] documents from metric secretCount" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 29ms: created=1" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [16] documents from metric nodeCPUSeconds-Masters-start" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 16ms: created=16" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Indexing [100] documents from metric mutatingAPICallsLatency" file="prometheus.go:222"
+time="2025-12-03 08:35:52" level=info msg="Indexing finished in 48ms: created=100" file="prometheus.go:227"
+time="2025-12-03 08:35:52" level=info msg="Finished execution with UUID: bfd5d1d4-029f-4dc2-9968-86b857f45137" file="job.go:263"
+time="2025-12-03 08:35:52" level=info msg="Garbage collecting jobs" file="job.go:290"
+time="2025-12-03 08:35:53" level=info msg="Deleting 1 namespaces with label: kube-burner-job=node-density" file="namespaces.go:66"
+time="2025-12-03 08:36:05" level=info msg="👋 kube-burner run completed with rc 0 for UUID bfd5d1d4-029f-4dc2-9968-86b857f45137" file="helpers.go:105"</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_visualization_of_results_in_grafana"><a class="anchor" href="#_visualization_of_results_in_grafana"></a>Visualization of results in Grafana</h4>
+<div class="paragraph">
+<p>Let&#8217;s create the <strong>Kube-burner Report</strong> dashboard in Grafana and visualize the indexed data.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the latest version of the dashboard:</p>
+<div class="literalblock">
+<div class="content">
+<pre>wget https://raw.githubusercontent.com/kube-burner/kube-burner-ocp/refs/heads/main/dashboards/Kube-burner.json</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Grafana does NOT accept a raw dashboard JSON file, it requires a wrapper object around it:</p>
+<div class="literalblock">
+<div class="content">
+<pre>jq -n --argfile dash Kube-burner.json '{
+  dashboard: $dash,
+  overwrite: true,
+  folderId: 0
+}' &gt; Kube-burner-wrapped.json</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Finally, let&#8217;s create the dashboard:</p>
+<div class="literalblock">
+<div class="content">
+<pre>curl -X POST -sS --insecure \
+    -u admin:admin123 \
+    -H "Content-Type: application/json" \
+    -d @Kube-burner-wrapped.json \
+    https://grafana-route-openshift-logging.apps.cluster-vjm62.dynamic.redhatworkshops.io/api/dashboards/import | jq .</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>{
+  "uid": "dbcfe71e",
+  "pluginId": "",
+  "title": "Kube-burner Report",
+  "imported": true,
+  "importedUri": "db/kube-burner-report",
+  "importedUrl": "/d/dbcfe71e/kube-burner-report",
+  "slug": "kube-burner-report",
+  "dashboardId": 3,
+  "folderId": 0,
+  "folderUid": "",
+  "description": "",
+  "path": "",
+  "removed": false
+}
+```</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Let&#8217;s make sure the ElasticSearch data source is properly configured:</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/grafana-es-config.png" alt="grafana es config" width="450">
+</div>
+<div class="title">Figure 1. ElasticSearch setup</div>
+</div>
+</li>
+<li>
+<p>Let&#8217;s visualize the report in the newly created <strong>Kube-burner Report</strong> dashboard:</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/grafana-kb.png" alt="grafana kb" width="700">
+</div>
+<div class="title">Figure 2. Kube-burner Report dashboard</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_conclusion"><a class="anchor" href="#_conclusion"></a>Conclusion</h3>
+<div class="paragraph">
+<p>This hands-on activity has demonstrated how to configure and run kube-burner jobs for simulating control plane churn and measuring responsiveness. Through practical exercises like this, users can gain valuable insights into Kubernetes cluster performance under stress conditions. Remember to consult the comprehensive [kube-burner documentation](<a href="https://cloud-bulldozer.github.io/kube-burner/" class="bare">https://cloud-bulldozer.github.io/kube-burner/</a>) for more in-depth guidance on using kube-burner&#8217;s features and understanding test results.</p>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

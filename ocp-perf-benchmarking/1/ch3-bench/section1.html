@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Kubernetes-native benchmarking tools :: OpenShift performance benchmarking guide</title>
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">OpenShift performance benchmarking guide</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/ocp-perf-benchmarking/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ocp-perf-benchmarking" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">OpenShift performance benchmarking guide</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment Setup</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">OpenShift performance benchmarking guide</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">OpenShift performance benchmarking guide</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">OpenShift performance benchmarking guide</a></li>
+    <li><a href="section1.html">Kubernetes-native benchmarking tools</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Kubernetes-native benchmarking tools</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Kubernetes-native benchmarking tools are specifically designed to measure the performance of applications and infrastructure running in containerized environments. Unlike traditional benchmarking suites, these tools understand the unique characteristics of Kubernetes, such as dynamic scaling, pod scheduling, and network overlays. They allow engineers to test real workloads under realistic conditions and observe how clusters behave under load, making them essential for both development and operations teams.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_control_plane"><a class="anchor" href="#_control_plane"></a>Control plane</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>One widely used tool in this space is <a href="https://kube-burner.github.io/kube-burner/latest/">kube-burner</a>, which is designed to generate configurable workloads for Kubernetes clusters. It can create pods, services, and other Kubernetes objects at scale, allowing operators to evaluate the cluster behavior under high-density conditions. kube-burner is often used to test API server performance, scheduler responsiveness, and overall cluster throughput, providing metrics that help identify scaling limits and bottlenecks.</p>
+</div>
+<div class="paragraph">
+<p>Building on top of kube-burner, <a href="https://github.com/kube-burner/kube-burner-ocp/">kube-burner-ocp</a> is a very opinionated OpenShift wrapper designed to simplify the execution of different control-plane related workloads in this Kubernetes distribution. It greatly simplifies the execution of the supported workloads adding the corresponding OpenShift metadata and automatically discovering the Prometheus URL and authentication tokens.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_networking"><a class="anchor" href="#_networking"></a>Networking</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/cloud-bulldozer/k8s-netperf">k8s-netperf</a> is another Kubernetes-specific benchmarking tool focused on network performance. It supports several backends mentioned in the previous section, like netperf, iperf and uperf to be able to measure latency, throughput, and other network characteristics across the cluster. By running tests between pods on different nodes, k8s-netperf provides insight into how networking plugins, CNI configurations, and overlay networks affect communication performance in a cloud-native environment.</p>
+</div>
+<div class="paragraph">
+<p>For applications exposed via HTTP or other ingress protocols, <a href="https://github.com/cloud-bulldozer/ingress-perf">ingress-perf</a> offers a way to benchmark the performance of Kubernetes ingress controllers. It can simulate concurrent connections, measure request latency, and generate traffic patterns similar to real-world application workloads. This helps teams understand how ingress controllers behave under stress and how configuration changes or resource constraints impact application availability and responsiveness.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_virtualization"><a class="anchor" href="#_virtualization"></a>Virtualization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Both kube-burner, through <a href="https://github.com/kube-burner/kube-burner-ocp/?tab=readme-ov-file#virt-workloads">kube-burner-ocp virtualization related workloads</a> (virt-density, virt-capacity-benchmark, virt-clone, virt-migration,  etc.) and k8s-netperf, through the <code>--vm</code> and <code>--vm-image</code> flags, support running workloads on top of OpenShift Virtualization, creating virtual machines at scale allowing operators to evaluate the cluster behavior under high-density conditions.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_storage"><a class="anchor" href="#_storage"></a>Storage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/jtaleric/k8s-io">k8s-IO</a> is a lightweight Go-based CLI tool for running benchmark workloads on Kubernetes clusters. Unlike operator-based solutions, it provides a simple command-line interface for executing benchmarks without requiring cluster-wide operator deployments, supporting multiple benchmark types like fio or HammerDB (for database performance benchmarking).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion"><a class="anchor" href="#_conclusion"></a>Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Overall, Kubernetes-native benchmarking tools complement traditional system benchmarks by providing visibility into cluster-level performance and cloud-native behaviors. Most of these tools allow indexing results on external ElasticSearch/OpenSearch instances in a cloud-native way. Subsequent chapters in this course will dive deeper into each of these tools, providing practical examples and configuration guidance.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
