@@ -65,21 +65,21 @@ Access the OpenShift Console and navigate to *Observe*.
 Navigate to *Observe* -> *Dashboards* for some great default dashboards, including the *API Performance* one showcasing API request durations, rates, long running requests, registered watchers, etc.:
 
 .Built-in API Performance dashboard
-image::images/prom-dashboard.png[width=700]
+image::prom-dashboard.png[width=700]
 
 === Inspect Prometheus Targets
 
 To verify which components are being scraped, navigate to *Observe* -> *Targets*:
 
 .Prometheus Targets
-image::images/prom-targets.png[width=700]
+image::prom-targets.png[width=700]
 
 === Query Cluster Metrics Using PromQL
 
 Navigate to *Observe* -> *Metrics*:
 
 .Custom queries with PromQL
-image::images/prom-query.png[width=700]
+image::prom-query.png[width=700]
 
 Useful PromQL queries you may try:
 

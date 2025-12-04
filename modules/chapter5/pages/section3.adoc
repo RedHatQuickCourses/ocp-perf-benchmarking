@@ -557,13 +557,13 @@ Let's create the *Kube-burner Report* dashboard in Grafana and visualize the ind
 
 +
 .ElasticSearch setup
-image::images/grafana-es-config.png[width=300]
+image::grafana-es-config.png[width=300]
 
 5. Let's visualize the report in the newly created *Kube-burner Report* dashboard:
 
 +
 .Kube-burner Report dashboard
-image::images/grafana-kb.png[width=700]
+image::grafana-kb.png[width=700]
 
 === Conclusion
 

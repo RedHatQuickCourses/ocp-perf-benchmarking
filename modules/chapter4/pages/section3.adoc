@@ -187,9 +187,9 @@ Let's create the *Ingress Performance nextgen* dashboard in Grafana and visualiz
 
 +
 .ElasticSearch setup
-image::images/ingress-es.png[width=300]
+image::ingress-es.png[width=300]
 
 5. Let's visualize the report in the newly created *Ingress Performance nextgen* dashboard:
 
 .Ingress Performance nextgen dashboard
-image::images/ingress-dashboard.png[width=700]
+image::ingress-dashboard.png[width=700]
