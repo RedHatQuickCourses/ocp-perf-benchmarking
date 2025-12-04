@@ -553,13 +553,6 @@ Let's create the *Kube-burner Report* dashboard in Grafana and visualize the ind
     }
     ```
 
-====
-[source,sh,subs="attributes"]
-----
-ls -al
-----
-====
-
 4. Let's make sure the ElasticSearch data source is properly configured:
 
 +
