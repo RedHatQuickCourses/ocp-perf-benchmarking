@@ -1,0 +1,2 @@
+* xref:index.adoc[Storage benchmarking]
+** xref:section1.adoc[Storage performance testing with k8s-IO]

@@ -41,7 +41,7 @@ Churn is especially valuable for:
  * Scale-down/scale-up stress tests
  * Multi-tenant simulation environments
 
-== Basic churn configuration example
+== Basic configuration example
 
 The following example:
 

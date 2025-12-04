@@ -1,0 +1,272 @@
+= Storage performance testing with k8s-IO
+
+K8s-IO is a lightweight Go-based CLI tool for running benchmark workloads on Kubernetes clusters. Unlike operator-based solutions, it provides a simple command-line interface for executing benchmarks without requiring cluster-wide operator deployments. It supports multiple benchmark types and reuses existing Jinja templates from the benchmark-operator project.
+
+== Supported workloads
+ * FIO: Distributed I/O benchmark using FIO (Flexible I/O Tester)
+ * HammerDB: Database performance benchmark supporting PostgreSQL, MariaDB, and MSSQL
+
+== Configuration
+
+The tool uses YAML configuration files to specify benchmark parameters. Let's start with a FIO distributed benchmark configuration:
+
+```bash
+cat > config-fio.yaml <<EOF
+namespace: "benchmark-fio"
+workload:
+  name: "fio"
+  args:
+    kind: "pod"
+    servers: 2
+    samples: 2
+    jobs: ["read", "write"]
+    bs: ["4KiB", "8KiB"]
+    numjobs: [1, 2]
+    filesize: "1G"
+    prefill: true
+EOF
+```
+
+Let's take a closer look at each of the fields:
+
+ * `kind`: Pod or virtual machine
+ * `servers`: Number of FIO server pods
+ * `samples`: Test iterations
+ * `jobs`: FIO job types
+ * `bs`: Block sizes
+ * `numjobs`: FIO processes per pod
+ * `filesize`: File size for testing
+ * `prefill`: Enable prefill
+
+Let's run this simple configuration:
+
+```bash
+k8s-io -config config-fio.yaml
+```
+```
+2025/12/04 11:50:26 Starting K8s-IO benchmark tool...
+2025/12/04 11:50:26 Loaded configuration for workload: fio
+2025/12/04 11:50:26 Created fio workload
+2025/12/04 11:50:26 Creating namespace: benchmark-fio
+2025/12/04 11:50:26 Starting fio benchmark...
+2025/12/04 11:50:26 Starting FIO distributed benchmark execution...
+2025/12/04 11:50:26 Deploying infrastructure...
+2025/12/04 11:50:26 Waiting for 2 FIO servers to be ready...
+2025/12/04 11:52:01 Waiting for pods: 0/2 ready (selector: app=fio-benchmark-17648670)
+2025/12/04 11:52:06 Waiting for pods: 0/2 ready (selector: app=fio-benchmark-17648670)
+2025/12/04 11:52:21 Waiting for pods: 1/2 ready (selector: app=fio-benchmark-17648670)
+2025/12/04 11:52:26 Waiting for pods: 1/2 ready (selector: app=fio-benchmark-17648670)
+2025/12/04 11:52:31 All 2 servers are ready
+2025/12/04 11:52:31 Creating hosts configmap...
+2025/12/04 11:52:31 Job fio-check-17648670 still running (succeeded: 0, failed: 0, active: 1)
+2025/12/04 11:53:31 Job fio-check-17648670 completed successfully
+2025/12/04 11:53:31 Running prefill job...
+2025/12/04 11:53:31 Job fio-prefill-17648670 still running (succeeded: 0, failed: 0, active: 0)
+2025/12/04 11:54:31 Job fio-prefill-17648670 completed successfully
+2025/12/04 11:54:31 Prefill completed successfully
+2025/12/04 11:54:31 Starting benchmark client...
+2025/12/04 11:54:32 Benchmark client started
+2025/12/04 11:54:32 Waiting for benchmark to complete...
+2025/12/04 11:54:32 Job fio-client-17648670 still running (succeeded: 0, failed: 0, active: 0)
+2025/12/04 11:55:32 Job fio-client-17648670 still running (succeeded: 0, failed: 0, active: 1)
+2025/12/04 12:51:33 Job fio-client-17648670 completed successfully
+2025/12/04 12:51:33 Capturing benchmark results...
+Found 16 FIO result(s)
+
+=== FIO Benchmark Results ===
+Test ID                          Sample  Job    Hostname     Read IOPS  Read BW (KB/s)  Write IOPS  Write BW (KB/s)  Read Lat P50 (μs)  Read Lat P95 (μs)  Write Lat P50 (μs)  Write Lat P95 (μs)  Runtime (s)
+-------                          ------  ---    --------     ---------  -----------     ----------  ------------     --------------     --------------     ---------------     ---------------     -----------
+17648670_read-write_4KiB-8KiB_1  1       read   10.134.0.33  5553.8     22215           0.0         0                553.0              1318.9             0.0                 0.0                 43
+17648670_read-write_4KiB-8KiB_1  1       read   10.132.2.50  2854.5     11418           0.0         0                995.3              3096.6             0.0                 0.0                 85
+17648670_read-write_4KiB-8KiB_1  2       read   10.134.0.33  5630.9     22523           0.0         0                561.2              1269.8             0.0                 0.0                 43
+17648670_read-write_4KiB-8KiB_1  2       read   10.132.2.50  2899.0     11596           0.0         0                987.1              3129.3             0.0                 0.0                 84
+17648670_read-write_4KiB-8KiB_1  3       write  10.134.0.33  0.0        0               3179.8      12719            0.0                0.0                970.8               2277.4              76
+17648670_read-write_4KiB-8KiB_1  3       write  10.132.2.50  0.0        0               1678.9      6715             0.0                0.0                1679.4              5668.9              145
+17648670_read-write_4KiB-8KiB_1  4       write  10.134.0.33  0.0        0               3168.8      12675            0.0                0.0                995.3               2211.8              77
+17648670_read-write_4KiB-8KiB_1  4       write  10.132.2.50  0.0        0               1598.5      6394             0.0                0.0                1744.9              5931.0              152
+17648670_read-write_4KiB-8KiB_1  5       read   10.134.0.33  3645.8     29166           0.0         0                806.9              2572.3             0.0                 0.0                 33
+17648670_read-write_4KiB-8KiB_1  5       read   10.132.2.50  1733.6     13868           0.0         0                1548.3             6062.1             0.0                 0.0                 70
+17648670_read-write_4KiB-8KiB_1  6       read   10.134.0.33  3748.2     29985           0.0         0                790.5              2441.2             0.0                 0.0                 32
+17648670_read-write_4KiB-8KiB_1  6       read   10.132.2.50  1657.2     13257           0.0         0                1613.8             6258.7             0.0                 0.0                 73
+17648670_read-write_4KiB-8KiB_1  7       write  10.134.0.33  0.0        0               2936.8      23494            0.0                0.0                1089.5              2408.4              41
+17648670_read-write_4KiB-8KiB_1  7       write  10.132.2.50  0.0        0               1434.8      11478            0.0                0.0                2007.0              6717.4              85
+17648670_read-write_4KiB-8KiB_1  8       write  10.134.0.33  0.0        0               2729.7      21837            0.0                0.0                1138.7              2703.4              44
+17648670_read-write_4KiB-8KiB_1  8       write  10.132.2.50  0.0        0               1465.8      11726            0.0                0.0                1990.7              6324.2              83
+17648670_read-write_4KiB-8KiB_1  9       read   10.134.0.33  4811.7     19246           0.0         0                634.9              1712.1             0.0                 0.0                 50
+17648670_read-write_4KiB-8KiB_1  9       read   10.134.0.33  4952.2     19808           0.0         0                602.1              1548.3             0.0                 0.0                 49
+17648670_read-write_4KiB-8KiB_1  9       read   10.132.2.50  2027.7     8110            0.0         0                1286.1             5144.6             0.0                 0.0                 120
+17648670_read-write_4KiB-8KiB_1  9       read   10.132.2.50  2057.3     8229            0.0         0                1253.4             5013.5             0.0                 0.0                 118
+17648670_read-write_4KiB-8KiB_1  10      read   10.134.0.33  5373.4     21493           0.0         0                585.7              1368.1             0.0                 0.0                 45
+17648670_read-write_4KiB-8KiB_1  10      read   10.134.0.33  5634.8     22539           0.0         0                561.2              1318.9             0.0                 0.0                 43
+17648670_read-write_4KiB-8KiB_1  10      read   10.132.2.50  2239.9     8959            0.0         0                1187.8             4685.8             0.0                 0.0                 108
+17648670_read-write_4KiB-8KiB_1  10      read   10.132.2.50  2276.4     9105            0.0         0                1171.5             4685.8             0.0                 0.0                 107
+17648670_read-write_4KiB-8KiB_1  11      write  10.134.0.33  0.0        0               3186.7      12746            0.0                0.0                995.3               2179.1              76
+17648670_read-write_4KiB-8KiB_1  11      write  10.134.0.33  0.0        0               3140.5      12562            0.0                0.0                1011.7              2310.1              77
+17648670_read-write_4KiB-8KiB_1  11      write  10.132.2.50  0.0        0               1706.7      6826             0.0                0.0                1679.4              5603.3              143
+17648670_read-write_4KiB-8KiB_1  11      write  10.132.2.50  0.0        0               1712.3      6849             0.0                0.0                1679.4              5537.8              142
+17648670_read-write_4KiB-8KiB_1  12      write  10.134.0.33  0.0        0               3377.1      13508            0.0                0.0                938.0               2039.8              72
+17648670_read-write_4KiB-8KiB_1  12      write  10.134.0.33  0.0        0               3400.5      13601            0.0                0.0                938.0               2039.8              71
+17648670_read-write_4KiB-8KiB_1  12      write  10.132.2.50  0.0        0               1895.1      7580             0.0                0.0                1548.3              4882.4              128
+17648670_read-write_4KiB-8KiB_1  12      write  10.132.2.50  0.0        0               1891.8      7567             0.0                0.0                1564.7              4948.0              129
+17648670_read-write_4KiB-8KiB_1  13      read   10.134.0.33  4505.4     36043           0.0         0                741.4              1531.9             0.0                 0.0                 27
+17648670_read-write_4KiB-8KiB_1  13      read   10.134.0.33  4537.4     36299           0.0         0                733.2              1531.9             0.0                 0.0                 26
+17648670_read-write_4KiB-8KiB_1  13      read   10.132.2.50  1831.5     14651           0.0         0                1548.3             5341.2             0.0                 0.0                 66
+17648670_read-write_4KiB-8KiB_1  13      read   10.132.2.50  1840.6     14724           0.0         0                1548.3             5341.2             0.0                 0.0                 66
+17648670_read-write_4KiB-8KiB_1  14      read   10.134.0.33  4664.1     37313           0.0         0                725.0              1433.6             0.0                 0.0                 26
+17648670_read-write_4KiB-8KiB_1  14      read   10.134.0.33  4756.5     38051           0.0         0                716.8              1400.8             0.0                 0.0                 25
+17648670_read-write_4KiB-8KiB_1  14      read   10.132.2.50  1956.5     15652           0.0         0                1466.4             4948.0             0.0                 0.0                 62
+17648670_read-write_4KiB-8KiB_1  14      read   10.132.2.50  1929.5     15436           0.0         0                1482.8             5013.5             0.0                 0.0                 63
+17648670_read-write_4KiB-8KiB_1  15      write  10.134.0.33  0.0        0               3367.3      26938            0.0                0.0                1011.7              1974.3              36
+17648670_read-write_4KiB-8KiB_1  15      write  10.134.0.33  0.0        0               3409.6      27276            0.0                0.0                1011.7              1925.1              35
+17648670_read-write_4KiB-8KiB_1  15      write  10.132.2.50  0.0        0               1576.1      12609            0.0                0.0                1876.0              5799.9              77
+17648670_read-write_4KiB-8KiB_1  15      write  10.132.2.50  0.0        0               1586.0      12688            0.0                0.0                1892.4              5734.4              76
+17648670_read-write_4KiB-8KiB_1  16      write  10.134.0.33  0.0        0               3297.8      26382            0.0                0.0                1019.9              2039.8              37
+17648670_read-write_4KiB-8KiB_1  16      write  10.134.0.33  0.0        0               3278.8      26230            0.0                0.0                1028.1              2039.8              37
+17648670_read-write_4KiB-8KiB_1  16      write  10.132.2.50  0.0        0               1582.9      12662            0.0                0.0                1908.7              5734.4              77
+17648670_read-write_4KiB-8KiB_1  16      write  10.132.2.50  0.0        0               1594.2      12753            0.0                0.0                1908.7              5603.3              76
+
+Results exported to: fio-results-17648670_read-write_4KiB-8KiB_1-20251204-125133.csv
+2025/12/04 12:51:33 Benchmark completed successfully!
+```
+
+As we can see from the output, k8s-IO run 32 tests iterating through the number of servers, samples, jobs, block sizes and number of jobs.K8s-IO automatically captured and parsed the results, displaying them in both a formatted table and exporting to CSV for further analysis.
+
+For convenience, let's present the 4 first results in table format:
+
+[options="header"]
+|===
+|Test ID |Sample |Job |Hostname |Read IOPS |Read BW (KB/s) |Write IOPS |Write BW (KB/s) |Read Lat P50 (μs) |Read Lat P95 (μs) |Write Lat P50 (μs) |Write Lat P95 (μs) |Runtime (s)
+
+|17648670_read-write_4KiB-8KiB_1 |1 |read  |10.134.0.33 |5553.8 |22215 |0.0 |0 |553.0 |1318.9 |0.0 |0.0 |43
+|17648670_read-write_4KiB-8KiB_1 |1 |read  |10.132.2.50 |2854.5 |11418 |0.0 |0 |995.3 |3096.6 |0.0 |0.0 |85
+|17648670_read-write_4KiB-8KiB_1 |2 |read  |10.134.0.33 |5630.9 |22523 |0.0 |0 |561.2 |1269.8 |0.0 |0.0 |43
+|17648670_read-write_4KiB-8KiB_1 |2 |read  |10.132.2.50 |2899.0 |11596 |0.0 |0 |987.1 |3129.3 |0.0 |0.0 |84
+|17648670_read-write_4KiB-8KiB_1 |3 |write |10.134.0.33 |0.0 |0 |3179.8 |12719 |0.0 |0.0 |970.8 |2277.4 |76
+|17648670_read-write_4KiB-8KiB_1 |3 |write |10.132.2.50 |0.0 |0 |1678.9 |6715 |0.0 |0.0 |1679.4 |5668.9 |145
+|17648670_read-write_4KiB-8KiB_1 |4 |write |10.134.0.33 |0.0 |0 |3168.8 |12675 |0.0 |0.0 |995.3 |2211.8 |77
+|17648670_read-write_4KiB-8KiB_1 |4 |write |10.132.2.50 |0.0 |0 |1598.5 |6394 |0.0 |0.0 |1744.9 |5931.0 |152
+|===
+
+
+Some of the *key metrics captured* include:
+
+ * *Sample*: Sample/iteration number for multi-sample benchmarks (starts from 1)
+ * *IOPs*: Input/Output operations per second for read and write operations
+ * *Bandwidth*: Data transfer rate in KB/s
+ * *Latency percentiles*: P50 (median) and P95 latency in microseconds
+ * *Runtime*: Actual test duration in seconds
+ * *Hostname*: Worker node where each test client ran
+ * *Timestamp*: When the results were captured
+
+== Storage classes
+
+For FIO benchmarks, is it possible to specify a storage class to test different storage types. Let's see what storage classes we have available in the cluster:
+
+```bash
+oc get storageclass
+```
+```
+NAME                                             PROVISIONER                             RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+ocs-external-storagecluster-ceph-rbd (default)   openshift-storage.rbd.csi.ceph.com      Delete          Immediate           true                   135m
+ocs-external-storagecluster-cephfs               openshift-storage.cephfs.csi.ceph.com   Delete          Immediate           true                   135m
+openshift-storage.noobaa.io                      openshift-storage.noobaa.io/obc         Delete          Immediate           false                  133m
+```
+
+Let's point to the default storage class:
+```bash
+cat > config-fio-sc.yaml <<EOF
+namespace: "benchmark-fio"
+workload:
+  name: "fio"
+  args:
+    kind: "pod"
+    servers: 1
+    samples: 1
+    jobs: ["read"]
+    bs: ["4KiB"]
+    numjobs: [1]
+    filesize: "1G"
+    storageclass: "ocs-external-storagecluster-ceph-rbd"
+    storagesize: "1Gi"
+    prefill: true
+EOF
+```
+
+Note we introduced a couple new parameters:
+
+ * `storageclass`: To use a specific storage class
+ * `storagesize`: Persistent Volume Clain (PVC) size
+
+Let's run the test:
+
+```bash
+k8s-io -config config-fio-sc.yaml
+```
+```
+2025/12/04 13:32:26 Starting K8s-IO benchmark tool...
+2025/12/04 13:32:26 Loaded configuration for workload: fio
+2025/12/04 13:32:26 Created fio workload
+2025/12/04 13:32:26 Starting fio benchmark...
+2025/12/04 13:32:26 Starting FIO distributed benchmark execution...
+2025/12/04 13:32:26 Deploying infrastructure...
+2025/12/04 13:32:26 Waiting for 1 FIO servers to be ready...
+2025/12/04 13:32:26 Waiting for pods: 0/1 ready (selector: app=fio-benchmark-17648731)
+2025/12/04 13:32:41 All 1 servers are ready
+2025/12/04 13:32:41 Creating hosts configmap...
+2025/12/04 13:32:41 Job fio-check-17648731 still running (succeeded: 0, failed: 0, active: 1)
+2025/12/04 13:33:41 Job fio-check-17648731 completed successfully
+2025/12/04 13:33:41 Running prefill job...
+2025/12/04 13:33:41 Job fio-prefill-17648731 still running (succeeded: 0, failed: 0, active: 0)
+2025/12/04 13:34:41 Job fio-prefill-17648731 completed successfully
+2025/12/04 13:34:41 Prefill completed successfully
+2025/12/04 13:34:41 Starting benchmark client...
+2025/12/04 13:34:42 Benchmark client started
+2025/12/04 13:34:42 Waiting for benchmark to complete...
+2025/12/04 13:34:42 Job fio-client-17648731 still running (succeeded: 0, failed: 0, active: 0)
+2025/12/04 13:35:42 Job fio-client-17648731 still running (succeeded: 0, failed: 0, active: 1)
+2025/12/04 13:36:42 Job fio-client-17648731 completed successfully
+2025/12/04 13:36:42 Capturing benchmark results...
+Found 1 FIO result(s)
+
+=== FIO Benchmark Results ===
+Test ID               Sample  Job   Hostname     Read IOPS  Read BW (KB/s)  Write IOPS  Write BW (KB/s)  Read Lat P50 (μs)  Read Lat P95 (μs)  Write Lat P50 (μs)  Write Lat P95 (μs)  Runtime (s)
+-------               ------  ---   --------     ---------  -----------     ----------  ------------     --------------     --------------     ---------------     ---------------     -----------
+17648731_read_4KiB_1  1       read  10.134.0.38  7753.2     31012           0.0         0                399.4              962.6              0.0                 0.0                 31
+
+Results exported to: fio-results-17648731_read_4KiB_1-20251204-133642.csv
+2025/12/04 13:36:42 Benchmark completed successfully!
+```
+
+We can see the test left the Persistent Volume and the pods:
+```bash
+oc get pvc
+```
+```
+NAME                   STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS                           VOLUMEATTRIBUTESCLASS   AGE
+fio-claim-1-17648731   Bound    pvc-138920d0-1ca7-4d7e-93d2-ad5513d17500   1Gi        RWO            ocs-external-storagecluster-ceph-rbd   <unset>                 12m
+```
+
+```bas
+oc get pods -n benchmark-fio
+```
+```
+NAME                              READY   STATUS      RESTARTS   AGE
+fio-check-17648670-srjlk          0/1     Completed   0          120m
+fio-check-17648731-z8fmv          0/1     Completed   0          18m
+fio-client-17648670-wnjqf         0/1     Completed   0          116m
+fio-client-17648731-z79ng         0/1     Completed   0          16m
+fio-prefill-17648670-b5xg8        0/1     Completed   0          117m
+fio-prefill-17648731-jbmvr        0/1     Completed   0          17m
+fio-server-1-benchmark-17648670   1/1     Running     0          120m
+fio-server-1-benchmark-17648731   1/1     Running     0          18m
+fio-server-2-benchmark-17648670   1/1     Running     0          120m
+```
+
+== Cleanup
+
+To clean up the resources after the benchmarking:
+
+```bash
+k8s-io -config config-fio.yaml -cleanup
+k8s-io -config config-fio-sc.yaml -cleanup
+```
