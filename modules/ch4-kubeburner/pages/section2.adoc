@@ -41,7 +41,7 @@ Churn is especially valuable for:
  * Scale-down/scale-up stress tests
  * Multi-tenant simulation environments
 
-=== Basic churn configuration example
+== Basic churn configuration example
 
 The following example:
 
@@ -80,14 +80,14 @@ jobs:
  * They are deleted and recreated
 4. This cycle continues for 2 hours
 
-=== Churn termination conditions
+== Termination conditions
 
 Churn stops when either condition is met first:
 
 * `duration` - Total time to keep churning
 * `cycles` - Total number of churn cycles
 
-==== Cycle-based churn
+=== Cycle-based churn
 
 The following configuration churn runs exactly 10 iterations, regardless of time:
 
@@ -98,7 +98,7 @@ churnConfig:
   cycles: 10
 ```
 
-==== Duration-based churn
+=== Duration-based churn
 
 Churn runs only by time, ignoring cycles:
 
@@ -109,7 +109,7 @@ churnConfig:
   cycles: 0
 ```
 
-=== Churn delay between cycles
+== Delay between cycles
 
 You can pause between churn operations using `delay`:
 
@@ -121,11 +121,11 @@ churnConfig:
 ```
 Each churn wave waits 2 minutes before starting the next delete/recreate cycle.
 
-=== Namespace vs Object modes
+== Namespace vs Object modes
 
 By default, kube-burner churns entire namespaces. You can switch to object-level churning with `mode: objects`.
 
-==== Namespace churn (default)
+=== Namespace churn (default)
 
 ```yaml
 churnConfig:
@@ -136,7 +136,7 @@ churnConfig:
  * Deletes and recreates entire namespaces
  * Heaviest load on API server and controllers
 
-==== Object-level churn
+=== Object-level churn
 
 ```yaml
 churnConfig:
@@ -148,7 +148,7 @@ churnConfig:
  * Namespaces remain intact
  * Better for application-level chaos testing
 
-=== Excluding specific objects
+== Excluding specific objects
 
 Some objects should never be deleted, such as:
 
@@ -171,7 +171,7 @@ objects:
 
 The Deployment will never be deleted during churn, but Services will.
 
-=== Advanced example
+== Advanced example
 
 The following configuration:
 
@@ -207,7 +207,7 @@ jobs:
     replicas: 20
 ```
 
-=== Key rules and constraints
+== Key rules and constraints
 
  * Churn only works for create jobs
  * Requires namespaced iterations
@@ -218,7 +218,7 @@ jobs:
     ** Job types other than `create`
     ** Cluster-scoped only objects
 
-=== Summary
+== Summary
 
 kube-burner's churning feature allows you to:
 
