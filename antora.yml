@@ -4,9 +4,9 @@ version: 1
 nav:
   - modules/ROOT/nav.adoc
   - modules/LABENV/nav.adoc
-  - modules/chapter1/nav.adoc
-  - modules/chapter2/nav.adoc
-  - modules/chapter3/nav.adoc
-  - modules/chapter4/nav.adoc
-  - modules/chapter5/nav.adoc
-  - modules/chapter6/nav.adoc
+  - modules/ch1-intro/nav.adoc
+  - modules/ch2-monitoring/nav.adoc
+  - modules/ch3-bench/nav.adoc
+  - modules/ch4-kubeburner/nav.adoc
+  - modules/ch5-network/nav.adoc
+  - modules/ch6-final/nav.adoc
