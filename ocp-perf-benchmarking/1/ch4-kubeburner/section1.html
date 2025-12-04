@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Configuring kube-burner jobs to simulate cluster churn :: OpenShift performance benchmarking guide</title>
+    <title>Measuring control plane responsiveness :: OpenShift performance benchmarking guide</title>
     <link rel="prev" href="index.html">
     <link rel="next" href="section2.html">
     <meta name="generator" content="Antora 3.1.3">
@@ -174,445 +174,115 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Configuring kube-burner jobs to simulate cluster churn</h1>
+<h1 class="page">Measuring control plane responsiveness</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Cluster churn is a critical real-world behavior where workloads are continuously created and deleted. Simulating this behavior helps uncover issues in scheduling, garbage collection, API performance, controller reconciliation, and control-plane stability. kube-burner provides native support for controlled workload churning to model these conditions at scale.</p>
+<p>Measuring control plane responsiveness is crucial for ensuring a Kubernetes (k8s) cluster&#8217;s stability and performance under varying loads, particularly when simulating churn scenarios with tools like kube-burner. The control plane components, including the API server, etcd, and controller manager, must be responsive to maintain optimal cluster operations.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_understanding_control_plane_metrics"><a class="anchor" href="#_understanding_control_plane_metrics"></a>Understanding control plane metrics</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>This tutorial walks you through what churn is, how it works, and exactly how to configure it in kube-burner.</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_1_what_is_churn_in_kube_burner"><a class="anchor" href="#_1_what_is_churn_in_kube_burner"></a>1. What is <code>churn</code> in kube-burner?</h3>
-<div class="paragraph">
-<p>In kube-burner, churn refers to the cyclic deletion and re-creation of workloads after the initial job completes.</p>
-</div>
-<div class="paragraph">
-<p><strong>Churning</strong>:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Randomly selects a subset of namespaces or objects</p>
-</li>
-<li>
-<p>Deletes them</p>
-</li>
-<li>
-<p>Recreates them using the original job templates</p>
-</li>
-<li>
-<p>Repeats this process for a defined duration or number of cycles</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>This simulates</strong>:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Auto-scaling environments</p>
-</li>
-<li>
-<p>CI/CD redeployments</p>
-</li>
-<li>
-<p>Unstable or bursty workloads</p>
-</li>
-<li>
-<p>Real-world production traffic patterns</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>⚠️ Important: Churn is supported only for create jobs and only for namespace-based jobs.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_2_when_should_you_use_churn"><a class="anchor" href="#_2_when_should_you_use_churn"></a>2. When should you use churn?</h3>
-<div class="paragraph">
-<p>You should enable churning when testing:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>API server behavior under continuous load</p>
-</li>
-<li>
-<p>Scheduler and controller stability</p>
-</li>
-<li>
-<p>Namespace lifecycle performance</p>
-</li>
-<li>
-<p>Garbage collection efficiency</p>
-</li>
-<li>
-<p>Control plane memory and CPU leaks</p>
-</li>
-<li>
-<p>Network and CNI stability under load</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Churn is especially valuable for:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Long-running soak tests</p>
-</li>
-<li>
-<p>Scale-down/scale-up stress tests</p>
-</li>
-<li>
-<p>Multi-tenant simulation environments</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_3_basic_churn_configuration_example"><a class="anchor" href="#_3_basic_churn_configuration_example"></a>3. Basic churn configuration example</h3>
-<div class="paragraph">
-<p>The example below:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Creates 100 namespaces</p>
-</li>
-<li>
-<p>Churns 20% of them</p>
-</li>
-<li>
-<p>Runs for 2 hours</p>
-</li>
-<li>
-<p>Recreates 10 Deployments and 10 Services per namespace</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">jobs:
-- name: churning-job
-  jobIterations: 100
-  namespacedIterations: true
-  namespace: churn-test
-
-  churnConfig:
-    percent: 20
-    duration: 2h
-
-  objects:
-  - objectTemplate: deployment.yml
-    replicas: 10
-
-  - objectTemplate: service.yml
-    replicas: 10</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>What Happens Here?</strong></p>
+<p>Before diving into measuring control plane responsiveness, it&#8217;s essential to understand relevant metrics:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>kube-burner creates 100 namespaces</p>
+<p><strong>API server latency</strong>: Measures how quickly the API server responds to client requests in milliseconds (ms). High latency may indicate performance issues or overloaded resources.</p>
 </li>
 <li>
-<p>Each namespace gets:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>10 Deployments</p>
+<p><strong>etcd performance</strong>: etcd is responsible for k8s cluster state persistence. Key metrics include read/write operation success rates, latency, and resource usage like CPU and memory.</p>
 </li>
 <li>
-<p>10 Services</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>After job completion:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>20 namespaces (20%) are randomly selected</p>
-</li>
-<li>
-<p>They are deleted and recreated</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>This cycle continues for 2 hours</p>
+<p><strong>Controller Manager responsiveness</strong>: This metric assesses how efficiently controllers process the cluster&#8217;s desired state, replicating it in reality. Delays here might lead to pod scheduling failures or other control loop issues.</p>
 </li>
 </ol>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_4_churn_termination_conditions"><a class="anchor" href="#_4_churn_termination_conditions"></a>4. Churn termination conditions</h3>
+</div>
+<div class="sect1">
+<h2 id="_utilizing_kube_burner_for_control_plane_testing"><a class="anchor" href="#_utilizing_kube_burner_for_control_plane_testing"></a>Utilizing kube-burner for Control Plane Testing</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Churn stops when either condition is met first:</p>
+<p>kube-burner is a powerful tool designed to simulate various churn scenarios within a k8s cluster, providing valuable insights into its behavior under stress and helping to validate its resilience. Here’s how to configure kube-burner jobs for measuring control plane responsiveness:</p>
+</div>
+<div class="sect2">
+<h3 id="_enable_pod_latency_measurements"><a class="anchor" href="#_enable_pod_latency_measurements"></a>Enable pod latency measurements</h3>
+<div class="paragraph">
+<p>Kube-burner collects pod latency metrics across different phases of pod startup, crucial for evaluating the API server&#8217;s performance. To enable this feature:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">global:
+  measurements:
+    - name: podLatency
+    - name: serviceLatency</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configure_kube_burner_jobs"><a class="anchor" href="#_configure_kube_burner_jobs"></a>Configure kube-burner jobs</h3>
+<div class="paragraph">
+<p>Next, set up specific jobs tailored for control plane responsiveness testing:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">jobs:
+- name: controlplane_stress
+  # Specify the type of churn you want to simulate, e.g., pod creations/deletions
+  type: pod_create_delete
+  duration: 60m
+  args:
+    - --namespace=kube-burner
+    - --count=50</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This job simulates creating and deleting 50 pods within the <code>kube-burner</code> namespace over a 60-minute period, stressing control plane components like the API server and etcd.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_analyze_results"><a class="anchor" href="#_analyze_results"></a>Analyze results</h3>
+<div class="paragraph">
+<p>After running the job with <code>kubeburner run controlplane_stress</code>, kube-burner will generate detailed metrics and logs. Focus on pod latency measurements from the <code>global.measurements.podLatency</code> output, which reflects API server responsiveness under stress:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell"># Example of examining pod latency using jq (requires jq to be installed)
+kubectl exec -n kube-burner &lt;kube-burner-pod&gt; -- cat /var/lib/kube-burner/results.json | jq '.results[].measurements[] | select(.name == "podLatency") | .values'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_troubleshooting"><a class="anchor" href="#_troubleshooting"></a>Troubleshooting</h3>
+<div class="paragraph">
+<p>Should control plane latency exceed acceptable thresholds, investigate potential causes:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>duration</code> - Total time to keep churning</p>
+<p><strong>Resource Constraints</strong>: Check if the control plane nodes are adequately provisioned (CPU, memory).</p>
 </li>
 <li>
-<p><code>cycles</code> - Total number of churn cycles</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>Example: Cycle-based churn only</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">churnConfig:
-  percent: 30
-  cycles: 10</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Churn runs exactly 10 iterations, regardless of time.</p>
-</div>
-<div class="paragraph">
-<p><strong>Example: Duration-based churn only</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">churnConfig:
-  percent: 25
-  duration: 1h
-  cycles: 0</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Churn runs only by time, ignoring cycles.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_5_churn_delay_between_cycles"><a class="anchor" href="#_5_churn_delay_between_cycles"></a>5. Churn delay between cycles</h3>
-<div class="paragraph">
-<p>You can pause between churn operations using <code>delay</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">churnConfig:
-  percent: 20
-  duration: 1h
-  delay: 2m</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Each churn wave waits 2 minutes before starting the next delete/recreate cycle.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_6_namespace_vs_object_churn_modes"><a class="anchor" href="#_6_namespace_vs_object_churn_modes"></a>6. Namespace vs Object churn modes</h3>
-<div class="paragraph">
-<p>By default, kube-burner churns entire namespaces. You can
-switch to object-level churn with <code>mode: objects</code>.</p>
-</div>
-<div class="paragraph">
-<p><strong>Namespace Churn (Default)</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">churnConfig:
-  percent: 20
-  mode: namespaces</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Deletes and recreates entire namespaces</p>
+<p><strong>etcd Performance</strong>: Inspect etcd metrics for bottlenecks or high load conditions.</p>
 </li>
 <li>
-<p>Heaviest load on API server and controllers</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>Object-level Churn</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">churnConfig:
-  percent: 20
-  mode: objects</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Deletes objects only inside namespaces</p>
-</li>
-<li>
-<p>Namespaces remain intact</p>
-</li>
-<li>
-<p>Better for application-level chaos testing</p>
+<p><strong>Network Latency</strong>: Ensure network communication between control plane components is not introducing delays.</p>
 </li>
 </ul>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_7_excluding_specific_objects_from_churn"><a class="anchor" href="#_7_excluding_specific_objects_from_churn"></a>7. Excluding Specific Objects from Churn</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion"><a class="anchor" href="#_conclusion"></a>Conclusion</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Some objects should never be deleted, such as:</p>
+<p>Measuring control plane responsiveness with kube-burner provides invaluable insights into a k8s cluster&#8217;s performance and resilience under simulated churn scenarios. By carefully configuring jobs to focus on relevant metrics and thoroughly analyzing the results, you can identify and address performance bottlenecks, ensuring your cluster operates efficiently even under heavy loads.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>RBAC</p>
-</li>
-<li>
-<p>CRDs</p>
-</li>
-<li>
-<p>Storage classes</p>
-</li>
-<li>
-<p>Base networking objects</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>You can disable churn per object:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">objects:
-- objectTemplate: deployment.yml
-  replicas: 10
-  churn: false
-
-- objectTemplate: service.yml
-  replicas: 10</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The Deployment will never be deleted during churn, but Services will.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_8_full_advanced_churn_example"><a class="anchor" href="#_8_full_advanced_churn_example"></a>8. Full Advanced Churn Example</h3>
-<div class="paragraph">
-<p>This configuration:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Creates 200 namespaces</p>
-</li>
-<li>
-<p>Churns 15% of them</p>
-</li>
-<li>
-<p>Runs for 90 minutes</p>
-</li>
-<li>
-<p>Waits 1 minute between churn cycles</p>
-</li>
-<li>
-<p>Churns only objects</p>
-</li>
-<li>
-<p>Protects one critical object</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">jobs:
-- name: advanced-churn
-  jobIterations: 200
-  namespacedIterations: true
-  namespace: advanced-churn
-
-  churnConfig:
-    percent: 15
-    duration: 90m
-    delay: 1m
-    mode: objects
-
-  objects:
-  - objectTemplate: critical-config.yml
-    replicas: 1
-    churn: false
-
-  - objectTemplate: workload.yml
-    replicas: 20
-
-  - objectTemplate: service.yml
-    replicas: 20</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_9_key_rules_and_constraints"><a class="anchor" href="#_9_key_rules_and_constraints"></a>9. Key Rules and Constraints</h3>
-<div class="paragraph">
-<p>✅ Churn only works for create jobs</p>
-</div>
-<div class="paragraph">
-<p>✅ Requires namespacedIterations: true</p>
-</div>
-<div class="paragraph">
-<p>✅ Either cycles or duration must be set</p>
-</div>
-<div class="paragraph">
-<p>✅ Churn happens after job completion, before metrics upload</p>
-</div>
-<div class="paragraph">
-<p>✅ Works with both namespace-level and object-level deletion.</p>
-</div>
-<div class="paragraph">
-<p>❌ Cannot be used with:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Job types other than <code>create</code>.</p>
-</li>
-<li>
-<p>Cluster-scoped only objects</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_10_summary"><a class="anchor" href="#_10_summary"></a>10. Summary</h3>
-<div class="paragraph">
-<p>kube-burner&#8217;s churning feature allows you to:</p>
-</div>
-<div class="paragraph">
-<p>✔ Simulate real production instability</p>
-</div>
-<div class="paragraph">
-<p>✔ Stress test control-plane resilience</p>
-</div>
-<div class="paragraph">
-<p>✔ Validate cleanup, GC, and reconciliation logic</p>
-</div>
-<div class="paragraph">
-<p>✔ Detect scaling issues early</p>
-</div>
-<div class="paragraph">
-<p>✔ Perform chaos-like testing without external tools</p>
-</div>
-<div class="paragraph">
-<p>It is a first-class primitive for realistic k8s performance testing and should be part of any serious scale or soak test strategy.</p>
 </div>
 </div>
 <nav class="pagination">
