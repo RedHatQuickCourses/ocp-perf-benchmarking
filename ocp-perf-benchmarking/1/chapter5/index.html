@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Control plane and scalability testing with kube-burner :: OpenShift performance benchmarking guide</title>
+    <title>Final review and key takeaways :: OpenShift performance benchmarking guide</title>
     <link rel="prev" href="../chapter4/section3.html">
-    <link rel="next" href="section1.html">
+    <link rel="next" href="../chapter6/index.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -112,26 +112,26 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Control Plane and Scalability Testing with kube-burner</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section1.html">Configuring kube-burner jobs to simulate cluster churn</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section2.html">Measuring Control Plane Responsiveness</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section3.html">Hands-on with kube-burner</a>
-  </li>
-</ul>
+    <a class="nav-link" href="index.html">Final Review and Key Takeaways</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter6/index.html">Final Review and Key Takeaways</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter6/index.html">Control Plane and Scalability Testing with kube-burner</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter6/section1.html">Configuring kube-burner jobs to simulate cluster churn</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter6/section2.html">Measuring Control Plane Responsiveness</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter6/section3.html">Hands-on with kube-burner</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -164,7 +164,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">OpenShift performance benchmarking guide</a></li>
-    <li><a href="index.html">Control Plane and Scalability Testing with kube-burner</a></li>
+    <li><a href="index.html">Final Review and Key Takeaways</a></li>
   </ul>
 </nav>
 </div>
@@ -173,138 +173,70 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Control plane and scalability testing with kube-burner</h1>
-<div class="sect1">
-<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
+<h1 class="page">Final review and key takeaways</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Modern Kubernetes and OpenShift environments operate at massive scale, where even small inefficiencies in the control plane can lead to significant reliability, performance, and cost issues. Continuous control plane and scalability testing is essential to ensure that clusters remain stable and responsive as workload density, node count, and API activity increase.</p>
+<p>This course has taken you through the essential techniques and best practices for benchmarking the performance of an OpenShift cluster using Kubernetes-native tooling. By combining the platform&#8217;s built-in observability stack with powerful tools such as kube-burner, k8s-netperf, ingress-perf, etc. you&#8217;ve gained practical experience in evaluating cluster behavior under load, identifying bottlenecks, and building repeatable testing workflows.</p>
 </div>
 <div class="paragraph">
-<p>This tutorial introduces <a href="https://github.com/kube-burner/kube-burner">kube-burner</a>, a CNCF project with advanced performance and scale testing toolset designed to generate realistic k8s workloads and stress patterns. You will learn how kube-burner can be used to validate cluster scalability, uncover regressions, measure key performance indicators (KPIs), and provide actionable insights for both infrastructure and platform teams.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_what_youll_learn"><a class="anchor" href="#_what_youll_learn"></a>What you&#8217;ll learn</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>By the end of this tutorial, you will be able to:</p>
+<p>Throughout the hands-on labs, you learned how to:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Understand the role of control plane and scalability testing in Kubernetes and OpenShift.</p>
+<p><strong>Define performance objectives</strong> that align with real operational needs.</p>
 </li>
 <li>
-<p>Set up and configure kube-burner for large-scale workload generation.</p>
+<p><strong>Establish reliable baselines</strong> to detect performance regressions over time.</p>
 </li>
 <li>
-<p>Execute benchmark and custom workload scenarios to simulate real-world cluster behavior.</p>
+<p><strong>Stress-test the control plane</strong> to understand API server behavior, scheduling pressure and cluster stability under load.</p>
 </li>
 <li>
-<p>Measure and analyze some key performance metrics such as:</p>
+<p><strong>Benchmark the data plane</strong>, including network throughput, latency and corresponding resource consumption.</p>
+</li>
+<li>
+<p><strong>Interpret and visualize results</strong> using Prometheus, Grafana, and other native observability tools.</p>
+</li>
+<li>
+<p><strong>Apply structured analysis</strong> to derive clear, actionable insights from your benchmarking runs.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Although storage, application benchmarks, and chaos engineering were out of scope, you now possess a strong foundation to continue exploring more advanced performance domains.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_key_takeaways"><a class="anchor" href="#_key_takeaways"></a>Key Takeaways</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>API server latency and throughput</p>
+<p><strong>Performance benchmarking is proactive, not reactive</strong> — establishing baselines and running routine tests helps detect issues before they become outages.</p>
 </li>
 <li>
-<p>Etcd performance</p>
+<p><strong>Kubernetes-native tools are powerful and lightweight</strong>, allowing you to test using the same APIs and workflows the platform itself relies on.</p>
 </li>
 <li>
-<p>Runtime measurements like pod readiness latency</p>
+<p><strong>Observability is inseparable from performance</strong> — meaningful benchmarking requires metrics, logs and structured dashboards.</p>
 </li>
 <li>
-<p>Control plane resource utilization</p>
+<p><strong>Repeatability is essential</strong> — consistent methodologies and parameterized test runs ensure your data is trustworthy and comparable over time.</p>
+</li>
+<li>
+<p><strong>Every cluster is different</strong> — performance tuning is an iterative, environment-specific process driven by real data, not guesswork.</p>
 </li>
 </ul>
-</div>
-</li>
-<li>
-<p>Ways to collect and visualize kube-burner metrics.</p>
-</li>
-<li>
-<p>Integrate kube-burner into CI/CD pipelines for Continuous Performance Testing (CPT).</p>
-</li>
-<li>
-<p>Interpret results to drive capacity planning, tuning, and product readiness decisions.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_conclusion"><a class="anchor" href="#_conclusion"></a>Conclusion</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Scalability and control plane performance are foundational to the reliability of any Kubernetes-based platform. kube-burner enables teams to move from reactive performance testing to a proactive, automated, and data-driven testing strategy. By combining large-scale workload generation, metrics collection, and deep observability, kube-burner helps ensure that your platform remains performant as features, releases, and customer usage evolve.</p>
 </div>
 <div class="paragraph">
-<p>Adopting kube-burner as part of your continuous testing strategy strengthens product quality, reduces production risk, and accelerates confident release cycles.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next steps</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>To continue your learning journey:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Start with the kube-burner installation and setup guide.</p>
-</li>
-<li>
-<p>Learn to configure and simulate a churn job.</p>
-</li>
-<li>
-<p>Explore custom workload profiles tailored to your environment.</p>
-</li>
-<li>
-<p>Connect test results to monitoring dashboards (Prometheus, Grafana, Elasticsearch, etc.) for deeper analysis.</p>
-</li>
-<li>
-<p>Try kube-burner hands on in the lab environment.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_see_also"><a class="anchor" href="#_see_also"></a>See also</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://developers.redhat.com/articles/2024/03/04/test-kubernetes-performance-and-scale-kube-burner">kube-burner Blog Post</a></p>
-</li>
-<li>
-<p><a href="https://dl.acm.org/doi/10.1145/3629527.3651405">kube-burner ICPE Publication</a></p>
-</li>
-<li>
-<p><a href="https://github.com/kube-burner/kube-burner">kube-burner GitHub Repository</a></p>
-</li>
-<li>
-<p><a href="https://kube-burner.github.io/kube-burner/latest/">kube-burner Official Documentation</a></p>
-</li>
-<li>
-<p><a href="https://www.youtube.com/watch?v=gaKnW5o_FIk">Performance &amp; Scale testing with kube-burner</a></p>
-</li>
-<li>
-<p><a href="https://medium.com/@jay.gokani/observability-with-prometheus-and-grafana-c865b68617b2">Prometheus &amp; Grafana for Performance Observability</a></p>
-</li>
-<li>
-<p><a href="https://developers.redhat.com/articles/2025/10/15/how-red-hat-has-redefined-continuous-performance-testing#what_s_next">Continuous Performance Testing (CPT) in CI/CD</a></p>
-</li>
-</ul>
-</div>
+<p>With these skills, you are now better equipped to ensure your OpenShift environments remain stable, resilient, and efficient—even under demanding workloads.</p>
 </div>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="../chapter4/section3.html">Ingress Controller Benchmarking and Analysis</a></span>
-  <span class="next"><a href="section1.html">Configuring kube-burner jobs to simulate cluster churn</a></span>
+  <span class="next"><a href="../chapter6/index.html">Control Plane and Scalability Testing with kube-burner</a></span>
 </nav>
 </article>
   </div>
