@@ -35,7 +35,7 @@ oc get co    # ClusterOperators
 
 === ElasticSearch
 
-Let's make sure the ElasticSearch instance that we need to index the benchmarking results through the course is available and responsive.
+Let's make sure the ElasticSearch instance that we need to index the benchmarking results through the course is available and responsive:
 
 1. Get password:
 
@@ -70,7 +70,7 @@ Let's make sure the ElasticSearch instance that we need to index the benchmarkin
 
 === Grafana
 
-Let's make sure the Grafana instance that we need to visualize the benchmarking results through the course is available and responsive.
+Let's make sure the Grafana instance that we need to visualize the benchmarking results through the course is available and responsive:
 
 1. Get Grafana route URL:
 

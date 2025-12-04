@@ -15,8 +15,8 @@ On completing this course, you should gain skills to proactively measure, analyz
  * Identify bottlenecks
  * Get familiar with Kubernetes-native benchmarking tools
  * Establish a baseline
+ * Stress-test the control plane
  * Benchmark the data plane
- * Stress-Test the control plane
  * Analytical and reporting abilities
 
 == Out of scope
