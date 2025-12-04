@@ -557,7 +557,7 @@ Let's create the *Kube-burner Report* dashboard in Grafana and visualize the ind
 
 +
 .ElasticSearch setup
-image::grafana-es-config.png[width=300]
+image::grafana-es-config.png[width=450]
 
 5. Let's visualize the report in the newly created *Kube-burner Report* dashboard:
 

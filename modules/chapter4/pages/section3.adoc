@@ -93,8 +93,6 @@ time="2025-11-28 15:25:10" level=info msg="Cleaning up resources" file="runner.g
 
 Check out the `ingress-perf run --help` for more info about the allowed flags.
 
-The metrics
-
 Note that ingress-perf cleans up the resources after the benchmarks are complete, so you don't need to clean up manually.
 
 
@@ -187,7 +185,7 @@ Let's create the *Ingress Performance nextgen* dashboard in Grafana and visualiz
 
 +
 .ElasticSearch setup
-image::ingress-es.png[width=300]
+image::ingress-es.png[width=450]
 
 5. Let's visualize the report in the newly created *Ingress Performance nextgen* dashboard:
 
