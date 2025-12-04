@@ -1,4 +1,4 @@
 * xref:index.adoc[Control Plane and Scalability Testing with kube-burner]
-** xref:section1.adoc[Configuring kube-burner jobs to simulate cluster churn]
-** xref:section2.adoc[Measuring Control Plane Responsiveness]
+** xref:section1.adoc[Measuring Control Plane Responsiveness]
+** xref:section2.adoc[Configuring kube-burner jobs to simulate cluster churn]
 ** xref:section3.adoc[Hands-on with kube-burner]
