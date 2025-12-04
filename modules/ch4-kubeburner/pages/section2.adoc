@@ -4,53 +4,53 @@ Cluster churn is a critical real-world behavior where workloads are continuously
 
 This tutorial walks you through what churn is, how it works, and exactly how to configure it in kube-burner.
 
-### 1. What is `churn` in kube-burner?
+=== What is churn in kube-burner?
 
-In kube-burner, churn refers to the cyclic deletion and re-creation of workloads after the initial job completes. 
+In kube-burner, churn refers to the cyclic deletion and re-creation of workloads after the initial job completes.
 
 *Churning*:
 
-* Randomly selects a subset of namespaces or objects
-* Deletes them
-* Recreates them using the original job templates
-* Repeats this process for a defined duration or number of cycles
+ * Randomly selects a subset of namespaces or objects
+ * Deletes them
+ * Recreates them using the original job templates
+ * Repeats this process for a defined duration or number of cycles
 
 *This simulates*:
 
-* Auto-scaling environments
-* CI/CD redeployments
-* Unstable or bursty workloads
-* Real-world production traffic patterns
+ * Auto-scaling environments
+ * CI/CD redeployments
+ * Unstable or bursty workloads
+ * Real-world production traffic patterns
 
-⚠️ Important: Churn is supported only for create jobs and only for namespace-based jobs.
+NOTE: Churn is supported only for create jobs and only for namespace-based jobs.
 
-### 2. When should you use churn?
+=== When should you use churn?
 
 You should enable churning when testing:
 
-* API server behavior under continuous load
-* Scheduler and controller stability
-* Namespace lifecycle performance
-* Garbage collection efficiency
-* Control plane memory and CPU leaks
-* Network and CNI stability under load
+ * API server behavior under continuous load
+ * Scheduler and controller stability
+ * Namespace lifecycle performance
+ * Garbage collection efficiency
+ * Control plane memory and CPU leaks
+ * Network and CNI stability under load
 
 Churn is especially valuable for:
 
-* Long-running soak tests
-* Scale-down/scale-up stress tests
-* Multi-tenant simulation environments
+ * Long-running soak tests
+ * Scale-down/scale-up stress tests
+ * Multi-tenant simulation environments
 
-### 3. Basic churn configuration example
+### Basic churn configuration example
 
 The example below:
 
-* Creates 100 namespaces
-* Churns 20% of them
-* Runs for 2 hours
-* Recreates 10 Deployments and 10 Services per namespace
+ * Creates 100 namespaces
+ * Churns 20% of them
+ * Runs for 2 hours
+ * Recreates 10 Deployments and 10 Services per namespace
 
-```
+```yaml
 jobs:
 - name: churning-job
   jobIterations: 100
@@ -68,6 +68,7 @@ jobs:
   - objectTemplate: service.yml
     replicas: 10
 ```
+
 *What Happens Here?*
 
 1. kube-burner creates 100 namespaces
@@ -81,33 +82,40 @@ jobs:
 * They are deleted and recreated
 4. This cycle continues for 2 hours
 
-### 4. Churn termination conditions
+=== Churn termination conditions
 
 Churn stops when either condition is met first:
 
 * `duration` - Total time to keep churning
 * `cycles` - Total number of churn cycles
 
-*Example: Cycle-based churn only*
-```
+==== Cycle-based churn
+
+The following configuration churn runs exactly 10 iterations, regardless of time:
+
+
+```yaml
 churnConfig:
   percent: 30
   cycles: 10
 ```
-Churn runs exactly 10 iterations, regardless of time.
 
-*Example: Duration-based churn only*
-```
+==== Duration-based churn
+
+Churn runs only by time, ignoring cycles:
+
+```yaml
 churnConfig:
   percent: 25
   duration: 1h
   cycles: 0
 ```
-Churn runs only by time, ignoring cycles.
 
-### 5. Churn delay between cycles
+=== Churn delay between cycles
+
 You can pause between churn operations using `delay`:
-```
+
+```yaml
 churnConfig:
   percent: 20
   duration: 1h
@@ -115,40 +123,45 @@ churnConfig:
 ```
 Each churn wave waits 2 minutes before starting the next delete/recreate cycle.
 
-### 6. Namespace vs Object churn modes
-By default, kube-burner churns entire namespaces. You can 
-switch to object-level churn with `mode: objects`.
+=== Namespace vs Object churn modes
 
-*Namespace Churn (Default)*
-```
+By default, kube-burner churns entire namespaces. You can switch to object-level churning with `mode: objects`.
+
+==== Namespace Churn (Default)
+
+```yaml
 churnConfig:
   percent: 20
   mode: namespaces
 
 ```
-* Deletes and recreates entire namespaces
-* Heaviest load on API server and controllers
+ * Deletes and recreates entire namespaces
+ * Heaviest load on API server and controllers
 
-*Object-level Churn*
-```
+==== Object-level Churn
+
+```yaml
 churnConfig:
   percent: 20
   mode: objects
 ```
-* Deletes objects only inside namespaces
-* Namespaces remain intact
-* Better for application-level chaos testing
 
-### 7. Excluding Specific Objects from Churn
+ * Deletes objects only inside namespaces
+ * Namespaces remain intact
+ * Better for application-level chaos testing
+
+=== Excluding Specific Objects from Churn
+
 Some objects should never be deleted, such as:
 
-* RBAC
-* CRDs
-* Storage classes
-* Base networking objects
+ * RBAC
+ * CRDs
+ * Storage classes
+ * Base networking objects
 
 You can disable churn per object:
-```
+
+```yaml
 objects:
 - objectTemplate: deployment.yml
   replicas: 10
@@ -157,18 +170,21 @@ objects:
 - objectTemplate: service.yml
   replicas: 10
 ```
+
 The Deployment will never be deleted during churn, but Services will.
 
-### 8. Full Advanced Churn Example
-This configuration:
+=== Advanced churn example
 
-* Creates 200 namespaces
-* Churns 15% of them
-* Runs for 90 minutes
-* Waits 1 minute between churn cycles
-* Churns only objects
-* Protects one critical object
-```
+The following configuration:
+
+ * Creates 200 namespaces
+ * Churns 15% of them
+ * Runs for 90 minutes
+ * Waits 1 minute between churn cycles
+ * Churns only objects
+ * Protects one critical object
+
+```yaml
 jobs:
 - name: advanced-churn
   jobIterations: 200
@@ -193,36 +209,26 @@ jobs:
     replicas: 20
 ```
 
-### 9. Key Rules and Constraints
+### Key Rules and Constraints
 
-✅ Churn only works for create jobs
+ * Churn only works for create jobs
+ * Requires namespaced iterations
+ * Either cycles or duration must be set
+ * Churn happens after job completion, before the metrics upload
+ * Works with both namespace-level and object-level deletion
+ * Cannot be used with:
+    ** Job types other than `create`
+    ** Cluster-scoped only objects
 
-✅ Requires namespacedIterations: true   
-
-✅ Either cycles or duration must be set  
-
-✅ Churn happens after job completion, before metrics upload   
-
-✅ Works with both namespace-level and object-level deletion.   
-
-❌ Cannot be used with:
-
-* Job types other than `create`.
-* Cluster-scoped only objects
-
-### 10. Summary
+### Summary
 
 kube-burner's churning feature allows you to:
 
-✔ Simulate real production instability
-
-✔ Stress test control-plane resilience
-
-✔ Validate cleanup, GC, and reconciliation logic
-
-✔ Detect scaling issues early
-
-✔ Perform chaos-like testing without external tools
+ * Simulate real production instability
+ * Stress test control-plane resilience
+ * Validate cleanup, GC, and reconciliation logic
+ * Detect scaling issues early
+ * Perform chaos-like testing without external tools
 
 It is a first-class primitive for realistic k8s performance testing and should be part of any serious scale or soak test strategy.
 
