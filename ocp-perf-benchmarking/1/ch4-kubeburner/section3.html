@@ -182,8 +182,9 @@
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites:</h3>
+<div class="sect1">
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites:</h2>
+<div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -197,8 +198,8 @@
 </li>
 </ol>
 </div>
-<div class="sect3">
-<h4 id="_install_kube_burner_ocp"><a class="anchor" href="#_install_kube_burner_ocp"></a>Install kube-burner-ocp</h4>
+<div class="sect2">
+<h3 id="_install_kube_burner_ocp"><a class="anchor" href="#_install_kube_burner_ocp"></a>Install kube-burner-ocp</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -Ls https://raw.githubusercontent.com/kube-burner/kube-burner-ocp/refs/heads/main/hack/install.sh | sh</code></pre>
@@ -212,10 +213,8 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kube-burner-ocp help</code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_objective"><a class="anchor" href="#_objective"></a>Objective:</h3>
+<div class="sect3">
+<h4 id="_objective"><a class="anchor" href="#_objective"></a>Objective:</h4>
 <div class="paragraph">
 <p>By the end of this lab activity, you should be able to:</p>
 </div>
@@ -233,10 +232,11 @@
 </ol>
 </div>
 </div>
+</div>
 <div class="sect2">
 <h3 id="_step_by_step_hands_on_activity"><a class="anchor" href="#_step_by_step_hands_on_activity"></a>Step-by-step Hands-on Activity:</h3>
 <div class="sect3">
-<h4 id="_1_setting_up_kube_burner_configuration_files"><a class="anchor" href="#_1_setting_up_kube_burner_configuration_files"></a>1. Setting up kube-burner configuration files</h4>
+<h4 id="_setting_up_kube_burner_configuration_files"><a class="anchor" href="#_setting_up_kube_burner_configuration_files"></a>Setting up kube-burner configuration files</h4>
 <div class="paragraph">
 <p>kube-burner uses YAML configuration files to define jobs, which dictate the resources it will create, delete, or manipulate in your Kubernetes cluster. You can find example configuration files and metrics profiles in the [kube-burner examples directory](<a href="https://github.com/cloud-bulldozer/kube-burner/tree/master/examples" class="bare">https://github.com/cloud-bulldozer/kube-burner/tree/master/examples</a>).</p>
 </div>
@@ -268,7 +268,7 @@ spec:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_2_running_kube_burner_job"><a class="anchor" href="#_2_running_kube_burner_job"></a>2. Running kube-burner job</h4>
+<h4 id="_running_kube_burner_job"><a class="anchor" href="#_running_kube_burner_job"></a>Running kube-burner job</h4>
 <div class="paragraph">
 <p>Now that we have a configuration file ready, let&#8217;s run our job against the target Kubernetes cluster:</p>
 </div>
@@ -290,7 +290,7 @@ spec:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_3_measuring_control_plane_responsiveness"><a class="anchor" href="#_3_measuring_control_plane_responsiveness"></a>3. Measuring Control Plane Responsiveness</h4>
+<h4 id="_measuring_control_plane_responsiveness"><a class="anchor" href="#_measuring_control_plane_responsiveness"></a>Measuring Control Plane Responsiveness</h4>
 <div class="paragraph">
 <p>While the job is running, kube-burner will collect Prometheus metrics related to control plane components (kube-apiserver, etcd, etc.). To view these metrics, set up Grafana with a predefined dashboard or use <code>curl</code> to fetch metrics directly from the Kube-API server:</p>
 </div>
@@ -304,7 +304,7 @@ spec:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_4_analyzing_results"><a class="anchor" href="#_4_analyzing_results"></a>4. Analyzing Results</h4>
+<h4 id="_analyzing_results"><a class="anchor" href="#_analyzing_results"></a>Analyzing Results</h4>
 <div class="paragraph">
 <p>Once the job completes, analyze the collected Prometheus metrics to evaluate control plane responsiveness under stress. Key metrics to observe include:</p>
 </div>
@@ -868,6 +868,8 @@ time="2025-12-03 08:36:05" level=info msg="👋 kube-burner run completed with r
 <h3 id="_conclusion"><a class="anchor" href="#_conclusion"></a>Conclusion</h3>
 <div class="paragraph">
 <p>This hands-on activity has demonstrated how to configure and run kube-burner jobs for simulating control plane churn and measuring responsiveness. Through practical exercises like this, users can gain valuable insights into Kubernetes cluster performance under stress conditions. Remember to consult the comprehensive [kube-burner documentation](<a href="https://cloud-bulldozer.github.io/kube-burner/" class="bare">https://cloud-bulldozer.github.io/kube-burner/</a>) for more in-depth guidance on using kube-burner&#8217;s features and understanding test results.</p>
+</div>
+</div>
 </div>
 </div>
 <nav class="pagination">
