@@ -186,7 +186,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="_1_what_is_churn_in_kube_burner"><a class="anchor" href="#_1_what_is_churn_in_kube_burner"></a>1. What is <code>churn</code> in kube-burner?</h3>
+<h3 id="_what_is_churn_in_kube_burner"><a class="anchor" href="#_what_is_churn_in_kube_burner"></a>What is churn in kube-burner?</h3>
 <div class="paragraph">
 <p>In kube-burner, churn refers to the cyclic deletion and re-creation of workloads after the initial job completes.</p>
 </div>
@@ -228,12 +228,21 @@
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>⚠️ Important: Churn is supported only for create jobs and only for namespace-based jobs.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Churn is supported only for create jobs and only for namespace-based jobs.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_2_when_should_you_use_churn"><a class="anchor" href="#_2_when_should_you_use_churn"></a>2. When should you use churn?</h3>
+<h3 id="_when_should_you_use_churn"><a class="anchor" href="#_when_should_you_use_churn"></a>When should you use churn?</h3>
 <div class="paragraph">
 <p>You should enable churning when testing:</p>
 </div>
@@ -277,7 +286,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_basic_churn_configuration_example"><a class="anchor" href="#_3_basic_churn_configuration_example"></a>3. Basic churn configuration example</h3>
+<h3 id="_basic_churn_configuration_example"><a class="anchor" href="#_basic_churn_configuration_example"></a>Basic churn configuration example</h3>
 <div class="paragraph">
 <p>The example below:</p>
 </div>
@@ -299,7 +308,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">jobs:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">jobs:
 - name: churning-job
   jobIterations: 100
   namespacedIterations: true
@@ -358,7 +367,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="_4_churn_termination_conditions"><a class="anchor" href="#_4_churn_termination_conditions"></a>4. Churn termination conditions</h3>
+<h3 id="_churn_termination_conditions"><a class="anchor" href="#_churn_termination_conditions"></a>Churn termination conditions</h3>
 <div class="paragraph">
 <p>Churn stops when either condition is met first:</p>
 </div>
@@ -372,42 +381,42 @@
 </li>
 </ul>
 </div>
+<div class="sect3">
+<h4 id="_cycle_based_churn"><a class="anchor" href="#_cycle_based_churn"></a>Cycle-based churn</h4>
 <div class="paragraph">
-<p><strong>Example: Cycle-based churn only</strong></p>
+<p>The following configuration churn runs exactly 10 iterations, regardless of time:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">churnConfig:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">churnConfig:
   percent: 30
   cycles: 10</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Churn runs exactly 10 iterations, regardless of time.</p>
 </div>
+<div class="sect3">
+<h4 id="_duration_based_churn"><a class="anchor" href="#_duration_based_churn"></a>Duration-based churn</h4>
 <div class="paragraph">
-<p><strong>Example: Duration-based churn only</strong></p>
+<p>Churn runs only by time, ignoring cycles:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">churnConfig:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">churnConfig:
   percent: 25
   duration: 1h
   cycles: 0</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Churn runs only by time, ignoring cycles.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_5_churn_delay_between_cycles"><a class="anchor" href="#_5_churn_delay_between_cycles"></a>5. Churn delay between cycles</h3>
+<h3 id="_churn_delay_between_cycles"><a class="anchor" href="#_churn_delay_between_cycles"></a>Churn delay between cycles</h3>
 <div class="paragraph">
 <p>You can pause between churn operations using <code>delay</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">churnConfig:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">churnConfig:
   percent: 20
   duration: 1h
   delay: 2m</code></pre>
@@ -418,17 +427,15 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="_6_namespace_vs_object_churn_modes"><a class="anchor" href="#_6_namespace_vs_object_churn_modes"></a>6. Namespace vs Object churn modes</h3>
+<h3 id="_namespace_vs_object_churn_modes"><a class="anchor" href="#_namespace_vs_object_churn_modes"></a>Namespace vs Object churn modes</h3>
 <div class="paragraph">
-<p>By default, kube-burner churns entire namespaces. You can
-switch to object-level churn with <code>mode: objects</code>.</p>
+<p>By default, kube-burner churns entire namespaces. You can switch to object-level churning with <code>mode: objects</code>.</p>
 </div>
-<div class="paragraph">
-<p><strong>Namespace Churn (Default)</strong></p>
-</div>
+<div class="sect3">
+<h4 id="_namespace_churn_default"><a class="anchor" href="#_namespace_churn_default"></a>Namespace Churn (Default)</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">churnConfig:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">churnConfig:
   percent: 20
   mode: namespaces</code></pre>
 </div>
@@ -443,12 +450,12 @@ switch to object-level churn with <code>mode: objects</code>.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p><strong>Object-level Churn</strong></p>
 </div>
+<div class="sect3">
+<h4 id="_object_level_churn"><a class="anchor" href="#_object_level_churn"></a>Object-level Churn</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">churnConfig:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">churnConfig:
   percent: 20
   mode: objects</code></pre>
 </div>
@@ -467,8 +474,9 @@ switch to object-level churn with <code>mode: objects</code>.</p>
 </ul>
 </div>
 </div>
+</div>
 <div class="sect2">
-<h3 id="_7_excluding_specific_objects_from_churn"><a class="anchor" href="#_7_excluding_specific_objects_from_churn"></a>7. Excluding Specific Objects from Churn</h3>
+<h3 id="_excluding_specific_objects_from_churn"><a class="anchor" href="#_excluding_specific_objects_from_churn"></a>Excluding Specific Objects from Churn</h3>
 <div class="paragraph">
 <p>Some objects should never be deleted, such as:</p>
 </div>
@@ -493,7 +501,7 @@ switch to object-level churn with <code>mode: objects</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">objects:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">objects:
 - objectTemplate: deployment.yml
   replicas: 10
   churn: false
@@ -507,9 +515,9 @@ switch to object-level churn with <code>mode: objects</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_8_full_advanced_churn_example"><a class="anchor" href="#_8_full_advanced_churn_example"></a>8. Full Advanced Churn Example</h3>
+<h3 id="_advanced_churn_example"><a class="anchor" href="#_advanced_churn_example"></a>Advanced churn example</h3>
 <div class="paragraph">
-<p>This configuration:</p>
+<p>The following configuration:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -535,7 +543,7 @@ switch to object-level churn with <code>mode: objects</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">jobs:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">jobs:
 - name: advanced-churn
   jobIterations: 200
   namespacedIterations: true
@@ -561,55 +569,63 @@ switch to object-level churn with <code>mode: objects</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_9_key_rules_and_constraints"><a class="anchor" href="#_9_key_rules_and_constraints"></a>9. Key Rules and Constraints</h3>
-<div class="paragraph">
-<p>✅ Churn only works for create jobs</p>
-</div>
-<div class="paragraph">
-<p>✅ Requires namespacedIterations: true</p>
-</div>
-<div class="paragraph">
-<p>✅ Either cycles or duration must be set</p>
-</div>
-<div class="paragraph">
-<p>✅ Churn happens after job completion, before metrics upload</p>
-</div>
-<div class="paragraph">
-<p>✅ Works with both namespace-level and object-level deletion.</p>
-</div>
-<div class="paragraph">
-<p>❌ Cannot be used with:</p>
-</div>
+<h3 id="_key_rules_and_constraints"><a class="anchor" href="#_key_rules_and_constraints"></a>Key Rules and Constraints</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>Job types other than <code>create</code>.</p>
+<p>Churn only works for create jobs</p>
+</li>
+<li>
+<p>Requires namespaced iterations</p>
+</li>
+<li>
+<p>Either cycles or duration must be set</p>
+</li>
+<li>
+<p>Churn happens after job completion, before the metrics upload</p>
+</li>
+<li>
+<p>Works with both namespace-level and object-level deletion</p>
+</li>
+<li>
+<p>Cannot be used with:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Job types other than <code>create</code></p>
 </li>
 <li>
 <p>Cluster-scoped only objects</p>
 </li>
 </ul>
 </div>
+</li>
+</ul>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_10_summary"><a class="anchor" href="#_10_summary"></a>10. Summary</h3>
+<h3 id="_summary"><a class="anchor" href="#_summary"></a>Summary</h3>
 <div class="paragraph">
 <p>kube-burner&#8217;s churning feature allows you to:</p>
 </div>
-<div class="paragraph">
-<p>✔ Simulate real production instability</p>
-</div>
-<div class="paragraph">
-<p>✔ Stress test control-plane resilience</p>
-</div>
-<div class="paragraph">
-<p>✔ Validate cleanup, GC, and reconciliation logic</p>
-</div>
-<div class="paragraph">
-<p>✔ Detect scaling issues early</p>
-</div>
-<div class="paragraph">
-<p>✔ Perform chaos-like testing without external tools</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Simulate real production instability</p>
+</li>
+<li>
+<p>Stress test control-plane resilience</p>
+</li>
+<li>
+<p>Validate cleanup, GC, and reconciliation logic</p>
+</li>
+<li>
+<p>Detect scaling issues early</p>
+</li>
+<li>
+<p>Perform chaos-like testing without external tools</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>It is a first-class primitive for realistic k8s performance testing and should be part of any serious scale or soak test strategy.</p>
