@@ -8,7 +8,7 @@ Download and install the latest stable release for your operating system and arc
 
 ```bash
 pip install uv
-uv tool install orion --from git+https://github.com/cloud-bulldozer/orion.git
+uv tool install -p 3.11 orion --from git+https://github.com/cloud-bulldozer/orion.git
 ```
 
 Validate the installation:
