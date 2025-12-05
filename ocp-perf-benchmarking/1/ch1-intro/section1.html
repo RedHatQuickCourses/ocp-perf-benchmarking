@@ -228,10 +228,66 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_shift_left"><a class="anchor" href="#_shift_left"></a>Shift-left</h2>
+<h2 id="_shifting_performance_engineering_left"><a class="anchor" href="#_shifting_performance_engineering_left"></a>Shifting performance engineering left</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The <strong>shift-left approach</strong> in DevOps further increases the relevance of benchmarking. By integrating performance tests earlier in the development lifecycle, teams can identify bottlenecks long before an application reaches production. Kubernetes makes this process more accessible through ephemeral test environments and GitOps workflows where automated pipelines can deploy full stacks, run synthetic traffic tests, and collect metrics. This reduces late-stage surprises and ensures that performance becomes a core quality attribute rather than an afterthought.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cloud_native_tooling"><a class="anchor" href="#_cloud_native_tooling"></a>Cloud native tooling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>During the course will be showcasing and demonstrating the following cloud-native Kubernetes first tools.</p>
+</div>
+<div class="sect2">
+<h3 id="_control_plane"><a class="anchor" href="#_control_plane"></a>Control plane</h3>
+<div class="paragraph">
+<p><strong>Kube-burner</strong> is a Kubernetes performance and scale test orchestration toolset used to benchmark and characterize OpenShift control plane behavior.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_data_plane"><a class="anchor" href="#_data_plane"></a>Data plane</h3>
+<div class="sect3">
+<h4 id="_networking"><a class="anchor" href="#_networking"></a>Networking</h4>
+<div class="paragraph">
+<p><strong>k8s-netperf</strong> is a comprehensive network performance testing tool designed specifically for Kubernetes environments. It can test various network scenarios including pod-to-pod, host networking and cross-availability zone communications.</p>
+</div>
+<div class="paragraph">
+<p><strong>ingress-perf</strong> is a tool to benchmark OpenShift nort-south traffic.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_storage"><a class="anchor" href="#_storage"></a>Storage</h4>
+<div class="paragraph">
+<p><strong>K8s-io</strong> is a lightweight command line tool for running benchmark workloads on Kubernetes clusters.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_automatic_performance_regression_analysis"><a class="anchor" href="#_automatic_performance_regression_analysis"></a>Automatic performance regression analysis</h3>
+<div class="paragraph">
+<p>Orion performs statistical analysis of performance test results stored on ElasticSearch and OpenSearch databases. It finds change-points and notifies about possible performance regressions.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_see_also"><a class="anchor" href="#_see_also"></a>See also</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/scalability_and_performance/index" target="_blank" rel="noopener">OpenShift Scaling and Performance Guide</a></p>
+</li>
+<li>
+<p><a href="https://www.redhat.com/en/topics/devops/shift-left-vs-shift-right" target="_blank" rel="noopener">Shift left vs. shift right</a></p>
+</li>
+<li>
+<p><a href="https://developers.redhat.com/articles/2025/10/15/how-red-hat-has-redefined-continuous-performance-testing">How Red Hat has redefined continuous performance testing</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
