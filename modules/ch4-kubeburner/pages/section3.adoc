@@ -189,7 +189,6 @@ sed -i 's/opensearch/elastic/g' node-density.yml
 kube-burner-ocp node-density --pods-per-node 75 --es-server $ES_INSTANCE --es-index kube-burner
 ----
 +
-[source]
 ----
 time="2025-12-03 08:35:17" level=info msg="❤️ Checking for Cluster Health" file="cluster-health.go:46"
 time="2025-12-03 08:35:17" level=info msg="Cluster is Healthy" file="cluster-health.go:54"
