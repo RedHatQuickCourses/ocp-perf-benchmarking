@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Hands-on with Orion :: OpenShift performance benchmarking guide</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="../ch8-final/index.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">OpenShift performance benchmarking guide</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/ocp-perf-benchmarking/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="ocp-perf-benchmarking" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">OpenShift performance benchmarking guide</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment Setup</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch1-intro/index.html">Introduction to Performance Benchmarking</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch1-intro/section1.html">Kubernetes/OpenShift performance landscape</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch2-monitoring/index.html">Monitoring OpenShift Performance with the Built-in Stack</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch2-monitoring/section1.html">Hands-on lab: Exploring the OpenShift monitoring stack</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch3-bench/index.html">Overview of Benchmarking Suites</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch3-bench/section1.html">Kubernetes-native benchmarking tools</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch4-kubeburner/index.html">Control Plane and Scalability Testing with kube-burner</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-kubeburner/section1.html">Measuring Control Plane Responsiveness</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-kubeburner/section2.html">Configuring kube-burner jobs to simulate cluster churn</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch4-kubeburner/section3.html">Hands-on with kube-burner</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch5-network/index.html">Understanding Openshift Networking</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch5-network/section1.html">Understanding OVN-Kubernetes</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch5-network/section2.html">Network Performance Testing with k8s-netperf</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch5-network/section3.html">Ingress Controller Benchmarking and Analysis</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch6-storage/index.html">Storage benchmarking</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch6-storage/section1.html">Storage performance testing with k8s-IO</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Automatic performance regression analysis</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section1.html">Hands-on with Orion</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ch8-final/index.html">Final Review and Key Takeaways</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">OpenShift performance benchmarking guide</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">OpenShift performance benchmarking guide</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">OpenShift performance benchmarking guide</a></li>
+    <li><a href="index.html">Automatic performance regression analysis</a></li>
+    <li><a href="section1.html">Hands-on with Orion</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Hands-on with Orion</h1>
+<div class="sect1">
+<h2 id="_getting_started_with_orion"><a class="anchor" href="#_getting_started_with_orion"></a>Getting started with orion</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_downloading_and_install_latest_stable_version"><a class="anchor" href="#_downloading_and_install_latest_stable_version"></a>Downloading and install latest stable version</h3>
+<div class="paragraph">
+<p>Download and install the latest stable release for your operating system and architecture with the command below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pip install uv
+uv tool install orion --from git+https://github.com/cloud-bulldozer/orion.git</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Validate the installation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">orion --version</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration"><a class="anchor" href="#_configuration"></a>Configuration</h3>
+<div class="paragraph">
+<p>The tool uses YAML configuration files to specify both the metadata to filter the queries in the data source (in our case ElasticSearch) and the metrics we are interested in analyzing. Here&#8217;s the basic structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">tests:
+  - name: test-name
+    metadata:
+      # metadata filters
+    metrics:
+      # metric definitions</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s take a look at an example configuration for the node-density workload that we have been running with kube-burner:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">tests :
+  - name : node-density
+    metadata:
+      ocpVersion: "{{ version }}"
+      metricName: "jobsummary*"
+      jobConfig.name: "node-density"
+
+    metrics :
+    - name:  podReadyLatency
+      metricName: podLatencyQuantilesMeasurement
+      quantileName: Ready
+      metric_of_interest: P99
+      not:
+        jobConfig.name: "garbage-collection"
+      labels:
+        - "[Jira: PerfScale]"
+      direction: 1
+      threshold: 10
+
+    - name:  apiserverCPU
+      metricName : containerCPU
+      labels.namespace.keyword: openshift-kube-apiserver
+      metric_of_interest: value
+      agg:
+        value: cpu
+        agg_type: avg
+      labels:
+        - "[Jira: kube-apiserver]"
+      direction: 1
+      threshold: 10
+
+    - name:  ovnCPU
+      metricName : containerCPU
+      labels.namespace.keyword: openshift-ovn-kubernetes
+      metric_of_interest: value
+      agg:
+        value: cpu
+        agg_type: avg
+      labels:
+        - "[Jira: Networking / ovn-kubernetes]"
+      direction: 1
+      threshold: 10
+
+    - name:  etcdCPU
+      metricName : containerCPU
+      labels.namespace.keyword: openshift-etcd
+      metric_of_interest: value
+      agg:
+        value: cpu
+        agg_type: avg
+      labels:
+        - "[Jira: etcd]"
+      direction: 1
+      threshold: 10
+
+    - name: kubelet
+      metricName : kubeletCPU
+      metric_of_interest: value
+      labels:
+        - "[Jira: Node]"
+      agg:
+        value: cpu
+        agg_type: avg
+      direction: 1
+      threshold: 10</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_metadata"><a class="anchor" href="#_metadata"></a>Metadata</h3>
+<div class="paragraph">
+<p>Let&#8217;s save the configuration in a <code>orion-node-density.yaml</code> file and take a closer look at the metadata fields:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ocpVersion</code>: The OpenShift version we want to analyze</p>
+</li>
+<li>
+<p><code>metricName</code>: For <a href="https://kube-burner.github.io/kube-burner/latest/observability/indexing/#job-summary">kube-burner jobs summary</a></p>
+</li>
+<li>
+<p><code>jobConfig.name</code>: The workload to be analyzed</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_metrics"><a class="anchor" href="#_metrics"></a>Metrics</h3>
+<div class="paragraph">
+<p>The metrics we want to analyze for performance regressions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>podReadyLatency</code>:</p>
+</li>
+<li>
+<p><code>apiserverCPU</code>: CPU consumption of the Kube API server</p>
+</li>
+<li>
+<p><code>ovnCPU</code>: CPU usage of the CNI components</p>
+</li>
+<li>
+<p><code>etcdCPU</code>: CPU usage of the etcd in-memory database</p>
+</li>
+<li>
+<p><code>kubeletCPU</code>: CPU usage of the kubelet component in each worker node</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For each job we have several relevant fields:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>direction</code>: Controls which types of changes to detect:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>1: Show only positive changes (increases)</p>
+</li>
+<li>
+<p>0: Show both positive and negative changes (default)</p>
+</li>
+<li>
+<p>-1: Show only negative changes (decreases)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>threshold</code>: An absolute percentage value that filters changepoints (defaults to 0, any change will be reported):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Can be set at Test level (applies to all metrics)</p>
+</li>
+<li>
+<p>Can be set at Metric level (applies only to that metric). Metric level takes precedence over test level</p>
+</li>
+<li>
+<p>Only changepoints greater than this percentage will be detected</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>correlation</code>: A filter that skips changepoint detection if a dependent metric has no changepoint</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s run this simple configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">orion --config orion-node-density.yaml --hunter-analyze --input-vars='{"version": "4.18"}' --es-server=$ES_INSTANCE --benchmark-index=kube-burner --metadata-index=kube-burner --lookback=1d</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">2025-12-05 04:43:36,958 - Orion      - INFO - file: main.py - line: 159 - 🏹 Starting Orion in command-line mode
+2025-12-05 04:43:36,965 - Orion      - INFO - file: utils.py - line: 659 - Duration to subtract: 1 day, 0:00:00
+2025-12-05 04:43:36,965 - Orion      - INFO - file: utils.py - line: 662 - Start timestamp: 2025-12-05 09:43:36.579972+00:00
+2025-12-05 04:43:36,965 - Orion      - INFO - file: utils.py - line: 301 - The test node-density has started
+2025-12-05 04:43:36,966 - Orion      - INFO - file: matcher.py - line: 74 - Executing query against index: kube-burner
+2025-12-05 04:43:37,568 - Orion      - INFO - file: utils.py - line: 69 - Collecting podReadyLatency
+2025-12-05 04:43:37,623 - Orion      - INFO - file: utils.py - line: 69 - Collecting apiserverCPU
+2025-12-05 04:43:37,667 - Orion      - INFO - file: utils.py - line: 69 - Collecting ovnCPU
+2025-12-05 04:43:37,719 - Orion      - INFO - file: utils.py - line: 69 - Collecting etcdCPU
+2025-12-05 04:43:37,750 - Orion      - INFO - file: utils.py - line: 69 - Collecting kubelet
+2025-12-05 04:43:37,808 - Orion      - INFO - file: run_test.py - line: 182 - Comparison algorithm: EDivisive
+node-density
+============
+time                       uuid                                  ocpVersion      podReadyLatency_P99    apiserverCPU_avg    ovnCPU_avg    etcdCPU_avg    kubelet_avg  buildUrl
+-------------------------  ------------------------------------  ------------  ---------------------  ------------------  ------------  -------------  -------------  ----------
+2025-12-05 09:09:44 +0000  40fd7357-fd78-403a-9f5d-3fff6a1e4301  4.18.9                         2000             8.31025      0.378063        8.37524        17.2667  N/A
+2025-12-05 09:11:37 +0000  da495c60-a9ed-4c2f-bbb2-d96e9b2ee166  4.18.9                         2500             7.49911      0.309101        6.66135        17.4167  N/A</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s plot the results in a table so they are easier to visualize:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 18.1818%;">
+<col style="width: 18.1818%;">
+<col style="width: 9.0909%;">
+<col style="width: 9.0909%;">
+<col style="width: 9.0909%;">
+<col style="width: 9.0909%;">
+<col style="width: 9.0909%;">
+<col style="width: 9.0909%;">
+<col style="width: 9.091%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">time</th>
+<th class="tableblock halign-left valign-top">uuid</th>
+<th class="tableblock halign-left valign-top">ocpVersion</th>
+<th class="tableblock halign-left valign-top">podReadyLatency_P99</th>
+<th class="tableblock halign-left valign-top">apiserverCPU_avg</th>
+<th class="tableblock halign-left valign-top">ovnCPU_avg</th>
+<th class="tableblock halign-left valign-top">etcdCPU_avg</th>
+<th class="tableblock halign-left valign-top">kubelet_avg</th>
+<th class="tableblock halign-left valign-top">buildUrl</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2025-12-05 09:09:44 +0000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">40fd7357-fd78-403a-9f5d-3fff6a1e4301</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.18.9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8.31025</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.378063</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8.37524</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17.2667</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2025-12-05 09:11:37 +0000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">da495c60-a9ed-4c2f-bbb2-d96e9b2ee166</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.18.9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7.49911</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.309101</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6.66135</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17.4167</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>As we can see from the output, Orion detected the two previous kube-burner node-density workload runs and recovered all the metrics indicated in the config file. K8s-io automatically captured and parsed the results, displaying them in both a formatted table and optionally exporting to CSV/json files for further analysis.</p>
+</div>
+<div class="paragraph">
+<p>In this case, there were no performance regressions detected. In the next section we will see some Orion execution examples where we did observe and detect performance penalties.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_see_also"><a class="anchor" href="#_see_also"></a>See also</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.youtube.com/watch?v=LT6FQG9fR3k&amp;list=PLaJlRa-xItwCzM3U1P8LU4rFn3Qm8IQNH&amp;index=5" target="_blank" rel="noopener">AI Powered Performance Insights: Integrating OVS OVN automatic performance regression analysis</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Automatic performance regression analysis</a></span>
+  <span class="next"><a href="../ch8-final/index.html">Final Review and Key Takeaways</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

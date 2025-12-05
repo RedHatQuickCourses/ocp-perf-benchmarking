@@ -144,7 +144,20 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../ch7-final/index.html">Final Review and Key Takeaways</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch7-regression/index.html">Automatic performance regression analysis</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch7-regression/section1.html">Hands-on with Orion</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ch8-final/index.html">Final Review and Key Takeaways</a>
   </li>
 </ul>
   </li>
@@ -388,17 +401,53 @@ spec:
 <div class="content">
 <pre>mkdir node-density
 cd node-density/
-kube-burner-ocp node-density --extract
-ls</pre>
+kube-burner-ocp node-density --extract</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Let&#8217;s take a look at the files that compose the workload:</p>
+<div class="literalblock">
+<div class="content">
+<pre>tree</pre>
 </div>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>alerts.yml         metrics-aggregated.yml       metrics-report.yml  pod.yml
-cnv-metrics.yml    metrics-egressip.yml         metrics.yml
-kueue-metrics.yml  metrics-report-stackrox.yml  node-density.yml
-```</pre>
+<pre>.
+├── alerts.yml
+├── cnv-metrics.yml
+├── kueue-metrics.yml
+├── metrics-aggregated.yml
+├── metrics-egressip.yml
+├── metrics-report-stackrox.yml
+├── metrics-report.yml
+├── metrics.yml
+├── node-density.yml
+└── pod.yml</pre>
 </div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>alerts.yml</code>:</p>
+</li>
+<li>
+<p><code>cnv-metrics.yml</code>:</p>
+</li>
+<li>
+<p><code>metrics-report.yml</code>:</p>
+</li>
+<li>
+<p><code>metrics.yml</code>:</p>
+</li>
+<li>
+<p><code>node-density.yml</code>: The workload definition</p>
+</li>
+<li>
+<p><code>pod.yml</code>: The pod definition</p>
+</li>
+</ul>
 </div>
 </li>
 <li>

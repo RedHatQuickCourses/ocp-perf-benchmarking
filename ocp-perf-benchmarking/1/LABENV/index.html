@@ -144,7 +144,20 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../ch7-final/index.html">Final Review and Key Takeaways</a>
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../ch7-regression/index.html">Automatic performance regression analysis</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ch7-regression/section1.html">Hands-on with Orion</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ch8-final/index.html">Final Review and Key Takeaways</a>
   </li>
 </ul>
   </li>
@@ -297,14 +310,14 @@ oc get co    # ClusterOperators</code></pre>
 </li>
 <li>
 <p>Check ElasticSearch endpoint health:</p>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>curl -k -u elastic:$ES_PASSWORD $ES_INSTANCE/_cluster/health?pretty</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -k -u elastic:$ES_PASSWORD $ES_INSTANCE/_cluster/health?pretty</code></pre>
 </div>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>{
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">{
   "cluster_name" : "elasticsearch",
   "status" : "green",
   "timed_out" : false,
@@ -320,7 +333,7 @@ oc get co    # ClusterOperators</code></pre>
   "number_of_in_flight_fetch" : 0,
   "task_max_waiting_in_queue_millis" : 0,
   "active_shards_percent_as_number" : 100.0
-}</pre>
+}</code></pre>
 </div>
 </div>
 </li>

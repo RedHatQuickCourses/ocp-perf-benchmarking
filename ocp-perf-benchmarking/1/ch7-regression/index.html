@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Control plane and scalability testing with kube-burner :: OpenShift performance benchmarking guide</title>
-    <link rel="prev" href="../ch3-bench/section1.html">
+    <title>Automatic performance regression analysis :: OpenShift performance benchmarking guide</title>
+    <link rel="prev" href="../ch6-storage/section1.html">
     <link rel="next" href="section1.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
@@ -92,18 +92,18 @@
   </li>
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Control Plane and Scalability Testing with kube-burner</a>
+    <a class="nav-link" href="../ch4-kubeburner/index.html">Control Plane and Scalability Testing with kube-burner</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section1.html">Measuring Control Plane Responsiveness</a>
+    <a class="nav-link" href="../ch4-kubeburner/section1.html">Measuring Control Plane Responsiveness</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section2.html">Configuring kube-burner jobs to simulate cluster churn</a>
+    <a class="nav-link" href="../ch4-kubeburner/section2.html">Configuring kube-burner jobs to simulate cluster churn</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section3.html">Hands-on with kube-burner</a>
+    <a class="nav-link" href="../ch4-kubeburner/section3.html">Hands-on with kube-burner</a>
   </li>
 </ul>
   </li>
@@ -143,12 +143,12 @@
   </li>
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../ch7-regression/index.html">Automatic performance regression analysis</a>
+    <a class="nav-link" href="index.html">Automatic performance regression analysis</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../ch7-regression/section1.html">Hands-on with Orion</a>
+    <a class="nav-link" href="section1.html">Hands-on with Orion</a>
   </li>
 </ul>
   </li>
@@ -190,7 +190,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">OpenShift performance benchmarking guide</a></li>
-    <li><a href="index.html">Control Plane and Scalability Testing with kube-burner</a></li>
+    <li><a href="index.html">Automatic performance regression analysis</a></li>
   </ul>
 </nav>
 </div>
@@ -199,15 +199,40 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Control plane and scalability testing with kube-burner</h1>
+<h1 class="page">Automatic performance regression analysis</h1>
 <div class="sect1">
 <h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Modern Kubernetes and OpenShift environments operate at massive scale, where even small inefficiencies in the control plane can lead to significant reliability, performance, and cost issues. Continuous control plane and scalability testing is essential to ensure that clusters remain stable and responsive as workload density, node count, and API activity increase.</p>
+<p>Orion stands as a powerful command-line tool designed for automatically identifying performance regressions, leveraging metadata provided during the process (in this example by <a href="https://kube-burner.github.io/kube-burner/latest/observability/indexing/#job-summary">kube-burner jobs summary</a>). The detection mechanism relies on <a href="https://otava.apache.org/">Apache Otava</a>.</p>
 </div>
 <div class="paragraph">
-<p>This tutorial introduces <a href="https://github.com/kube-burner/kube-burner">kube-burner</a>, a CNCF project with advanced performance and scale testing toolset designed to generate realistic k8s workloads and stress patterns. You will learn how kube-burner can be used to validate cluster scalability, uncover regressions, measure key performance indicators (KPIs), and provide actionable insights for both infrastructure and platform teams.</p>
+<p>Otava performs statistical analysis of performance test results stored in a number of data source formats and data bases (in our case ElasticSearch) and finds change-points and notifies about possible performance regressions.</p>
+</div>
+<div class="paragraph">
+<p>A typical use-case of Orion in the OpenShift context is as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A set of performance tests is scheduled repeatedly with any of the cloud-native benchmarking tooling presented through this course (kube-burner, k8s-netperf, ingress-perf, k8s-io, etc.), such as after each commit is pushed.</p>
+</li>
+<li>
+<p>The resulting metrics of the test runs are stored in an internal or external ElasticSearch or OpenSearch instance.</p>
+</li>
+<li>
+<p>Orion is launched by a scheduled Continuous Integration (CI) job (or an operator) to analyze the recorded metrics regularly.</p>
+</li>
+<li>
+<p>Orion notifies about significant changes in recorded metrics by outputting text reports or sending Slack notifications.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Otava is capable of finding even small, but persistent shifts in metric values, despite noise in data. It adapts automatically to the level of noise in data and tries to notify only about persistent, statistically significant changes, be it in the system under test or in the environment.</p>
+</div>
+<div class="paragraph">
+<p>Unlike in threshold-based performance monitoring systems, there is no need to setup fixed warning threshold levels manually for each recorded metric. The level of accepted probability of false-positives, as well as the minimal accepted magnitude of changes are tunable. Orion is also capable of comparing the level of performance recorded in two different git histories. This can be used for example to validate a feature branch against the main branch, perhaps integrated with a pull request.</p>
 </div>
 </div>
 </div>
@@ -215,59 +240,8 @@
 <h2 id="_what_youll_learn"><a class="anchor" href="#_what_youll_learn"></a>What you&#8217;ll learn</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>By the end of this tutorial, you will be able to:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Understand the role of control plane and scalability testing in Kubernetes and OpenShift.</p>
-</li>
-<li>
-<p>Set up and configure kube-burner for large-scale workload generation.</p>
-</li>
-<li>
-<p>Execute benchmark and custom workload scenarios to simulate real-world cluster behavior.</p>
-</li>
-<li>
-<p>Measure and analyze some key performance metrics such as:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>API server latency and throughput</p>
-</li>
-<li>
-<p>Etcd performance</p>
-</li>
-<li>
-<p>Runtime measurements like pod readiness latency</p>
-</li>
-<li>
-<p>Control plane resource utilization</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Ways to collect and visualize kube-burner metrics.</p>
-</li>
-<li>
-<p>Integrate kube-burner into CI/CD pipelines for Continuous Performance Testing (CPT).</p>
-</li>
-<li>
-<p>Interpret results to drive capacity planning, tuning, and product readiness decisions.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_conclusion"><a class="anchor" href="#_conclusion"></a>Conclusion</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Scalability and control plane performance are foundational to the reliability of any Kubernetes-based platform. kube-burner enables teams to move from reactive performance testing to a proactive, automated, and data-driven testing strategy. By combining large-scale workload generation, metrics collection, and deep observability, kube-burner helps ensure that your platform remains performant as features, releases, and customer usage evolve.</p>
-</div>
-<div class="paragraph">
-<p>Adopting kube-burner as part of your continuous testing strategy strengthens product quality, reduces production risk, and accelerates confident release cycles.</p>
+<p>This chapter provides a practical, <strong>hands-on introduction to automatic performance regression in OpenShift</strong>.
+You will learn how to compare the performance of several benchmarking runs and how to automatically flag performace issues.</p>
 </div>
 </div>
 </div>
@@ -275,24 +249,21 @@
 <h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To continue your learning journey:</p>
+<p>After completing this module, you will have a solid foundation for integrating automatic OpenShift performance regression into your CI pipelines of choice:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Start with the kube-burner installation and setup guide.</p>
+<p>Validate the performance characteristics of your Persistent Volumes (PVs).</p>
 </li>
 <li>
-<p>Learn to configure and simulate a churn job.</p>
+<p>Compare multiple benchmarking runs on equal terms.</p>
 </li>
 <li>
-<p>Explore custom workload profiles tailored to your environment.</p>
+<p>Build repeatable, automated benchmarking workflows.</p>
 </li>
 <li>
-<p>Connect test results to monitoring dashboards (Prometheus, Grafana, Elasticsearch, etc.) for deeper analysis.</p>
-</li>
-<li>
-<p>Try kube-burner hands on in the lab environment.</p>
+<p>Translate raw metrics into actionable insights for capacity planning and optimization.</p>
 </li>
 </ul>
 </div>
@@ -304,33 +275,18 @@
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://developers.redhat.com/articles/2024/03/04/test-kubernetes-performance-and-scale-kube-burner">kube-burner Blog Post</a></p>
+<p><a href="https://www.redhat.com/en/topics/devops/shift-left-vs-shift-right" target="_blank" rel="noopener">Shift left vs. shift right</a></p>
 </li>
 <li>
-<p><a href="https://dl.acm.org/doi/10.1145/3629527.3651405">kube-burner ICPE Publication</a></p>
-</li>
-<li>
-<p><a href="https://github.com/kube-burner/kube-burner">kube-burner GitHub Repository</a></p>
-</li>
-<li>
-<p><a href="https://kube-burner.github.io/kube-burner/latest/">kube-burner Official Documentation</a></p>
-</li>
-<li>
-<p><a href="https://www.youtube.com/watch?v=gaKnW5o_FIk">Performance &amp; Scale testing with kube-burner</a></p>
-</li>
-<li>
-<p><a href="https://medium.com/@jay.gokani/observability-with-prometheus-and-grafana-c865b68617b2">Prometheus &amp; Grafana for Performance Observability</a></p>
-</li>
-<li>
-<p><a href="https://developers.redhat.com/articles/2025/10/15/how-red-hat-has-redefined-continuous-performance-testing#what_s_next">Continuous Performance Testing (CPT) in CI/CD</a></p>
+<p><a href="https://developers.redhat.com/articles/2025/10/15/how-red-hat-has-redefined-continuous-performance-testing">How Red Hat has redefined continuous performance testing</a></p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="../ch3-bench/section1.html">Kubernetes-native benchmarking tools</a></span>
-  <span class="next"><a href="section1.html">Measuring Control Plane Responsiveness</a></span>
+  <span class="prev"><a href="../ch6-storage/section1.html">Storage performance testing with k8s-IO</a></span>
+  <span class="next"><a href="section1.html">Hands-on with Orion</a></span>
 </nav>
 </article>
   </div>
