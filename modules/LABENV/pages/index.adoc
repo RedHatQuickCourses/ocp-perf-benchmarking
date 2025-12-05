@@ -28,6 +28,7 @@
 == Validate the Lab environment
 
 Let's make sure the environment healthy and ready to continue with the training:
+
 ```bash
 oc get node
 oc get co    # ClusterOperators
@@ -39,12 +40,19 @@ Let's make sure the ElasticSearch instance that we need to index the benchmarkin
 
 1. Get password:
 
-    ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
++
+[source,bash]
+----
+ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
+----
 
 2. Get ElasticSearch route URL:
 
-    ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath='https://{.spec.host}')
-
++
+[source,bash]
+----
+ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath='https://{.spec.host}')
+----
 
 3. Check ElasticSearch endpoint health:
 
@@ -81,8 +89,12 @@ Let's make sure the Grafana instance that we need to visualize the benchmarking 
 
 1. Get Grafana route URL:
 
-    GRAFANA_URL=$(oc get route grafana-route -n openshift-logging -o jsonpath='https://{.spec.host}')
-    echo "Grafana URL: $GRAFANA_URL"
++
+[source,bash]
+----
+GRAFANA_URL=$(oc get route grafana-route -n openshift-logging -o jsonpath='https://{.spec.host}')
+echo "Grafana URL: $GRAFANA_URL"
+----
 
 2. Login with `admin`/`admin123`:
 
