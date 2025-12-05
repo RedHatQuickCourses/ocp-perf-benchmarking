@@ -37,6 +37,7 @@ This course assumes that you have the following prior experience:
  * José Castillo Lema <jlema@redhat.com>
  * Mohit Sheth <msheth@redhat.com>
  * Raúl Sevilla Cañavate <rsevilla@redhat.com>
+ * Vicente Zepeda Mas <vzepedam@redhat.com>
  * Vishnu Challa <vchalla@redhat.com>
 
 Special thanks to all contributors who have helped shape this resource through content creation, testing, and feedback.

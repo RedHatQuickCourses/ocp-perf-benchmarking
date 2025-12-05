@@ -11,7 +11,7 @@ Throughout the hands-on labs, you learned how to:
  * *Interpret and visualize results* using Prometheus, Grafana, and other native observability tools.
  * *Apply structured analysis* to derive clear, actionable insights from your benchmarking runs.
 
-=== Key Takeaways
+== Key Takeaways
 
  * *Performance benchmarking is proactive, not reactive* — establishing baselines and running routine tests helps detect issues before they become outages.
  * *Kubernetes-native tools are powerful and lightweight*, allowing you to test using the same APIs and workflows the platform itself relies on.

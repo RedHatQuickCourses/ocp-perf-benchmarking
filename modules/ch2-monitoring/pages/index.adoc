@@ -51,7 +51,6 @@ After completing this module, you'll be ready to:
  * Explore hands-on PromQL queries to analyze control-plane and workload performance
  * Learn how to use oc adm tools and must-gather bundles for advanced troubleshooting
  * Experiment with Alertmanager routing and custom alert rules tailored to your environment
- * Dive into workload-level observability using the User Workload Monitoring stack
 
 == See also
 

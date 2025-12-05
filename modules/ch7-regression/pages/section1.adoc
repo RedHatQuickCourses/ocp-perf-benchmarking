@@ -1,0 +1,190 @@
+= Hands-on with Orion
+
+== Getting started with orion
+
+=== Downloading and install latest stable version
+
+Download and install the latest stable release for your operating system and architecture with the command below.
+
+```bash
+pip install uv
+uv tool install orion --from git+https://github.com/cloud-bulldozer/orion.git
+```
+
+Validate the installation:
+```bash
+orion --version
+```
+
+=== Configuration
+
+The tool uses YAML configuration files to specify both the metadata to filter the queries in the data source (in our case ElasticSearch) and the metrics we are interested in analyzing. Here's the basic structure:
+
+```yaml
+tests:
+  - name: test-name
+    metadata:
+      # metadata filters
+    metrics:
+      # metric definitions
+```
+
+Let's take a look at an example configuration for the node-density workload that we have been running with kube-burner:
+
+```yaml
+tests :
+  - name : node-density
+    metadata:
+      ocpVersion: "{{ version }}"
+      metricName: "jobsummary*"
+      jobConfig.name: "node-density"
+
+    metrics :
+    - name:  podReadyLatency
+      metricName: podLatencyQuantilesMeasurement
+      quantileName: Ready
+      metric_of_interest: P99
+      not:
+        jobConfig.name: "garbage-collection"
+      labels:
+        - "[Jira: PerfScale]"
+      direction: 1
+      threshold: 10
+
+    - name:  apiserverCPU
+      metricName : containerCPU
+      labels.namespace.keyword: openshift-kube-apiserver
+      metric_of_interest: value
+      agg:
+        value: cpu
+        agg_type: avg
+      labels:
+        - "[Jira: kube-apiserver]"
+      direction: 1
+      threshold: 10
+
+    - name:  ovnCPU
+      metricName : containerCPU
+      labels.namespace.keyword: openshift-ovn-kubernetes
+      metric_of_interest: value
+      agg:
+        value: cpu
+        agg_type: avg
+      labels:
+        - "[Jira: Networking / ovn-kubernetes]"
+      direction: 1
+      threshold: 10
+
+    - name:  etcdCPU
+      metricName : containerCPU
+      labels.namespace.keyword: openshift-etcd
+      metric_of_interest: value
+      agg:
+        value: cpu
+        agg_type: avg
+      labels:
+        - "[Jira: etcd]"
+      direction: 1
+      threshold: 10
+
+    - name: kubelet
+      metricName : kubeletCPU
+      metric_of_interest: value
+      labels:
+        - "[Jira: Node]"
+      agg:
+        value: cpu
+        agg_type: avg
+      direction: 1
+      threshold: 10
+```
+
+=== Metadata
+
+Let's save the configuration in a `orion-node-density.yaml` file and take a closer look at the metadata fields:
+
+ * `ocpVersion`: The OpenShift version we want to analyze
+ * `metricName`: For https://kube-burner.github.io/kube-burner/latest/observability/indexing/#job-summary[kube-burner jobs summary]
+ * `jobConfig.name`: The workload to be analyzed
+
+=== Metrics
+
+The metrics we want to analyze for performance regressions:
+
+ * `podReadyLatency`:
+ * `apiserverCPU`: CPU consumption of the Kube API server
+ * `ovnCPU`: CPU usage of the CNI components
+ * `etcdCPU`: CPU usage of the etcd in-memory database
+ * `kubeletCPU`: CPU usage of the kubelet component in each worker node
+
+For each job we have several relevant fields:
+
+ * `direction`: Controls which types of changes to detect:
+   ** 1: Show only positive changes (increases)
+   ** 0: Show both positive and negative changes (default)
+   ** -1: Show only negative changes (decreases)
+ * `threshold`: An absolute percentage value that filters changepoints (defaults to 0, any change will be reported):
+   ** Can be set at Test level (applies to all metrics)
+   ** Can be set at Metric level (applies only to that metric). Metric level takes precedence over test level
+   ** Only changepoints greater than this percentage will be detected
+ * `correlation`: A filter that skips changepoint detection if a dependent metric has no changepoint
+
+Let's run this simple configuration:
+
+```bash
+orion --config orion-node-density.yaml --hunter-analyze --input-vars='{"version": "4.18"}' --es-server=$ES_INSTANCE --benchmark-index=kube-burner --metadata-index=kube-burner --lookback=1d
+```
+```
+2025-12-05 04:43:36,958 - Orion      - INFO - file: main.py - line: 159 - 🏹 Starting Orion in command-line mode
+2025-12-05 04:43:36,965 - Orion      - INFO - file: utils.py - line: 659 - Duration to subtract: 1 day, 0:00:00
+2025-12-05 04:43:36,965 - Orion      - INFO - file: utils.py - line: 662 - Start timestamp: 2025-12-05 09:43:36.579972+00:00
+2025-12-05 04:43:36,965 - Orion      - INFO - file: utils.py - line: 301 - The test node-density has started
+2025-12-05 04:43:36,966 - Orion      - INFO - file: matcher.py - line: 74 - Executing query against index: kube-burner
+2025-12-05 04:43:37,568 - Orion      - INFO - file: utils.py - line: 69 - Collecting podReadyLatency
+2025-12-05 04:43:37,623 - Orion      - INFO - file: utils.py - line: 69 - Collecting apiserverCPU
+2025-12-05 04:43:37,667 - Orion      - INFO - file: utils.py - line: 69 - Collecting ovnCPU
+2025-12-05 04:43:37,719 - Orion      - INFO - file: utils.py - line: 69 - Collecting etcdCPU
+2025-12-05 04:43:37,750 - Orion      - INFO - file: utils.py - line: 69 - Collecting kubelet
+2025-12-05 04:43:37,808 - Orion      - INFO - file: run_test.py - line: 182 - Comparison algorithm: EDivisive
+node-density
+============
+time                       uuid                                  ocpVersion      podReadyLatency_P99    apiserverCPU_avg    ovnCPU_avg    etcdCPU_avg    kubelet_avg  buildUrl
+-------------------------  ------------------------------------  ------------  ---------------------  ------------------  ------------  -------------  -------------  ----------
+2025-12-05 09:09:44 +0000  40fd7357-fd78-403a-9f5d-3fff6a1e4301  4.18.9                         2000             8.31025      0.378063        8.37524        17.2667  N/A
+2025-12-05 09:11:37 +0000  da495c60-a9ed-4c2f-bbb2-d96e9b2ee166  4.18.9                         2500             7.49911      0.309101        6.66135        17.4167  N/A
+```
+
+Let's plot the results in a table so they are easier to visualize:
+
+[cols="2,2,1,1,1,1,1,1,1", options="header"]
+|===
+|time |uuid |ocpVersion |podReadyLatency_P99 |apiserverCPU_avg |ovnCPU_avg |etcdCPU_avg |kubelet_avg |buildUrl
+
+|2025-12-05 09:09:44 +0000
+|40fd7357-fd78-403a-9f5d-3fff6a1e4301
+|4.18.9
+|2000
+|8.31025
+|0.378063
+|8.37524
+|17.2667
+|N/A
+
+|2025-12-05 09:11:37 +0000
+|da495c60-a9ed-4c2f-bbb2-d96e9b2ee166
+|4.18.9
+|2500
+|7.49911
+|0.309101
+|6.66135
+|17.4167
+|N/A
+|===
+
+As we can see from the output, Orion detected the two previous kube-burner node-density workload runs and recovered all the metrics indicated in the config file. K8s-io automatically captured and parsed the results, displaying them in both a formatted table and optionally exporting to CSV/json files for further analysis.
+
+In this case, there were no performance regressions detected. In the next section we will see some Orion execution examples where we did observe and detect performance penalties.
+
+== See also
+
+* link:https://www.youtube.com/watch?v=LT6FQG9fR3k&list=PLaJlRa-xItwCzM3U1P8LU4rFn3Qm8IQNH&index=5[AI Powered Performance Insights: Integrating OVS OVN automatic performance regression analysis,window=_blank]

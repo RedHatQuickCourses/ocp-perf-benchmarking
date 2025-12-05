@@ -144,8 +144,6 @@ Results exported to: fio-results-17648670_read-write_4KiB-8KiB_1-20251204-125133
 2025/12/04 12:51:33 Benchmark completed successfully!
 ```
 
-As we can see from the output, k8s-io run 32 tests iterating through the number of servers, samples, jobs, block sizes and number of jobs. K8s-io automatically captured and parsed the results, displaying them in both a formatted table and exporting to CSV for further analysis.
-
 For convenience, let's present the 4 first results in table format:
 
 [options="header"]
@@ -162,6 +160,7 @@ For convenience, let's present the 4 first results in table format:
 |17648670_read-write_4KiB-8KiB_1 |4 |write |10.132.2.50 |0.0 |0 |1598.5 |6394 |0.0 |0.0 |1744.9 |5931.0 |152
 |===
 
+As we can see from the output, k8s-io run 32 tests iterating through the number of servers, samples, jobs, block sizes and number of jobs. K8s-io automatically captured and parsed the results, displaying them in both a formatted table and exporting to CSV for further analysis.
 
 Some of the *key metrics captured* include:
 

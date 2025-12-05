@@ -5,7 +5,7 @@
 Storage performance is a critical pillar of any OpenShift deployment.
 Whether you are running stateful applications, databases, logging stacks, or AI/ML workloads, understanding how your storage backend behaves under load is essential for ensuring reliability, scalability, and predictable latency.
 
-== What you’ll learn
+== What you'll learn
 
 This chapter provides a practical, *hands-on introduction to benchmarking storage in OpenShift*.
 You will learn how to evaluate the efficiency of different storage backends, measure throughput and latency, detect bottlenecks, and interpret performance metrics that matter for real-world workloads.
@@ -23,4 +23,4 @@ After completing this module, you will have a solid foundation for designing rel
 
 == See also
 
-* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/storage/index[Configuring and managing storage in OpenShift Container Platform ,window=_blank]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/storage/index[Configuring and managing storage in OpenShift Container Platform,window=_blank]

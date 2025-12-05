@@ -1,0 +1,37 @@
+= Automatic performance regression analysis
+
+== Overview
+
+Orion stands as a powerful command-line tool designed for automatically identifying performance regressions, leveraging metadata provided during the process (in this example by https://kube-burner.github.io/kube-burner/latest/observability/indexing/#job-summary[kube-burner jobs summary]). The detection mechanism relies on https://otava.apache.org/[Apache Otava].
+
+Otava performs statistical analysis of performance test results stored in a number of data source formats and data bases (in our case ElasticSearch) and finds change-points and notifies about possible performance regressions.
+
+A typical use-case of Orion in the OpenShift context is as follows:
+
+ * A set of performance tests is scheduled repeatedly with any of the cloud-native benchmarking tooling presented through this course (kube-burner, k8s-netperf, ingress-perf, k8s-io, etc.), such as after each commit is pushed.
+ * The resulting metrics of the test runs are stored in an internal or external ElasticSearch or OpenSearch instance.
+ * Orion is launched by a scheduled Continuous Integration (CI) job (or an operator) to analyze the recorded metrics regularly.
+ * Orion notifies about significant changes in recorded metrics by outputting text reports or sending Slack notifications.
+
+Otava is capable of finding even small, but persistent shifts in metric values, despite noise in data. It adapts automatically to the level of noise in data and tries to notify only about persistent, statistically significant changes, be it in the system under test or in the environment.
+
+Unlike in threshold-based performance monitoring systems, there is no need to setup fixed warning threshold levels manually for each recorded metric. The level of accepted probability of false-positives, as well as the minimal accepted magnitude of changes are tunable. Orion is also capable of comparing the level of performance recorded in two different git histories. This can be used for example to validate a feature branch against the main branch, perhaps integrated with a pull request.
+
+== What you'll learn
+
+This chapter provides a practical, *hands-on introduction to automatic performance regression in OpenShift*.
+You will learn how to compare the performance of several benchmarking runs and how to automatically flag performace issues.
+
+== Next steps
+
+After completing this module, you will have a solid foundation for integrating automatic OpenShift performance regression into your CI pipelines of choice:
+
+ * Validate the performance characteristics of your Persistent Volumes (PVs).
+ * Compare multiple benchmarking runs on equal terms.
+ * Build repeatable, automated benchmarking workflows.
+ * Translate raw metrics into actionable insights for capacity planning and optimization.
+
+== See also
+
+* link:https://www.redhat.com/en/topics/devops/shift-left-vs-shift-right[Shift left vs. shift right,window=_blank]
+* link:https://developers.redhat.com/articles/2025/10/15/how-red-hat-has-redefined-continuous-performance-testing[How Red Hat has redefined continuous performance testing]

@@ -128,12 +128,29 @@ You can find more information on interpreting these metrics in kube-burner's doc
     mkdir node-density
     cd node-density/
     kube-burner-ocp node-density --extract
-    ls
 
-    alerts.yml         metrics-aggregated.yml       metrics-report.yml  pod.yml
-    cnv-metrics.yml    metrics-egressip.yml         metrics.yml
-    kueue-metrics.yml  metrics-report-stackrox.yml  node-density.yml
-    ```
+5. Let's take a look at the files that compose the workload:
+
+    tree
+
+    .
+    ├── alerts.yml
+    ├── cnv-metrics.yml
+    ├── kueue-metrics.yml
+    ├── metrics-aggregated.yml
+    ├── metrics-egressip.yml
+    ├── metrics-report-stackrox.yml
+    ├── metrics-report.yml
+    ├── metrics.yml
+    ├── node-density.yml
+    └── pod.yml
+
+ * `alerts.yml`:
+ * `cnv-metrics.yml`:
+ * `metrics-report.yml`:
+ * `metrics.yml`:
+ * `node-density.yml`: The workload definition
+ * `pod.yml`: The pod definition
 
 5. Change the default metrics endpoint from `opensearch` to `elastic`:
 
