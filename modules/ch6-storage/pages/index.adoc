@@ -7,10 +7,10 @@ Whether you are running stateful applications, databases, logging stacks, or AI/
 
 == What you’ll learn
 
-This chapter provides a practical, hands-on introduction to benchmarking storage in OpenShift.
+This chapter provides a practical, *hands-on introduction to benchmarking storage in OpenShift*.
 You will learn how to evaluate the efficiency of different storage backends, measure throughput and latency, detect bottlenecks, and interpret performance metrics that matter for real-world workloads.
 
-We'll explore Kubernetes-native tools, industry-standard benchmarking suites, and OpenShift-integrated observability features to help you validate the storage performance of OpenShift clusters.
+We'll explore *Kubernetes-native tools*, industry-standard benchmarking suites and OpenShift-integrated observability features to help you validate the storage performance of OpenShift clusters.
 
 == Next steps
 

@@ -11,8 +11,6 @@ Throughout the hands-on labs, you learned how to:
  * *Interpret and visualize results* using Prometheus, Grafana, and other native observability tools.
  * *Apply structured analysis* to derive clear, actionable insights from your benchmarking runs.
 
-Although storage, application benchmarks, and chaos engineering were out of scope, you now possess a strong foundation to continue exploring more advanced performance domains.
-
 === Key Takeaways
 
  * *Performance benchmarking is proactive, not reactive* — establishing baselines and running routine tests helps detect issues before they become outages.

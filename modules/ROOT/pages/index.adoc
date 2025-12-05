@@ -21,7 +21,6 @@ On completing this course, you should gain skills to proactively measure, analyz
 
 == Out of scope
 
- * Storage benchmarking
  * Application-level benchmarking
  * Chaos testing
 

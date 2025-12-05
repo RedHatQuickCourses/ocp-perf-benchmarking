@@ -1,12 +1,27 @@
-= Storage performance testing with k8s-IO
+= Storage performance testing with k8s-io
 
-K8s-IO is a lightweight Go-based CLI tool for running benchmark workloads on Kubernetes clusters. Unlike operator-based solutions, it provides a simple command-line interface for executing benchmarks without requiring cluster-wide operator deployments. It supports multiple benchmark types and reuses existing Jinja templates from the benchmark-operator project.
+K8s-io is a lightweight Go-based CLI tool for running benchmark workloads on Kubernetes clusters. Unlike operator-based solutions, it provides a simple command-line interface for executing benchmarks without requiring cluster-wide operator deployments. It supports multiple benchmark types and reuses existing Jinja templates from the benchmark-operator project.
 
 == Supported workloads
  * FIO: Distributed I/O benchmark using FIO (Flexible I/O Tester)
  * HammerDB: Database performance benchmark supporting PostgreSQL, MariaDB, and MSSQL
 
-== Configuration
+== Getting started with k8s-io
+
+=== Downloading and install latest stable version
+
+Download and install the latest stable release for your operating system and architecture with the command below.
+
+```bash
+curl -Ls https://raw.githubusercontent.com/jtaleric/k8s-io/refs/heads/main/hack/install.sh | sh
+```
+
+Validate the installation:
+```bash
+k8s-io -h
+```
+
+=== Configuration
 
 The tool uses YAML configuration files to specify benchmark parameters. Let's start with a FIO distributed benchmark configuration:
 
@@ -129,7 +144,7 @@ Results exported to: fio-results-17648670_read-write_4KiB-8KiB_1-20251204-125133
 2025/12/04 12:51:33 Benchmark completed successfully!
 ```
 
-As we can see from the output, k8s-IO run 32 tests iterating through the number of servers, samples, jobs, block sizes and number of jobs.K8s-IO automatically captured and parsed the results, displaying them in both a formatted table and exporting to CSV for further analysis.
+As we can see from the output, k8s-io run 32 tests iterating through the number of servers, samples, jobs, block sizes and number of jobs. K8s-io automatically captured and parsed the results, displaying them in both a formatted table and exporting to CSV for further analysis.
 
 For convenience, let's present the 4 first results in table format:
 
@@ -158,7 +173,7 @@ Some of the *key metrics captured* include:
  * *Hostname*: Worker node where each test client ran
  * *Timestamp*: When the results were captured
 
-== Storage classes
+=== Storage classes
 
 For FIO benchmarks, is it possible to specify a storage class to test different storage types. Let's see what storage classes we have available in the cluster:
 
@@ -262,7 +277,7 @@ fio-server-1-benchmark-17648731   1/1     Running     0          18m
 fio-server-2-benchmark-17648670   1/1     Running     0          120m
 ```
 
-== Cleanup
+=== Cleanup
 
 To clean up the resources after the benchmarking:
 
@@ -270,3 +285,52 @@ To clean up the resources after the benchmarking:
 k8s-io -config config-fio.yaml -cleanup
 k8s-io -config config-fio-sc.yaml -cleanup
 ```
+
+=== Indexing the results
+
+k8s-io can also index the results in a remote ElasticSearch/OpenSearch instance. Let's configure Prometheus for metric collection and ElasticSearch for indexing the results:
+
+1. Get ElasticSearch password:
+
+    ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
+
+2. Get ElasticSearch password:
+
+    ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
+
+3. Create the configuration file with the corresponding `prometheus` and `elasticsearch` sections:
+
+    ```bash
+    cat > config-fio-es.yaml <<EOF
+    namespace: "benchmark-fio"
+    workload:
+    name: "fio"
+    args:
+        kind: "pod"
+        servers: 1
+        samples: 1
+        jobs: ["read"]
+        bs: ["4KiB"]
+        numjobs: [1]
+        filesize: "1G"
+        storageclass: "ocs-external-storagecluster-ceph-rbd"
+        storagesize: "1Gi"
+        prefill: true
+    prometheus:
+    url: "http://prometheus.monitoring.svc.cluster.local:9091"
+    elasticsearch:
+    url: "$ES_INSTANCE"
+    index_name: "k8s-io"
+    verify_cert: false
+    parallel: true
+    EOF
+    ```
+
+4. Run the test:
+```bash
+k8s-io -config config-fio-es.yaml
+```
+
+== See also
+
+If you are interested in database performance benchmarking, take a look at some https://github.com/jtaleric/k8s-io/tree/main?tab=readme-ov-file#hammerdb-configuration-example[HammerDB configuration examples].

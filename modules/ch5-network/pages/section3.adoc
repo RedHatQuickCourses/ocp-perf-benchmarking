@@ -4,11 +4,11 @@ https://github.com/cloud-bulldozer/ingress-perf/[Ingress-perf] is an open-source
 
 Same as k8s-netperf, this tool receives periodic updates with bugfixes and enhancements, as it's currently used to detect potential performance regressions in new OpenShift versions.
 
-== Starting with ingress-perf
+== Getting started with ingress-perf
 
-=== Downloading latest stable version
+=== Downloading and install latest stable version
 
-Download and install latest stable release for your operating system and architecture with the command below.
+Download and install the latest stable release for your operating system and architecture with the command below.
 
 ```bash
 curl -Ls https://raw.githubusercontent.com/cloud-bulldozer/ingress-perf/refs/heads/main/hack/install.sh | sh
@@ -108,7 +108,7 @@ However, you can also index the results in a remote ElasticSearch/OpenSearch ins
 
 2. Get ElasticSearch route URL:
 
-    ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging   -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")
+    ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")
 
 3. Run test with the following command:
 
