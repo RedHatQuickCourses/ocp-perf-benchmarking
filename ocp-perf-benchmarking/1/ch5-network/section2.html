@@ -236,7 +236,7 @@
 <div class="sect2">
 <h3 id="_node_labeling_optional"><a class="anchor" href="#_node_labeling_optional"></a>Node labeling (optional)</h3>
 <div class="paragraph">
-<p>k8s-netperf schedules a client and a server pod in your OpenShift cluster to run the network throughput and latency tests. Allowing for node labeling allows the user to control which nodes the network performance tests run on - for example to not cross regions or availability zones, which could lead to higher latency. To also ensure that these pods land on the correct nodes, you use node labels.</p>
+<p>k8s-netperf schedules a client and a server pod in your OpenShift cluster to run the network throughput and latency tests. Allowing for node labeling allows the user to control which nodes the network performance tests run on - for example to not cross regions or availability zones, which could lead to higher latency. To also ensure that these pods land on the correct nodes, you use node labels:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -462,7 +462,7 @@ INFO[2025-12-03 10:18:29] ⏰ Waiting for netperf Namespace to be deleted...</co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">INFO[2025-12-03 11:06:05] Starting k8s-netperf (roce2@e2988034e0f9dd4e2a59f131f6ae7866b12fd6de)
+<pre>INFO[2025-12-03 11:06:05] Starting k8s-netperf (roce2@e2988034e0f9dd4e2a59f131f6ae7866b12fd6de)
 INFO[2025-12-03 11:06:05] 📒 Reading netperf.yml file.
 INFO[2025-12-03 11:06:05] 📒 Reading netperf.yml file - using ConfigV2 Method.
 INFO[2025-12-03 11:06:05] 🔬 prometheus discovered at openshift-monitoring
@@ -512,7 +512,7 @@ INFO[2025-12-03 11:10:38] Indexing finished in 100ms: created=4
 | UDP Loss Percent    | netperf | UDP_STREAM | 1           | false        | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 0.316821   |
 +---------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+------------+
 INFO[2025-12-03 11:10:38] Cleaning resources created by k8s-netperf
-INFO[2025-12-03 11:10:38] ⏰ Waiting for netperf Namespace to be deleted...</code></pre>
+INFO[2025-12-03 11:10:38] ⏰ Waiting for netperf Namespace to be deleted...</pre>
 </div>
 </div>
 </li>
