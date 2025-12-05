@@ -156,7 +156,6 @@ kube-burner-ocp node-density --extract
 tree
 ----
 +
-[source]
 ----
 .
 ├── alerts.yml

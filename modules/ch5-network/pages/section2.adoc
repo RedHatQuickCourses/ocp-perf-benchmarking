@@ -15,13 +15,15 @@ curl -Ls https://raw.githubusercontent.com/cloud-bulldozer/k8s-netperf/refs/head
 ```
 
 Validate the installation:
+
 ```bash
 k8s-netperf -h
 ```
 
 === Node labeling (optional)
 
-k8s-netperf schedules a client and a server pod in your OpenShift cluster to run the network throughput and latency tests. Allowing for node labeling allows the user to control which nodes the network performance tests run on - for example to not cross regions or availability zones, which could lead to higher latency. To also ensure that these pods land on the correct nodes, you use node labels.
+k8s-netperf schedules a client and a server pod in your OpenShift cluster to run the network throughput and latency tests. Allowing for node labeling allows the user to control which nodes the network performance tests run on - for example to not cross regions or availability zones, which could lead to higher latency. To also ensure that these pods land on the correct nodes, you use node labels:
+
 ```bash
 oc get node
 ```
@@ -44,6 +46,7 @@ If for some reason you want to place the client and server pods on the same node
 === Namespace and service account setup (optional)
 
 You'll need a dedicated namespace and service account for k8s-netperf. You can create them with the following commands:
+
 ```bash
 oc create ns netperf
 oc create sa -n netperf netperf
@@ -202,7 +205,6 @@ curl -k $ES_INSTANCE
 k8s-netperf --all --search=${ES_INSTANCE} --index=k8s-netperf
 ----
 +
-[source]
 ----
 INFO[2025-12-03 11:06:05] Starting k8s-netperf (roce2@e2988034e0f9dd4e2a59f131f6ae7866b12fd6de)
 INFO[2025-12-03 11:06:05] 📒 Reading netperf.yml file.
