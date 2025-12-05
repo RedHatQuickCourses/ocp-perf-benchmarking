@@ -282,12 +282,9 @@ EOF</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ingress-perf run -c ingress-perf.yaml</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>The output will be similar to this:</p>
-</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">time="2025-11-28 15:16:20" level=info msg="Running ingress-perf (heads/v0.6.0@e06373946c0c939445d3b94d871d52ccd8c7e8c4) with uuid f1bd5953-698b-4b48-88ba-c79bd6f783c8" file="ingress-perf.go:62"
+<pre>time="2025-11-28 15:16:20" level=info msg="Running ingress-perf (heads/v0.6.0@e06373946c0c939445d3b94d871d52ccd8c7e8c4) with uuid f1bd5953-698b-4b48-88ba-c79bd6f783c8" file="ingress-perf.go:62"
 time="2025-11-28 15:16:20" level=info msg="Creating local indexer" file="runner.go:87"
 time="2025-11-28 15:16:24" level=info msg="HAProxy version: haproxy28-2.8.10-1.rhaos4.17.el9.x86_64" file="runner.go:170"
 time="2025-11-28 15:16:24" level=info msg="Deploying benchmark assets" file="runner.go:262"
@@ -311,14 +308,23 @@ time="2025-11-28 15:23:07" level=info msg="Running sample 2/2: 1m0s" file="exec.
 time="2025-11-28 15:25:10" level=info msg="edge: Rps=66230 avgLatency=3ms P95Latency=4ms" file="exec.go:149"
 time="2025-11-28 15:25:10" level=info msg="Scenario summary edge: Rps=67075 avgLatency=3ms P95Latency=4ms timeouts=0 http_errors=0" file="exec.go:157"
 time="2025-11-28 15:25:10" level=info msg="File output/f1bd5953-698b-4b48-88ba-c79bd6f783c8.json created with 3 documents" file="runner.go:234"
-time="2025-11-28 15:25:10" level=info msg="Cleaning up resources" file="runner.go:239"</code></pre>
+time="2025-11-28 15:25:10" level=info msg="Cleaning up resources" file="runner.go:239"</pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Check out the <code>ingress-perf run --help</code> for more info about the allowed flags.</p>
 </div>
-<div class="paragraph">
-<p>Note that ingress-perf cleans up the resources after the benchmarks are complete, so you don&#8217;t need to clean up manually.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Ingress-perf cleans up the resources after the benchmarks are complete, so you don&#8217;t need to clean up manually.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -344,6 +350,35 @@ time="2025-11-28 15:25:10" level=info msg="Cleaning up resources" file="runner.g
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Validate ElasticSearch authentication:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -k $ES_INSTANCE</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "name" : "elasticsearch-es-default-0",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "gfP33bmwQ82UMWI2btj2OQ",
+  "version" : {
+    "number" : "8.15.0",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "1a77947f34deddb41af25e6f0ddb8e830159c179",
+    "build_date" : "2024-08-05T10:05:34.233336849Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.11.1",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}</code></pre>
 </div>
 </div>
 </li>
