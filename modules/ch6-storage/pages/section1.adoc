@@ -53,6 +53,8 @@ Let's take a closer look at each of the fields:
  * `filesize`: File size for testing
  * `prefill`: Enable prefill
 
+== Running your first test
+
 Let's run this simple configuration:
 
 ```bash

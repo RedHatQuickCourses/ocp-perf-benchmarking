@@ -28,7 +28,7 @@ This configuration contains a list of scenarios that Ingress-perf uses to deploy
 Once these assets are deployed, ingress-perf will run the benchmarks with specified configuration, like the http termination, test concurrency, number of connections, etc.
 
 
-=== Running ingress-perf
+== Running your first test
 
 Run Ingress-perf with this basic `ingress-perf.yaml` configuration file to run two benchmark scenarios with similar parameters, but different termination types: http and edge.
 

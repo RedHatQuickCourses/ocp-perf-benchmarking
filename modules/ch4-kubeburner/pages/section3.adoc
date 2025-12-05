@@ -22,6 +22,7 @@ kube-burner-ocp help
 == Objectives
 
 By the end of this lab activity, you should be able to:
+
  * Configure kube-burner jobs to simulate various control plane churn scenarios.
  * Measure and observe the control plane's responsiveness under stress.
  * Analyze test results and interpret key performance metrics.

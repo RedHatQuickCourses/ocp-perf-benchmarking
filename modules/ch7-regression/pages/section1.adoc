@@ -129,6 +129,8 @@ For each job we have several relevant fields:
    ** Only changepoints greater than this percentage will be detected
  * `correlation`: A filter that skips changepoint detection if a dependent metric has no changepoint
 
+== Running your first test
+
 Let's run this simple configuration:
 
 ```bash
