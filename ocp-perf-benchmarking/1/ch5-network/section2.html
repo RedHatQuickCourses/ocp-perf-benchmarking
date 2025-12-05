@@ -410,30 +410,30 @@ INFO[2025-12-03 10:18:29] ⏰ Waiting for netperf Namespace to be deleted...</co
 <ol class="arabic">
 <li>
 <p>Get ElasticSearch password:</p>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Get ElasticSearch route URL:</p>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Validate the ElasticSearch credentials:</p>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>curl -k $ES_INSTANCE</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -k $ES_INSTANCE</code></pre>
 </div>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>{
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
   "name" : "elasticsearch-es-default-0",
   "cluster_name" : "elasticsearch",
   "cluster_uuid" : "gfP33bmwQ82UMWI2btj2OQ",
@@ -449,20 +449,20 @@ INFO[2025-12-03 10:18:29] ⏰ Waiting for netperf Namespace to be deleted...</co
     "minimum_index_compatibility_version" : "7.0.0"
   },
   "tagline" : "You Know, for Search"
-}</pre>
+}</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Run test with the following command:</p>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>k8s-netperf --all --search=${ES_INSTANCE} --index=k8s-netperf</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">k8s-netperf --all --search=${ES_INSTANCE} --index=k8s-netperf</code></pre>
 </div>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>INFO[2025-12-03 11:06:05] Starting k8s-netperf (roce2@e2988034e0f9dd4e2a59f131f6ae7866b12fd6de)
+<pre class="highlightjs highlight"><code class="language-none hljs">INFO[2025-12-03 11:06:05] Starting k8s-netperf (roce2@e2988034e0f9dd4e2a59f131f6ae7866b12fd6de)
 INFO[2025-12-03 11:06:05] 📒 Reading netperf.yml file.
 INFO[2025-12-03 11:06:05] 📒 Reading netperf.yml file - using ConfigV2 Method.
 INFO[2025-12-03 11:06:05] 🔬 prometheus discovered at openshift-monitoring
@@ -512,7 +512,7 @@ INFO[2025-12-03 11:10:38] Indexing finished in 100ms: created=4
 | UDP Loss Percent    | netperf | UDP_STREAM | 1           | false        | false   | false           |          |             | 64           | 0     | false     | 30       | 2       | 0.316821   |
 +---------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+------------+
 INFO[2025-12-03 11:10:38] Cleaning resources created by k8s-netperf
-INFO[2025-12-03 11:10:38] ⏰ Waiting for netperf Namespace to be deleted...</pre>
+INFO[2025-12-03 11:10:38] ⏰ Waiting for netperf Namespace to be deleted...</code></pre>
 </div>
 </div>
 </li>
