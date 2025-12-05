@@ -43,4 +43,5 @@ After completing this module, you'll be ready to:
 
 == See also
 
-* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/scalability_and_performance/index[OpenShift Scaling and Performance Guide,window=_blank]
+* link:https://www.redhat.com/en/authors/red-hat-performance-team[Red Hat Performance Team]
+* link:https://www.redhat.com/en/blog/red-hat-performance-and-scale-engineering[Red Hat Performance and Scale Engineering]

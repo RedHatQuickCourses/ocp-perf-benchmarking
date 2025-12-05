@@ -12,6 +12,36 @@ Benchmarking in these environments also helps validate **autoscaling strategies*
 
 Finally, Kubernetes and OpenShift place strong emphasis on **multi-tenancy and shared resources**. Benchmarking allows organizations to understand how workloads from different teams interact, compete for resources, or impact one another. By measuring performance under contention, teams can enforce better resource quotas, limits, and scheduling decisions. In regulated or high-reliability environments, these benchmarks form part of the validation needed to ensure that the cluster behaves predictably even under heavy, mixed, or adversarial loads.
 
-== Shift-left
+== Shifting performance engineering left
 
 The **shift-left approach** in DevOps further increases the relevance of benchmarking. By integrating performance tests earlier in the development lifecycle, teams can identify bottlenecks long before an application reaches production. Kubernetes makes this process more accessible through ephemeral test environments and GitOps workflows where automated pipelines can deploy full stacks, run synthetic traffic tests, and collect metrics. This reduces late-stage surprises and ensures that performance becomes a core quality attribute rather than an afterthought.
+
+== Cloud native tooling
+
+During the course will be showcasing and demonstrating the following cloud-native Kubernetes first tools.
+
+=== Control plane
+
+*Kube-burner* is a Kubernetes performance and scale test orchestration toolset used to benchmark and characterize OpenShift control plane behavior.
+
+=== Data plane
+
+==== Networking
+
+*k8s-netperf* is a comprehensive network performance testing tool designed specifically for Kubernetes environments. It can test various network scenarios including pod-to-pod, host networking and cross-availability zone communications.
+
+*ingress-perf* is a tool to benchmark OpenShift nort-south traffic.
+
+==== Storage
+
+*K8s-io* is a lightweight command line tool for running benchmark workloads on Kubernetes clusters. 
+
+=== Automatic performance regression analysis
+
+Orion performs statistical analysis of performance test results stored on ElasticSearch and OpenSearch databases. It finds change-points and notifies about possible performance regressions.
+
+== See also
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/scalability_and_performance/index[OpenShift Scaling and Performance Guide,window=_blank]
+* link:https://www.redhat.com/en/topics/devops/shift-left-vs-shift-right[Shift left vs. shift right,window=_blank]
+* link:https://developers.redhat.com/articles/2025/10/15/how-red-hat-has-redefined-continuous-performance-testing[How Red Hat has redefined continuous performance testing]
