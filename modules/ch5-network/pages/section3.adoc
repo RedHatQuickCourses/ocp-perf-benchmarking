@@ -60,10 +60,7 @@ Then run ingress-perf with the following command:
 ```bash
 ingress-perf run -c ingress-perf.yaml
 ```
-
-The output will be similar to this:
-
-```
+----
 time="2025-11-28 15:16:20" level=info msg="Running ingress-perf (heads/v0.6.0@e06373946c0c939445d3b94d871d52ccd8c7e8c4) with uuid f1bd5953-698b-4b48-88ba-c79bd6f783c8" file="ingress-perf.go:62"
 time="2025-11-28 15:16:20" level=info msg="Creating local indexer" file="runner.go:87"
 time="2025-11-28 15:16:24" level=info msg="HAProxy version: haproxy28-2.8.10-1.rhaos4.17.el9.x86_64" file="runner.go:170"
@@ -89,11 +86,11 @@ time="2025-11-28 15:25:10" level=info msg="edge: Rps=66230 avgLatency=3ms P95Lat
 time="2025-11-28 15:25:10" level=info msg="Scenario summary edge: Rps=67075 avgLatency=3ms P95Latency=4ms timeouts=0 http_errors=0" file="exec.go:157"
 time="2025-11-28 15:25:10" level=info msg="File output/f1bd5953-698b-4b48-88ba-c79bd6f783c8.json created with 3 documents" file="runner.go:234"
 time="2025-11-28 15:25:10" level=info msg="Cleaning up resources" file="runner.go:239"
-```
+----
 
 Check out the `ingress-perf run --help` for more info about the allowed flags.
 
-Note that ingress-perf cleans up the resources after the benchmarks are complete, so you don't need to clean up manually.
+NOTE: Ingress-perf cleans up the resources after the benchmarks are complete, so you don't need to clean up manually.
 
 
 === Indexing the results
@@ -118,7 +115,36 @@ ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -
 ES_INSTANCE=$(oc get route elasticsearch-route -n openshift-logging -o jsonpath="https://elastic:${ES_PASSWORD}@{.spec.host}")
 ----
 
-3. Run test with the following command:
+3. Validate ElasticSearch authentication:
+
++
+[source,bash]
+----
+curl -k $ES_INSTANCE
+----
++
+[source,json]
+----
+{
+  "name" : "elasticsearch-es-default-0",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "gfP33bmwQ82UMWI2btj2OQ",
+  "version" : {
+    "number" : "8.15.0",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "1a77947f34deddb41af25e6f0ddb8e830159c179",
+    "build_date" : "2024-08-05T10:05:34.233336849Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.11.1",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+----
+
+4. Run test with the following command:
 
 +
 [source,bash]

@@ -58,7 +58,7 @@ Let's run this simple configuration:
 ```bash
 k8s-io -config config-fio.yaml
 ```
-```
+----
 2025/12/04 11:50:26 Starting K8s-IO benchmark tool...
 2025/12/04 11:50:26 Loaded configuration for workload: fio
 2025/12/04 11:50:26 Created fio workload
@@ -142,7 +142,7 @@ Test ID                          Sample  Job    Hostname     Read IOPS  Read BW 
 
 Results exported to: fio-results-17648670_read-write_4KiB-8KiB_1-20251204-125133.csv
 2025/12/04 12:51:33 Benchmark completed successfully!
-```
+----
 
 For convenience, let's present the 4 first results in table format:
 
@@ -179,12 +179,12 @@ For FIO benchmarks, is it possible to specify a storage class to test different 
 ```bash
 oc get storageclass
 ```
-```
+----
 NAME                                             PROVISIONER                             RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
 ocs-external-storagecluster-ceph-rbd (default)   openshift-storage.rbd.csi.ceph.com      Delete          Immediate           true                   135m
 ocs-external-storagecluster-cephfs               openshift-storage.cephfs.csi.ceph.com   Delete          Immediate           true                   135m
 openshift-storage.noobaa.io                      openshift-storage.noobaa.io/obc         Delete          Immediate           false                  133m
-```
+----
 
 Let's point to the default storage class:
 ```bash
@@ -216,7 +216,7 @@ Let's run the test:
 ```bash
 k8s-io -config config-fio-sc.yaml
 ```
-```
+----
 2025/12/04 13:32:26 Starting K8s-IO benchmark tool...
 2025/12/04 13:32:26 Loaded configuration for workload: fio
 2025/12/04 13:32:26 Created fio workload
@@ -249,21 +249,21 @@ Test ID               Sample  Job   Hostname     Read IOPS  Read BW (KB/s)  Writ
 
 Results exported to: fio-results-17648731_read_4KiB_1-20251204-133642.csv
 2025/12/04 13:36:42 Benchmark completed successfully!
-```
+----
 
 We can see the test left the Persistent Volume and the pods:
 ```bash
 oc get pvc
 ```
-```
+----
 NAME                   STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS                           VOLUMEATTRIBUTESCLASS   AGE
 fio-claim-1-17648731   Bound    pvc-138920d0-1ca7-4d7e-93d2-ad5513d17500   1Gi        RWO            ocs-external-storagecluster-ceph-rbd   <unset>                 12m
-```
+----
 
-```bas
+```bash
 oc get pods -n benchmark-fio
 ```
-```
+----
 NAME                              READY   STATUS      RESTARTS   AGE
 fio-check-17648670-srjlk          0/1     Completed   0          120m
 fio-check-17648731-z8fmv          0/1     Completed   0          18m
@@ -274,7 +274,7 @@ fio-prefill-17648731-jbmvr        0/1     Completed   0          17m
 fio-server-1-benchmark-17648670   1/1     Running     0          120m
 fio-server-1-benchmark-17648731   1/1     Running     0          18m
 fio-server-2-benchmark-17648670   1/1     Running     0          120m
-```
+----
 
 === Cleanup
 
@@ -291,44 +291,86 @@ k8s-io can also index the results in a remote ElasticSearch/OpenSearch instance.
 
 1. Get ElasticSearch password:
 
-    ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
++
+[source,bash]
+----
+ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
+----
 
 2. Get ElasticSearch password:
 
-    ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
++
+[source,bash]
+----
+ES_PASSWORD=$(oc get secret elasticsearch-es-elastic-user -n openshift-logging -o jsonpath='{.data.elastic}' | base64 -d)
+----
 
-3. Create the configuration file with the corresponding `prometheus` and `elasticsearch` sections:
+3. Validate ElasticSearch authentication:
 
-    ```bash
-    cat > config-fio-es.yaml <<EOF
-    namespace: "benchmark-fio"
-    workload:
-    name: "fio"
-    args:
-        kind: "pod"
-        servers: 1
-        samples: 1
-        jobs: ["read"]
-        bs: ["4KiB"]
-        numjobs: [1]
-        filesize: "1G"
-        storageclass: "ocs-external-storagecluster-ceph-rbd"
-        storagesize: "1Gi"
-        prefill: true
-    prometheus:
-    url: "http://prometheus.monitoring.svc.cluster.local:9091"
-    elasticsearch:
-    url: "$ES_INSTANCE"
-    index_name: "k8s-io"
-    verify_cert: false
-    parallel: true
-    EOF
-    ```
++
+[source,bash]
+----
+curl -k $ES_INSTANCE
+----
++
+[source,json]
+----
+{
+  "name" : "elasticsearch-es-default-0",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "gfP33bmwQ82UMWI2btj2OQ",
+  "version" : {
+    "number" : "8.15.0",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "1a77947f34deddb41af25e6f0ddb8e830159c179",
+    "build_date" : "2024-08-05T10:05:34.233336849Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.11.1",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+----
 
-4. Run the test:
-```bash
+4. Create the configuration file with the corresponding `prometheus` and `elasticsearch` sections:
+
++
+[source,bash]
+----
+cat > config-fio-es.yaml <<EOF
+namespace: "benchmark-fio"
+workload:
+name: "fio"
+args:
+  kind: "pod"
+  servers: 1
+  samples: 1
+  jobs: ["read"]
+  bs: ["4KiB"]
+  numjobs: [1]
+  filesize: "1G"
+  storageclass: "ocs-external-storagecluster-ceph-rbd"
+  storagesize: "1Gi"
+  prefill: true
+prometheus:
+url: "http://prometheus.monitoring.svc.cluster.local:9091"
+elasticsearch:
+url: "$ES_INSTANCE"
+index_name: "k8s-io"
+verify_cert: false
+parallel: true
+EOF
+----
+
+5. Run the test:
+
++
+[source,bash]
+----
 k8s-io -config config-fio-es.yaml
-```
+----
 
 == See also
 

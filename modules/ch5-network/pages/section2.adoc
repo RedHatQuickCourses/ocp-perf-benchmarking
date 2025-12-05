@@ -27,14 +27,14 @@ k8s-netperf schedules a client and a server pod in your OpenShift cluster to run
 ```bash
 oc get node
 ```
-```
+----
 NAME                            STATUS   ROLES                  AGE   VERSION
 control-plane-cluster-vjm62-1   Ready    control-plane,master   47h   v1.31.7
 control-plane-cluster-vjm62-2   Ready    control-plane,master   47h   v1.31.7
 control-plane-cluster-vjm62-3   Ready    control-plane,master   47h   v1.31.7
 worker-cluster-vjm62-1          Ready    worker                 47h   v1.31.7
 worker-cluster-vjm62-2          Ready    worker                 47h   v1.31.7
-```
+----
 
 ```bash
 oc label node worker-cluster-vjm62-1 netperf=client
@@ -81,7 +81,7 @@ Let's run it with the `-all` flag that runs both hostNet and podNetwork scenario
 ```bash
 k8s-netperf --all
 ```
-```
+----
 INFO[2025-12-03 10:06:53] Starting k8s-netperf (0.1.34@664f2cc67082b9dcd5a07f6d01b195ca6ad507c4)
 INFO[2025-12-03 10:06:53] 📒 Reading netperf.yml file.
 INFO[2025-12-03 10:06:53] 📒 Reading netperf.yml file - using ConfigV2 Method.
@@ -131,7 +131,7 @@ INFO[2025-12-03 10:14:43] 🗒️  Running netperf UDP_STREAM (service false) fo
 +---------------------+---------+------------+-------------+--------------+---------+-----------------+----------+-------------+--------------+-------+-----------+----------+---------+------------+
 INFO[2025-12-03 10:18:29] Cleaning resources created by k8s-netperf
 INFO[2025-12-03 10:18:29] ⏰ Waiting for netperf Namespace to be deleted...
-```
+----
 
 As expected, the host network results (direct connectivity between hosts) where slightly better than the pod network ones (pod to pod connectivity through the CNI), though the difference is perfectly within the expected range. k8s-netperf will alert (and exit with error code 1) if the difference between host network and pod network results is significant (default alert threshold is 10%, can be adjusted though the `--tcp-tolerance` flag).
 
