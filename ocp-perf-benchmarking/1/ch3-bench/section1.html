@@ -221,7 +221,9 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="_networking"><a class="anchor" href="#_networking"></a>Networking</h3>
+<h3 id="_data_plane"><a class="anchor" href="#_data_plane"></a>Data plane</h3>
+<div class="sect3">
+<h4 id="_networking"><a class="anchor" href="#_networking"></a>Networking</h4>
 <div class="paragraph">
 <p><a href="https://github.com/cloud-bulldozer/k8s-netperf">k8s-netperf</a> is another Kubernetes-specific benchmarking tool focused on network performance. It supports several backends mentioned in the previous section, like netperf, iperf and uperf to be able to measure latency, throughput, and other network characteristics across the cluster. By running tests between pods on different nodes, k8s-netperf provides insight into how networking plugins, CNI configurations, and overlay networks affect communication performance in a cloud-native environment.</p>
 </div>
@@ -229,10 +231,11 @@
 <p>For applications exposed via HTTP or other ingress protocols, <a href="https://github.com/cloud-bulldozer/ingress-perf">ingress-perf</a> offers a way to benchmark the performance of Kubernetes ingress controllers. It can simulate concurrent connections, measure request latency, and generate traffic patterns similar to real-world application workloads. This helps teams understand how ingress controllers behave under stress and how configuration changes or resource constraints impact application availability and responsiveness.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_storage"><a class="anchor" href="#_storage"></a>Storage</h3>
+<div class="sect3">
+<h4 id="_storage"><a class="anchor" href="#_storage"></a>Storage</h4>
 <div class="paragraph">
 <p><a href="https://github.com/jtaleric/k8s-io">k8s-IO</a> is a lightweight Go-based CLI tool for running benchmark workloads on Kubernetes clusters. Unlike operator-based solutions, it provides a simple command-line interface for executing benchmarks without requiring cluster-wide operator deployments, supporting multiple benchmark types like fio or HammerDB (for database performance benchmarking).</p>
+</div>
 </div>
 </div>
 <div class="sect2">
