@@ -1,66 +1,230 @@
-= Measuring control plane responsiveness
+= Measuring control plane responsiveness with kube-burner
 
-Measuring control plane responsiveness is crucial for ensuring a Kubernetes (k8s) cluster's stability and performance under varying loads, particularly when simulating churn scenarios with tools like kube-burner. The control plane components, including the API server, etcd, and controller manager, must be responsive to maintain optimal cluster operations.
+This tutorial walks you through configuring and running kube-burner to measure control plane responsiveness using real latency measurements and Prometheus metrics. You will instrument pod and service latency, generate API load, and analyze the results to detect regressions.
 
-## Understanding control plane metrics
 
-Before diving into measuring control plane responsiveness, it's essential to understand relevant metrics:
+## 1. Understanding Control Plane Metrics
+Control plane responsiveness reflects how quickly k8s can:
 
-1. **API server latency**: Measures how quickly the API server responds to client requests in milliseconds (ms). High latency may indicate performance issues or overloaded resources.
+* Create pods
+* Transition pods to ready
+* Make services available
+* Handle API requests under load
 
-2. **etcd performance**: etcd is responsible for k8s cluster state persistence. Key metrics include read/write operation success rates, latency, and resource usage like CPU and memory.
+With kube-burner, this is measured using two data sources:
 
-3. **Controller Manager responsiveness**: This metric assesses how efficiently controllers process the cluster's desired state, replicating it in reality. Delays here might lead to pod scheduling failures or other control loop issues.
+### a. kube-burner Measurements (Built-in)
+These measure end-to-end latency:
 
-## Utilizing kube-burner for Control Plane Testing
+* `podLatency` → latencies for multiple pod lifecycle events
+* `serviceLatency` → Time taken for service to be up and running
 
-kube-burner is a powerful tool designed to simulate various churn scenarios within a k8s cluster, providing valuable insights into its behavior under stress and helping to validate its resilience. Here’s how to configure kube-burner jobs for measuring control plane responsiveness:
-
-### Enable pod latency measurements
-
-Kube-burner collects pod latency metrics across different phases of pod startup, crucial for evaluating the API server's performance. To enable this feature:
-
-```yaml
+They are enabled via:
+```
 global:
   measurements:
     - name: podLatency
     - name: serviceLatency
 ```
 
-### Configure kube-burner jobs
+### b. Prometheus Control Plane Metrics
+These provide internal system behavior:
 
-Next, set up specific jobs tailored for control plane responsiveness testing:
+* API server latency
+* API request rate (QPS)
+* API server CPU usage
 
-```yaml
+These are scraped using a Prometheus metrics configuration.
+
+## 2. Utilizing kube-burner for Control Plane Testing
+
+kube-burner executes high-volume k8s API operations (pod creation, service creation, churn, etc.) while:
+
+* Recording latency measurements
+* Scraping Prometheus metrics
+* Producing machine-readable JSON output
+
+A typical setup includes:
+
+* A job file (job.yaml) for load generation
+* A metrics file (metrics.yaml) for Prometheus scraping
+* One or more object templates (pod.yaml, service.yaml)
+
+## 3. Configure kube-burner jobs
+
+### 3.1 Example job.yaml (Control Plane Load Test)
+```
+global:
+  measurements:
+    - name: podLatency
+    - name: serviceLatency
+
 jobs:
-- name: controlplane_stress
-  # Specify the type of churn you want to simulate, e.g., pod creations/deletions
-  type: pod_create_delete
-  duration: 60m
-  args:
-    - --namespace=kube-burner
-    - --count=50
+  - name: control-plane-load
+    jobType: create
+    jobIterations: 1
+    qps: 50
+    burst: 50
+
+    objects:
+      - objectTemplate: pod.yaml
+        replicas: 500
+
+      - objectTemplate: service.yaml
+        replicas: 50
+```
+This job:
+
+* Creates 500 pods and 50 services
+* Drives load through the k8s API
+* Records pod and service latency automatically
+
+### 3.2 Pod Template (pod.yaml)
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cp-test-pod
+  labels:
+    app: cp-test
+spec:
+  containers:
+  - name: pause
+    image: registry.k8s.io/pause:3.9
 ```
 
-This job simulates creating and deleting 50 pods within the `kube-burner` namespace over a 60-minute period, stressing control plane components like the API server and etcd.
+### 3.3 Service Template (service.yaml)
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: cp-test-service
+spec:
+  selector:
+    app: cp-test
+  ports:
+  - port: 80
+    targetPort: 80
+```
+This is required for serviceLatency to work correctly.
 
-### Analyze results
+## 4. Prometheus Metrics Configuration
+To correlate latency results with control plane behavior, configure Prometheus scraping.
 
-After running the job with `kubeburner run controlplane_stress`, kube-burner will generate detailed metrics and logs. Focus on pod latency measurements from the `global.measurements.podLatency` output, which reflects API server responsiveness under stress:
-
-```shell
-# Example of examining pod latency using jq (requires jq to be installed)
-kubectl exec -n kube-burner <kube-burner-pod> -- cat /var/lib/kube-burner/results.json | jq '.results[].measurements[] | select(.name == "podLatency") | .values'
+### 4.1 metrics.yaml
+```
+metricsEndpoints:
+- endpoint: http://localhost:9090
+  alias: prometheus
+  metrics:
+  - metrics-control-plane.yaml
+  indexer:
+    type: local
+    metricsDirectory: metrics
 ```
 
-### Troubleshooting
+### 4.2 Control Plane Metrics (metrics-control-plane.yaml)
+```
+- metricName: apiserverP99
+  query: histogram_quantile(0.99,
+    sum(rate(apiserver_request_duration_seconds_bucket[2m])) by (le))
 
-Should control plane latency exceed acceptable thresholds, investigate potential causes:
+- metricName: apiserverQPS
+  query: sum(rate(apiserver_request_total[2m]))
 
-- **Resource Constraints**: Check if the control plane nodes are adequately provisioned (CPU, memory).
-- **etcd Performance**: Inspect etcd metrics for bottlenecks or high load conditions.
-- **Network Latency**: Ensure network communication between control plane components is not introducing delays.
+- metricName: apiserverCPU
+  query: sum(irate(process_cpu_seconds_total{job=~".*apiserver.*"}[2m]))
+```
+These allow you to correlate:
 
-## Conclusion
+* Pod latency spikes
+* API server latency
+* API server CPU saturation
 
-Measuring control plane responsiveness with kube-burner provides invaluable insights into a k8s cluster's performance and resilience under simulated churn scenarios. By carefully configuring jobs to focus on relevant metrics and thoroughly analyzing the results, you can identify and address performance bottlenecks, ensuring your cluster operates efficiently even under heavy loads.
+## 5. Run the Test
+Execute kube-burner with both configs:
+
+`kube-burner init -c job.yaml -m metrics.yaml`
+
+During execution:
+
+* Pods and services will be created
+* Latency will be recorded
+* Prometheus metrics will be scraped
+* Results will be written to disk
+
+## 6. Analyzing Results
+### a. Real pod-latency per-pod document
+This is the per-pod document kube-burner indexes for pods that reached `Running`:
+```
+{
+  "timestamp": "2020-11-15T20:28:59.598727718Z",
+  "schedulingLatency": 4,
+  "initializedLatency": 20,
+  "containersReadyLatency": 2997,
+  "podReadyLatency": 2997,
+  "metricName": "podLatencyMeasurement",
+  "uuid": "c40b4346-7af7-4c63-9ab4-aae7ccdd0616",
+  "namespace": "kubelet-density",
+  "podName": "kubelet-density-13",
+  "nodeName": "worker-001",
+  "jobName": "create-pods",
+  "jobIteration": "2",
+  "replica": "3"
+}
+```
+Notes:
+
+* Latencies are in milliseconds.
+* `podReadyLatency`` is the end-to-end number you usually care about (API → scheduler → kubelet readiness). 
+
+### b. Pod-latency quantiles
+Kube-burner also writes quantiles per condition. Example:
+```
+{
+  "quantileName": "Ready",
+  "uuid": "23c0b5fd-c17e-4326-a389-b3aebc774c82",
+  "P99": 3774,
+  "P95": 3510,
+  "P50": 2897,
+  "max": 3774,
+  "avg": 2876.3,
+  "timestamp": "2020-11-15T22:26:51.553221077+01:00",
+  "metricName": "podLatencyQuantilesMeasurement"
+}
+```
+Use `P50/P95/P99` for trend/regression detection (P99 is your high-confidence signal). 
+
+All the runtime measurements appear more or less in the similar pattern above.
+
+### c. Prometheus metric documents
+Each PromQL result kube-burner writes has this shape with a timestamp.
+```
+[
+  {
+    "timestamp": "2021-06-23T11:50:15+02:00",
+    "labels": {
+      "instance": "ip-10-0-219-170.eu-west-3.compute.internal",
+      "mode": "user"
+    },
+    "value": 0.3300880234732172,
+    "uuid": "<UUID>",
+    "query": "sum(irate(node_cpu_seconds_total[2m])) by (mode,instance)",
+    "metricName": "nodeCPU"
+  },
+  ...
+]
+```
+kube-burner enriches results with uuid, query, and metricName for correlation. Use metricName to identify which PromQL you ran.
+
+### 7 — Quick checklist: what signals mean what (developer view)
+
+* `podLatencyQuantilesMeasurement P99` (Ready): control-plane slowdown (API/scheduler/kubelet). Check node & apiserver CPU and apiserver request duration. 
+
+* `svcLatencyQuantiles P99`: Endpoints not ready quickly, or network/provider LB delays. Check endpoints and kube-burner-service-latency connectivity logs. 
+
+* `Prometheus apiserver P99`: (PromQL result apiserver_request_duration_seconds quantile) → API server processing time spike. Correlate with achievedQps in jobSummary. 
+
+* `High jobSummary.achievedQps with high latencies`: you pushed cluster beyond what it was tuned for; lower qps/burst for debugging.
+
+Note: The above is just an example, but analyzing metrics and debugging for issues is a wide topic.
