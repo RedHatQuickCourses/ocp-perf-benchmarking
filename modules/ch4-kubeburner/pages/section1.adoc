@@ -3,7 +3,7 @@
 This tutorial walks you through configuring and running kube-burner to measure control plane responsiveness using real latency measurements and Prometheus metrics. You will instrument pod and service latency, generate API load, and analyze the results to detect regressions.
 
 
-== Understanding Control Plane Metrics
+== Understanding Control Plane metrics
 
 Control plane responsiveness reflects how quickly k8s can:
 
@@ -38,7 +38,7 @@ These provide context about internal system behavior and are scraped using a Pro
  * API request rate (QPS)
  * API server CPU usage
 
-== Utilizing kube-burner for Control Plane Testing
+== Utilizing kube-burner for Control Plane testing
 
 kube-burner executes high-volume k8s API operations (pod creation, service creation, churn, etc.) while:
 
@@ -83,7 +83,9 @@ jobs:
         replicas: 50
 ```
 
-==== Pod Template (pod.yaml)
+==== Pod template
+
+Content of the `pod.yaml` file:
 
 ```yaml
 apiVersion: v1
@@ -98,9 +100,9 @@ spec:
     image: registry.k8s.io/pause:3.9
 ```
 
-==== 3.3 Service Template (service.yaml)
+==== Service template
 
-This is required for serviceLatency to work correctly:
+Content of the `service.yaml` file. This is required for serviceLatency to work correctly:
 
 ```yaml
 apiVersion: v1
@@ -118,7 +120,9 @@ spec:
 == Prometheus Metrics Configuration
 To correlate latency results with control plane behavior, configure Prometheus scraping.
 
-### metrics.yaml
+### Example metrics file
+
+Place this content in the `metrics.yaml` file:
 
 ```yaml
 metricsEndpoints:
@@ -131,7 +135,9 @@ metricsEndpoints:
     metricsDirectory: metrics
 ```
 
-### 4.2 Control Plane Metrics (metrics-control-plane.yaml)
+### Control Plane metrics
+
+Place this content in the `metrics-control-plane.yaml` file:
 
 ```yaml
 - metricName: apiserverP99
@@ -168,7 +174,7 @@ During execution:
 
 == Analyzing Results
 
-=== Real pod-latency per-pod document
+=== Pod creation latency per-pod document
 
 This is the per-pod document kube-burner indexes for pods that reached the running state:
 
