@@ -48,9 +48,9 @@ kube-burner executes high-volume k8s API operations (pod creation, service creat
 
 A typical setup includes:
 
- * A job file (job.yaml) for load generation
- * A metrics file (metrics.yaml) for Prometheus scraping
- * One or more object templates (pod.yaml, service.yaml)
+ * A job file (`job.yaml`) for load generation
+ * A metrics file (`metrics.yaml`) for Prometheus scraping
+ * One or more object templates (I.e.: `pod.yaml`, `service.yaml`, etc.)
 
 == Configure kube-burner jobs
 
