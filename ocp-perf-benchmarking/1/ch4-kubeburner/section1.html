@@ -209,7 +209,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_understanding_control_plane_metrics"><a class="anchor" href="#_understanding_control_plane_metrics"></a>Understanding Control Plane Metrics</h2>
+<h2 id="_understanding_control_plane_metrics"><a class="anchor" href="#_understanding_control_plane_metrics"></a>Understanding Control Plane metrics</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Control plane responsiveness reflects how quickly k8s can:</p>
@@ -282,7 +282,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_utilizing_kube_burner_for_control_plane_testing"><a class="anchor" href="#_utilizing_kube_burner_for_control_plane_testing"></a>Utilizing kube-burner for Control Plane Testing</h2>
+<h2 id="_utilizing_kube_burner_for_control_plane_testing"><a class="anchor" href="#_utilizing_kube_burner_for_control_plane_testing"></a>Utilizing kube-burner for Control Plane testing</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>kube-burner executes high-volume k8s API operations (pod creation, service creation, churn, etc.) while:</p>
@@ -362,7 +362,10 @@ jobs:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_pod_template_pod_yaml"><a class="anchor" href="#_pod_template_pod_yaml"></a>Pod Template (pod.yaml)</h4>
+<h4 id="_pod_template"><a class="anchor" href="#_pod_template"></a>Pod template</h4>
+<div class="paragraph">
+<p>Content of the <code>pod.yaml</code> file:</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
@@ -379,9 +382,9 @@ spec:
 </div>
 </div>
 <div class="sect3">
-<h4 id="_3_3_service_template_service_yaml"><a class="anchor" href="#_3_3_service_template_service_yaml"></a>3.3 Service Template (service.yaml)</h4>
+<h4 id="_service_template"><a class="anchor" href="#_service_template"></a>Service template</h4>
 <div class="paragraph">
-<p>This is required for serviceLatency to work correctly:</p>
+<p>Content of the <code>service.yaml</code> file. This is required for serviceLatency to work correctly:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -408,7 +411,10 @@ spec:
 <p>To correlate latency results with control plane behavior, configure Prometheus scraping.</p>
 </div>
 <div class="sect2">
-<h3 id="_metrics_yaml"><a class="anchor" href="#_metrics_yaml"></a>metrics.yaml</h3>
+<h3 id="_example_metrics_file"><a class="anchor" href="#_example_metrics_file"></a>Example metrics file</h3>
+<div class="paragraph">
+<p>Place this content in the <code>metrics.yaml</code> file:</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">metricsEndpoints:
@@ -423,7 +429,10 @@ spec:
 </div>
 </div>
 <div class="sect2">
-<h3 id="_4_2_control_plane_metrics_metrics_control_plane_yaml"><a class="anchor" href="#_4_2_control_plane_metrics_metrics_control_plane_yaml"></a>4.2 Control Plane Metrics (metrics-control-plane.yaml)</h3>
+<h3 id="_control_plane_metrics"><a class="anchor" href="#_control_plane_metrics"></a>Control Plane metrics</h3>
+<div class="paragraph">
+<p>Place this content in the <code>metrics-control-plane.yaml</code> file:</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">- metricName: apiserverP99
@@ -492,7 +501,7 @@ spec:
 <h2 id="_analyzing_results"><a class="anchor" href="#_analyzing_results"></a>Analyzing Results</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_real_pod_latency_per_pod_document"><a class="anchor" href="#_real_pod_latency_per_pod_document"></a>Real pod-latency per-pod document</h3>
+<h3 id="_pod_creation_latency_per_pod_document"><a class="anchor" href="#_pod_creation_latency_per_pod_document"></a>Pod creation latency per-pod document</h3>
 <div class="paragraph">
 <p>This is the per-pod document kube-burner indexes for pods that reached the running state:</p>
 </div>
