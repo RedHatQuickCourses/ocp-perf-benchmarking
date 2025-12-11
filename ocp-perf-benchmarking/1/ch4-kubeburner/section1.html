@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Measuring control plane responsiveness :: OpenShift performance benchmarking guide</title>
+    <title>Measuring control plane responsiveness with kube-burner :: OpenShift performance benchmarking guide</title>
     <link rel="prev" href="index.html">
     <link rel="next" href="section2.html">
     <meta name="generator" content="Antora 3.1.3">
@@ -200,49 +200,60 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Measuring control plane responsiveness</h1>
+<h1 class="page">Measuring control plane responsiveness with kube-burner</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Measuring control plane responsiveness is crucial for ensuring a Kubernetes (k8s) cluster&#8217;s stability and performance under varying loads, particularly when simulating churn scenarios with tools like kube-burner. The control plane components, including the API server, etcd, and controller manager, must be responsive to maintain optimal cluster operations.</p>
+<p>This tutorial walks you through configuring and running kube-burner to measure control plane responsiveness using real latency measurements and Prometheus metrics. You will instrument pod and service latency, generate API load, and analyze the results to detect regressions.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_understanding_control_plane_metrics"><a class="anchor" href="#_understanding_control_plane_metrics"></a>Understanding control plane metrics</h2>
+<h2 id="_1_understanding_control_plane_metrics"><a class="anchor" href="#_1_understanding_control_plane_metrics"></a>1. Understanding Control Plane Metrics</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Before diving into measuring control plane responsiveness, it&#8217;s essential to understand relevant metrics:</p>
+<p>Control plane responsiveness reflects how quickly k8s can:</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p><strong>API server latency</strong>: Measures how quickly the API server responds to client requests in milliseconds (ms). High latency may indicate performance issues or overloaded resources.</p>
+<p>Create pods</p>
 </li>
 <li>
-<p><strong>etcd performance</strong>: etcd is responsible for k8s cluster state persistence. Key metrics include read/write operation success rates, latency, and resource usage like CPU and memory.</p>
+<p>Transition pods to ready</p>
 </li>
 <li>
-<p><strong>Controller Manager responsiveness</strong>: This metric assesses how efficiently controllers process the cluster&#8217;s desired state, replicating it in reality. Delays here might lead to pod scheduling failures or other control loop issues.</p>
+<p>Make services available</p>
 </li>
-</ol>
+<li>
+<p>Handle API requests under load</p>
+</li>
+</ul>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_utilizing_kube_burner_for_control_plane_testing"><a class="anchor" href="#_utilizing_kube_burner_for_control_plane_testing"></a>Utilizing kube-burner for Control Plane Testing</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>kube-burner is a powerful tool designed to simulate various churn scenarios within a k8s cluster, providing valuable insights into its behavior under stress and helping to validate its resilience. Here’s how to configure kube-burner jobs for measuring control plane responsiveness:</p>
+<p>With kube-burner, this is measured using two data sources:</p>
 </div>
 <div class="sect2">
-<h3 id="_enable_pod_latency_measurements"><a class="anchor" href="#_enable_pod_latency_measurements"></a>Enable pod latency measurements</h3>
+<h3 id="_a_kube_burner_measurements_built_in"><a class="anchor" href="#_a_kube_burner_measurements_built_in"></a>a. kube-burner Measurements (Built-in)</h3>
 <div class="paragraph">
-<p>Kube-burner collects pod latency metrics across different phases of pod startup, crucial for evaluating the API server&#8217;s performance. To enable this feature:</p>
+<p>These measure end-to-end latency:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>podLatency</code> → latencies for multiple pod lifecycle events</p>
+</li>
+<li>
+<p><code>serviceLatency</code> → Time taken for service to be up and running</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>They are enabled via:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">global:
+<pre class="highlightjs highlight"><code class="language-none hljs">global:
   measurements:
     - name: podLatency
     - name: serviceLatency</code></pre>
@@ -250,53 +261,198 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_kube_burner_jobs"><a class="anchor" href="#_configure_kube_burner_jobs"></a>Configure kube-burner jobs</h3>
+<h3 id="_b_prometheus_control_plane_metrics"><a class="anchor" href="#_b_prometheus_control_plane_metrics"></a>b. Prometheus Control Plane Metrics</h3>
 <div class="paragraph">
-<p>Next, set up specific jobs tailored for control plane responsiveness testing:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">jobs:
-- name: controlplane_stress
-  # Specify the type of churn you want to simulate, e.g., pod creations/deletions
-  type: pod_create_delete
-  duration: 60m
-  args:
-    - --namespace=kube-burner
-    - --count=50</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This job simulates creating and deleting 50 pods within the <code>kube-burner</code> namespace over a 60-minute period, stressing control plane components like the API server and etcd.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_analyze_results"><a class="anchor" href="#_analyze_results"></a>Analyze results</h3>
-<div class="paragraph">
-<p>After running the job with <code>kubeburner run controlplane_stress</code>, kube-burner will generate detailed metrics and logs. Focus on pod latency measurements from the <code>global.measurements.podLatency</code> output, which reflects API server responsiveness under stress:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell"># Example of examining pod latency using jq (requires jq to be installed)
-kubectl exec -n kube-burner &lt;kube-burner-pod&gt; -- cat /var/lib/kube-burner/results.json | jq '.results[].measurements[] | select(.name == "podLatency") | .values'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_troubleshooting"><a class="anchor" href="#_troubleshooting"></a>Troubleshooting</h3>
-<div class="paragraph">
-<p>Should control plane latency exceed acceptable thresholds, investigate potential causes:</p>
+<p>These provide internal system behavior:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Resource Constraints</strong>: Check if the control plane nodes are adequately provisioned (CPU, memory).</p>
+<p>API server latency</p>
 </li>
 <li>
-<p><strong>etcd Performance</strong>: Inspect etcd metrics for bottlenecks or high load conditions.</p>
+<p>API request rate (QPS)</p>
 </li>
 <li>
-<p><strong>Network Latency</strong>: Ensure network communication between control plane components is not introducing delays.</p>
+<p>API server CPU usage</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These are scraped using a Prometheus metrics configuration.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_utilizing_kube_burner_for_control_plane_testing"><a class="anchor" href="#_2_utilizing_kube_burner_for_control_plane_testing"></a>2. Utilizing kube-burner for Control Plane Testing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>kube-burner executes high-volume k8s API operations (pod creation, service creation, churn, etc.) while:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Recording latency measurements</p>
+</li>
+<li>
+<p>Scraping Prometheus metrics</p>
+</li>
+<li>
+<p>Producing machine-readable JSON output</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A typical setup includes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A job file (job.yaml) for load generation</p>
+</li>
+<li>
+<p>A metrics file (metrics.yaml) for Prometheus scraping</p>
+</li>
+<li>
+<p>One or more object templates (pod.yaml, service.yaml)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_configure_kube_burner_jobs"><a class="anchor" href="#_3_configure_kube_burner_jobs"></a>3. Configure kube-burner jobs</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_3_1_example_job_yaml_control_plane_load_test"><a class="anchor" href="#_3_1_example_job_yaml_control_plane_load_test"></a>3.1 Example job.yaml (Control Plane Load Test)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">global:
+  measurements:
+    - name: podLatency
+    - name: serviceLatency
+
+jobs:
+  - name: control-plane-load
+    jobType: create
+    jobIterations: 1
+    qps: 50
+    burst: 50
+
+    objects:
+      - objectTemplate: pod.yaml
+        replicas: 500
+
+      - objectTemplate: service.yaml
+        replicas: 50</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This job:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Creates 500 pods and 50 services</p>
+</li>
+<li>
+<p>Drives load through the k8s API</p>
+</li>
+<li>
+<p>Records pod and service latency automatically</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_2_pod_template_pod_yaml"><a class="anchor" href="#_3_2_pod_template_pod_yaml"></a>3.2 Pod Template (pod.yaml)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">apiVersion: v1
+kind: Pod
+metadata:
+  name: cp-test-pod
+  labels:
+    app: cp-test
+spec:
+  containers:
+  - name: pause
+    image: registry.k8s.io/pause:3.9</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_3_service_template_service_yaml"><a class="anchor" href="#_3_3_service_template_service_yaml"></a>3.3 Service Template (service.yaml)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">apiVersion: v1
+kind: Service
+metadata:
+  name: cp-test-service
+spec:
+  selector:
+    app: cp-test
+  ports:
+  - port: 80
+    targetPort: 80</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is required for serviceLatency to work correctly.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_prometheus_metrics_configuration"><a class="anchor" href="#_4_prometheus_metrics_configuration"></a>4. Prometheus Metrics Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To correlate latency results with control plane behavior, configure Prometheus scraping.</p>
+</div>
+<div class="sect2">
+<h3 id="_4_1_metrics_yaml"><a class="anchor" href="#_4_1_metrics_yaml"></a>4.1 metrics.yaml</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">metricsEndpoints:
+- endpoint: http://localhost:9090
+  alias: prometheus
+  metrics:
+  - metrics-control-plane.yaml
+  indexer:
+    type: local
+    metricsDirectory: metrics</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_4_2_control_plane_metrics_metrics_control_plane_yaml"><a class="anchor" href="#_4_2_control_plane_metrics_metrics_control_plane_yaml"></a>4.2 Control Plane Metrics (metrics-control-plane.yaml)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">- metricName: apiserverP99
+  query: histogram_quantile(0.99,
+    sum(rate(apiserver_request_duration_seconds_bucket[2m])) by (le))
+
+- metricName: apiserverQPS
+  query: sum(rate(apiserver_request_total[2m]))
+
+- metricName: apiserverCPU
+  query: sum(irate(process_cpu_seconds_total{job=~".*apiserver.*"}[2m]))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These allow you to correlate:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pod latency spikes</p>
+</li>
+<li>
+<p>API server latency</p>
+</li>
+<li>
+<p>API server CPU saturation</p>
 </li>
 </ul>
 </div>
@@ -304,10 +460,151 @@ kubectl exec -n kube-burner &lt;kube-burner-pod&gt; -- cat /var/lib/kube-burner/
 </div>
 </div>
 <div class="sect1">
-<h2 id="_conclusion"><a class="anchor" href="#_conclusion"></a>Conclusion</h2>
+<h2 id="_5_run_the_test"><a class="anchor" href="#_5_run_the_test"></a>5. Run the Test</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Measuring control plane responsiveness with kube-burner provides invaluable insights into a k8s cluster&#8217;s performance and resilience under simulated churn scenarios. By carefully configuring jobs to focus on relevant metrics and thoroughly analyzing the results, you can identify and address performance bottlenecks, ensuring your cluster operates efficiently even under heavy loads.</p>
+<p>Execute kube-burner with both configs:</p>
+</div>
+<div class="paragraph">
+<p><code>kube-burner init -c job.yaml -m metrics.yaml</code></p>
+</div>
+<div class="paragraph">
+<p>During execution:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pods and services will be created</p>
+</li>
+<li>
+<p>Latency will be recorded</p>
+</li>
+<li>
+<p>Prometheus metrics will be scraped</p>
+</li>
+<li>
+<p>Results will be written to disk</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_6_analyzing_results"><a class="anchor" href="#_6_analyzing_results"></a>6. Analyzing Results</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_a_real_pod_latency_per_pod_document"><a class="anchor" href="#_a_real_pod_latency_per_pod_document"></a>a. Real pod-latency per-pod document</h3>
+<div class="paragraph">
+<p>This is the per-pod document kube-burner indexes for pods that reached <code>Running</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">{
+  "timestamp": "2020-11-15T20:28:59.598727718Z",
+  "schedulingLatency": 4,
+  "initializedLatency": 20,
+  "containersReadyLatency": 2997,
+  "podReadyLatency": 2997,
+  "metricName": "podLatencyMeasurement",
+  "uuid": "c40b4346-7af7-4c63-9ab4-aae7ccdd0616",
+  "namespace": "kubelet-density",
+  "podName": "kubelet-density-13",
+  "nodeName": "worker-001",
+  "jobName": "create-pods",
+  "jobIteration": "2",
+  "replica": "3"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Latencies are in milliseconds.</p>
+</li>
+<li>
+<p><code>podReadyLatency`</code> is the end-to-end number you usually care about (API → scheduler → kubelet readiness).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_b_pod_latency_quantiles"><a class="anchor" href="#_b_pod_latency_quantiles"></a>b. Pod-latency quantiles</h3>
+<div class="paragraph">
+<p>Kube-burner also writes quantiles per condition. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">{
+  "quantileName": "Ready",
+  "uuid": "23c0b5fd-c17e-4326-a389-b3aebc774c82",
+  "P99": 3774,
+  "P95": 3510,
+  "P50": 2897,
+  "max": 3774,
+  "avg": 2876.3,
+  "timestamp": "2020-11-15T22:26:51.553221077+01:00",
+  "metricName": "podLatencyQuantilesMeasurement"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use <code>P50/P95/P99</code> for trend/regression detection (P99 is your high-confidence signal).</p>
+</div>
+<div class="paragraph">
+<p>All the runtime measurements appear more or less in the similar pattern above.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_c_prometheus_metric_documents"><a class="anchor" href="#_c_prometheus_metric_documents"></a>c. Prometheus metric documents</h3>
+<div class="paragraph">
+<p>Each PromQL result kube-burner writes has this shape with a timestamp.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">[
+  {
+    "timestamp": "2021-06-23T11:50:15+02:00",
+    "labels": {
+      "instance": "ip-10-0-219-170.eu-west-3.compute.internal",
+      "mode": "user"
+    },
+    "value": 0.3300880234732172,
+    "uuid": "&lt;UUID&gt;",
+    "query": "sum(irate(node_cpu_seconds_total[2m])) by (mode,instance)",
+    "metricName": "nodeCPU"
+  },
+  ...
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>kube-burner enriches results with uuid, query, and metricName for correlation. Use metricName to identify which PromQL you ran.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_7_quick_checklist_what_signals_mean_what_developer_view"><a class="anchor" href="#_7_quick_checklist_what_signals_mean_what_developer_view"></a>7 — Quick checklist: what signals mean what (developer view)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>podLatencyQuantilesMeasurement P99</code> (Ready): control-plane slowdown (API/scheduler/kubelet). Check node &amp; apiserver CPU and apiserver request duration.</p>
+</li>
+<li>
+<p><code>svcLatencyQuantiles P99</code>: Endpoints not ready quickly, or network/provider LB delays. Check endpoints and kube-burner-service-latency connectivity logs.</p>
+</li>
+<li>
+<p><code>Prometheus apiserver P99</code>: (PromQL result apiserver_request_duration_seconds quantile) → API server processing time spike. Correlate with achievedQps in jobSummary.</p>
+</li>
+<li>
+<p><code>High jobSummary.achievedQps with high latencies</code>: you pushed cluster beyond what it was tuned for; lower qps/burst for debugging.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Note: The above is just an example, but analyzing metrics and debugging for issues is a wide topic.</p>
+</div>
 </div>
 </div>
 </div>
